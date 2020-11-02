@@ -1,13 +1,36 @@
-import re
 import tkinter as tk
 import threading
-import tkinter.scrolledtext as tkst
-import requests
-import youtube_dl
-from tkinter.ttk import Progressbar
-import multiprocessing
-import subprocess
-import time
+from tkinter import Tk, Canvas, Frame, BOTH
+
+
+class Draw(Frame):
+
+    def __init__(self):
+        super().__init__()
+
+        self.initUI()
+
+
+    def initUI(self):
+
+        self.master.title("Lines")
+        self.grid()
+
+        canvas = Canvas(self)
+        canvas.create_line(15, 25, 200, 25)
+        canvas.create_line(300, 35, 300, 200, dash=(4, 2))
+        canvas.create_line(55, 85, 155, 85, 105, 180, 55, 85)
+        canvas.create_line(20, 20, 100, 100)
+
+        canvas.grid()
+
+
+def main():
+
+    root = Tk()
+    ex = Draw()
+    root.geometry("400x250+300+300")
+    root.mainloop()
 
 class App(tk.Tk): 
 
@@ -16,30 +39,40 @@ class App(tk.Tk):
         #Standard setup
 
         tk.Tk.__init__(self, *args, **kwargs) 
-        self.title('SammaSounds')
+        self.title('Scheduling')
         self.configure(bg='light grey')         
-        self.minsize(width=500, height=120)
-        self.maxsize(width=500, height=120)
+        self.minsize(width=1000, height=1000)
+        self.maxsize(width=1000, height=1000)
 
         #Implement Widgets
         
-        self.txt0 = tk.Label(self, text="Search for Music:",bg='light grey')
+        self.txt0 = tk.Label(self, text="Enter the Release, Period, and Execution Time. Eg:'1,2,3'",bg='light grey')
         self.txt0.grid(row=0, column=0, sticky='w')
-        self.txtin0 = tk.Entry(self,width=45) 
-        self.txtin0.grid(row=0,column=0, sticky='n')
-        self.button0 = tk.Button(self, text="Search", command=self.threadstarter) 
-        self.button0.grid(row=0,column=0,sticky='e')
-        self.lstbox0 = tk.Listbox(self,width=77,height=5) 
-        self.lstbox0.bind("<Double-Button-1>", self.selector) 
-        self.lstbox0.grid(row=1,column=0,sticky='nsw') 
-        self.scroll0 = tk.Scrollbar(self, orient="vertical") 
-        self.scroll0.config(command=self.lstbox0.yview) 
-        self.scroll0.grid(row=1,column=1,sticky='nsw')
-        self.lstbox0.config(yscrollcommand=self.scroll0.set)
-        self.p = Progressbar(self,orient='vertical',length=90,mode="determinate",takefocus=True,maximum=5)
-        self.p.grid(row=1,column=2)
+        self.txt0 = tk.Label(self, text="Task 1:",bg='light grey')
+        self.txt0.grid(row=1, column=0, sticky='w')
+        self.txt0 = tk.Label(self, text="Task 2:",bg='light grey')
+        self.txt0.grid(row=2, column=0, sticky='w')
+        self.txt0 = tk.Label(self, text="Task 3:",bg='light grey')
+        self.txt0.grid(row=3, column=0, sticky='w')
+        self.txt0 = tk.Label(self, text="Task 4:",bg='light grey')
+        self.txt0.grid(row=4, column=0, sticky='w')
+        self.txt0 = tk.Label(self, text="Task 5:",bg='light grey')
+        self.txt0.grid(row=5, column=0, sticky='w')
+        self.txtin0 = tk.Entry(self,width=20) 
+        self.txtin0.grid(row=1,column=0)
+        self.txtin1 = tk.Entry(self,width=20) 
+        self.txtin1.grid(row=2,column=0)
+        self.txtin2 = tk.Entry(self,width=20) 
+        self.txtin2.grid(row=3,column=0)
+        self.txtin3 = tk.Entry(self,width=20) 
+        self.txtin3.grid(row=4,column=0)
+        self.txtin4 = tk.Entry(self,width=20) 
+        self.txtin4.grid(row=5,column=0)
+        self.button0 = tk.Button(self, text="Start", command=Draw) 
+        self.button0.grid(row=0,column=1,sticky='w')
+
 
 if __name__ == "__main__": 
 
         app = App() 
-        app.mainloop() 
+        app.mainloop()
