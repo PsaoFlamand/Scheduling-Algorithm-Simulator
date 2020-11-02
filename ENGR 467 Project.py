@@ -14,7 +14,7 @@ class Draw(Frame):
         self.grid()
 
         canvas = Canvas(self,width=1000, height=300)
-        canvas.create_line(10, 10, 1000, 10)
+        canvas.create_line(10, 10, 1000, 10) #Format(x1,y1,x2,y2)
         canvas.create_line(10, 40, 1000, 40)
         canvas.create_line(10, 70, 1000, 70)
         canvas.create_line(10, 100, 1000, 100)
@@ -23,7 +23,7 @@ class Draw(Frame):
 
         canvas.grid()
 
-class App(tk.Tk): 
+class App(Tk): 
 
     def __init__(self, *args, **kwargs):
 
