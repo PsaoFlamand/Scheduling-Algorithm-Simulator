@@ -14,11 +14,11 @@ class Draw(Frame):
         self.grid()
         Counter = 0
         self.canvas = Canvas(self,width=1000, height=300)
-        for i in range(10,220,30):
+        for i in range(10,220,30):                  #Draws the Initial X-Axis Lines
             self.canvas.create_line(10, i, 1000, i) #Format(x1,y1,x2,y2)
-        for i1 in range(10,1000,30):
+        for i1 in range(10,1000,30):                #Draws the Y-Axis Lines
             self.canvas.create_line(i1, 220, i1, 230)
-            self.canvas.create_text(i1,240,fill="darkblue",font="Times 12 italic bold",text=str(Counter))
+            self.canvas.create_text(i1,240,fill="darkblue",font="Times 12 italic bold",text=str(Counter)) #Draws the numbers
             Counter+=1
 
         self.canvas.grid()
