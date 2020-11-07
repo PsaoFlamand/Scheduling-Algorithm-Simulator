@@ -10,18 +10,47 @@ class Draw(Frame):
     def initUI(self):
         #This is where the Schedule is Drawn
 
-        self.master.title("Lines")
+        self.master.title("Schedule")
         self.grid()
+        Counter = 0
+        self.canvas = Canvas(self,width=1000, height=300)
+        for i in range(10,220,30):
+            self.canvas.create_line(10, i, 1000, i) #Format(x1,y1,x2,y2)
+        for i1 in range(10,1000,30):
+            self.canvas.create_line(i1, 220, i1, 230)
+            self.canvas.create_text(i1,240,fill="darkblue",font="Times 12 italic bold",text=str(Counter))
+            Counter+=1
 
-        canvas = Canvas(self,width=1000, height=300)
-        canvas.create_line(10, 10, 1000, 10) #Format(x1,y1,x2,y2)
-        canvas.create_line(10, 40, 1000, 40)
-        canvas.create_line(10, 70, 1000, 70)
-        canvas.create_line(10, 100, 1000, 100)
-        canvas.create_line(10, 130, 1000, 130)
-        canvas.create_line(10, 160, 1000, 160)
-
-        canvas.grid()
+        self.canvas.grid()
+        self.Draw_Task(5,0,3)
+        self.Draw_Task(2,9,13)
+    def Draw_Task(self,Task,Begin,End):
+        self.canvas.create_rectangle((30*(Begin)+10), ((Task*30)+10), (30*(End)+10), ((Task*30)+40),fill="blue")
+        
+    def Logic(self):
+        #(8, 1), (15, 3), (20, 4), and (22, 6) test
+        #Release, Period, and Execution Time
+        self.update()
+        Total_Task=[]
+        Task0 = "0,0,70"     #self.txtin0.get()
+        Task1 = "5,0,40"    #self.txtin1.get()
+        Task2 = "10,0,35"    #self.txtin2.get()
+        Task3 = "0,0,0"    #self.txtin3.get()
+        Task4 = "0,0,0"     #self.txtin4.get()
+        #TimeQuantum=20      #self.txtin5.get()
+        Task0 = Task0.split(",")
+        Task1 = Task1.split(",")
+        Task2 = Task2.split(",")
+        Task3 = Task3.split(",")
+        Task4 = Task4.split(",")
+        Release=[int(Task0[0]),int(Task1[0]),int(Task2[0]),int(Task3[0]),int(Task4[0])]
+        Period=[int(Task0[1]),int(Task1[1]),int(Task2[1]),int(Task3[1]),int(Task4[1])]
+        Execution=[int(Task0[2]),int(Task1[2]),int(Task2[2]),int(Task3[2]),int(Task4[2])]
+        for i in range(0,len(Release)-1):
+            #print(i)
+            Width=Release[i+1]-Release[i]
+            #print(Release[i])
+            print(Width)
 
 class App(Tk): 
 
@@ -32,8 +61,8 @@ class App(Tk):
         tk.Tk.__init__(self, *args, **kwargs) 
         self.title('Scheduling')
         self.configure(bg='light grey')         
-        self.minsize(width=1000, height=1000)
-        self.maxsize(width=1000, height=1000)
+        self.minsize(width=1000, height=600)
+        self.maxsize(width=1000, height=600)
 
         #Set up the Textboxes,  text, and button
         
