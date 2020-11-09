@@ -23,8 +23,9 @@ class Draw(Frame):
             Counter+=1
 
         self.canvas.grid()
-        self.Draw_Task(5,0,3)
-        self.Draw_Task(3,0,13)
+        
+        self.Draw_Task(5,0,3) #Test drawing task (Task,start,end)
+        self.Draw_Task(3,5,13)
         
     def Draw_Task(self,Task,Begin,End):
         self.canvas.create_rectangle((30*(Begin)+10), ((Task*30)+10), (30*(End)+10), ((Task*30)+40),fill="blue")
@@ -33,12 +34,14 @@ class Draw(Frame):
         #(8, 1), (15, 3), (20, 4), and (22, 6) test
         #Release, Period, and Execution Time
         self.update()
-        Task0 = "0,0,70"     #self.txtin0.get()
-        Task1 = "5,0,40"    #self.txtin1.get()
-        Task2 = "10,0,35"    #self.txtin2.get()
+        
+        Task0 = "0,10,70"     #self.txtin0.get()
+        Task1 = "5,5,40"    #self.txtin1.get()
+        Task2 = "10,2,35"    #self.txtin2.get()
         Task3 = "0,0,0"    #self.txtin3.get()
         Task4 = "0,0,0"     #self.txtin4.get()
-        #TimeQuantum=20      #self.txtin5.get()
+        
+        #TimeQuantum=20      #self.txtin5.get() #For round robin, not part of EDF or RM
         
         Task0 = Task0.split(",")
         Task1 = Task1.split(",")
@@ -55,9 +58,7 @@ class Draw(Frame):
             print(Width)
 
 class App(Tk): #This Module sets up the original window with search boxes, labels, and a button
-
     def __init__(self, *args, **kwargs):
-
         #Standard setup
 
         tk.Tk.__init__(self, *args, **kwargs) 
@@ -92,12 +93,10 @@ class App(Tk): #This Module sets up the original window with search boxes, label
         self.txtin4 = tk.Entry(self,width=20) 
         self.txtin4.grid(row=5,column=0)
         
-        self.button0 = tk.Button(self, text="Start", command=Draw) #When Clicked, the draw class is called
+        self.button0 = tk.Button(self, text="Start", command=Draw) # When Clicked, the draw class is called
         self.button0.grid(row=0,column=1,sticky='w')
-
 
 if __name__ == "__main__": 
 
-        app = App()
-        
+        app = App()        
         app.mainloop()
