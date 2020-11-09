@@ -49,9 +49,9 @@ class Draw(Frame):
         Task3 = Task3.split(",")
         Task4 = Task4.split(",")
         
-        Release=[int(Task0[0]),int(Task1[0]),int(Task2[0]),int(Task3[0]),int(Task4[0])]
-        Period=[int(Task0[1]),int(Task1[1]),int(Task2[1]),int(Task3[1]),int(Task4[1])]
-        Execution=[int(Task0[2]),int(Task1[2]),int(Task2[2]),int(Task3[2]),int(Task4[2])]
+        Release={0:int(Task0[0]),1:int(Task1[0]),2:int(Task2[0]),3:int(Task3[0]),4:int(Task4[0])}
+        Period={0:int(Task0[1]),1:int(Task1[1]),2:int(Task2[1]),3:int(Task3[1]),4:int(Task4[1])}
+        Execution={0:int(Task0[2]),1:int(Task1[2]),2:int(Task2[2]),3:int(Task3[2]),4:int(Task4[2])]
         
         for i in range(0,len(Release)-1):
             Width=Release[i+1]-Release[i]
