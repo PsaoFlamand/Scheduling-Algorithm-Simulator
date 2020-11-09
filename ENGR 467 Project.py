@@ -101,12 +101,12 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         
         self.button0 = tk.Button(self, text="Start", command=lambda: self.Execute()) # When Clicked, the draw class is called
         self.button0.grid(row=0,column=1)
-        self.button1 = tk.Button(self, text="Add Task", command=lambda: self.Real_Add()) # When Clicked, the draw class is called
+        self.button1 = tk.Button(self, text="Add Task", command=lambda: self.Add_Task()) # When Clicked, the draw class is called
         self.button1.grid(row=0,column=4)
         self.button2 = tk.Button(self, text="Clear", command=lambda: self.clear()) # When Clicked, the draw class is called
         self.button2.grid(row=0,column=5)
 
-    def Real_Add(self):
+    def Add_Task(self):
         global counter
         counter +=1
         descript="Task " + str(counter) + ":"
@@ -139,8 +139,6 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         label_list.clear()
         counter =0
         
-
-
 if __name__ == "__main__": 
 
         app = Main()        
