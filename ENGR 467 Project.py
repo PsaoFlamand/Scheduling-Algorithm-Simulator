@@ -158,24 +158,39 @@ class Draw_Schedule(Frame):
         Counter = 0
         self.canvas = Canvas(Schedule,width=1000,height=450)
        # print(N)
-        self.canvas.create_line(10, 10, 1000, 10)
+        self.canvas.create_line(25, 10, 1000, 10)
+        tsknum=0
         for i in range(40,(((N+1)*30)),30):                  #Draws the Initial X-Axis Lines
-            self.canvas.create_line(10, i, 1000, i) #Format(x1,y1,x2,y2)
-
-        for i1 in range(10,1000,30):                #Draws the Y-Axis Lines
-            self.canvas.create_line(i1, (((N+1)*30)-20), i1, (((N+1)*30)-10))
-            self.canvas.create_text(i1,(((N+1)*30)),fill="darkblue",font="Times 12 italic bold",text=str(Counter))
-            Counter+=5
+            self.canvas.create_line(25, i, 1000, i) #Format(x1,y1,x2,y2)
+            self.canvas.create_text(10,i-13,fill="darkblue",font="Times 12 italic bold",text="T"+str(tsknum))
+            tsknum+=1
 
         self.canvas.grid()
         
     def Draw_Task(self,Task_List,Begin_List,End_List):
+        scale=1
+        Counter = 0
+        mx=End_List[len(End_List)-1]
+        if(mx>160):
+            scale=10
+        if(mx>60 and mx<=160):
+            scale=5
+        elif(mx>30 and mx<=60):
+            scale=2
+        elif(mx<=30):
+            scale=1
+        for i1 in range(20,1000,30):                #Draws the Y-Axis Lines
+            self.canvas.create_line(i1, (((N+1)*30)-20), i1, (((N+1)*30)-10))
+            self.canvas.create_text(i1,(((N+1)*30)),fill="darkblue",font="Times 12 italic bold",text=str(Counter))
+        
+            Counter+=scale
         for i in range(0,len(Task_List)):
-            Task=Task_List[i]
-            Begin=Begin_List[i]/5
-            End=End_List[i]/5
 
-            self.canvas.create_rectangle((30*(Begin)+10), ((Task*30)+10), (30*(End)+10), ((Task*30)+40),fill="blue")
+            Task=Task_List[i]
+            Begin=Begin_List[i]/scale
+            End=End_List[i]/scale
+            
+            self.canvas.create_rectangle((30*(Begin)+25), ((Task*30)+10), (30*(End)+25), ((Task*30)+40),fill="blue")
 
 class Main(Tk): #This Module sets up the original window with search boxes, labels, and a button
     
