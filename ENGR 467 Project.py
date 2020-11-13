@@ -126,27 +126,27 @@ class Algorithms():
         #print(Task_List,Begin_List,End_List)        
         
         return Task_List,Begin_List,End_List
-
+#####################################################All Graphics and controls beyond  this point
 class Draw_Schedule(Frame):
     
     def __init__(self,Release,Period,Execution,N,algo_type):
         super().__init__()
-        test=Algorithms()
+        algo=Algorithms()
         if (algo_type=="eedf"):
             print("we eedfed")
-            Task,Begin,End=test.eedf(Release,Period,Execution)
+            Task,Begin,End=algo.eedf(Release,Period,Execution)
         if (algo_type=="edf"):
             print("we edfed")
-            Task,Begin,End=test.edf(Release,Period,Execution)
+            Task,Begin,End=algo.edf(Release,Period,Execution)
         if (algo_type=="rm"):
             print("we rmed")
-            Task,Begin,End=test.rm(Release,Period,Execution)
+            Task,Begin,End=algo.rm(Release,Period,Execution)
         if (algo_type=="fcfs"):
             print("we fcfsed")
-            Task,Begin,End=test.fcfs(Execution)
+            Task,Begin,End=algo.fcfs(Execution)
         if (algo_type=="rr"):
             print("we rred")
-            Task,Begin,End=test.rr(Release,Period,Execution)
+            Task,Begin,End=algo.rr(Release,Period,Execution)
         self.Draw_Structure(N)
         self.Draw_Task(Task,Begin,End)
 
