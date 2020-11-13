@@ -179,7 +179,7 @@ class Draw_Schedule(Frame):
             scale=2
         elif(mx<=30):
             scale=1
-        for i1 in range(20,1000,30):                #Draws the Y-Axis Lines
+        for i1 in range(25,1000,30):                #Draws the Y-Axis Lines
             self.canvas.create_line(i1, (((N+1)*30)-20), i1, (((N+1)*30)-10))
             self.canvas.create_text(i1,(((N+1)*30)),fill="darkblue",font="Times 12 italic bold",text=str(Counter))
         
