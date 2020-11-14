@@ -27,7 +27,7 @@ class Algorithms():
                     prev_start=width+prev_start
                     count+=1    
         return Task_List,Begin_List,End_List
-    def rr (self,Execution): #RR algorithm
+    def rr (self,Release,Deadline,Execution): #RR algorithm
 
         Task_List=[]
         Begin_List=[]
