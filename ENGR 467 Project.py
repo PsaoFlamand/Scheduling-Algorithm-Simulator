@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from tkinter import Tk, Canvas, Frame, BOTH
+from tkinter import font
 global counter
 counter=0
 class Algorithms():
@@ -33,7 +34,6 @@ class Algorithms():
         Begin_List=[]
         End_List=[]
 
-       # print(Execution)
         Task_List=[]
         Begin_List=[]
         End_List=[]
@@ -47,7 +47,7 @@ class Algorithms():
         count=0
         prev_start=0
         
-        while not all(v == 0 for v in remaining_execution):
+        while not all(remains == 0 for remains in remaining_execution):
             write=1
             count+=1
             for width in range(1,int(quantum)+1,1):
@@ -71,79 +71,6 @@ class Algorithms():
                 exe_count+=1
         return Task_List,Begin_List,End_List
 
-    def rm (self,Execution): #RM algorithm
-
-        Task_List=[]
-        Begin_List=[]
-        End_List=[]
-        sort_Period = sorted(Period.items(), key=lambda x: x[1])
-
-        count =0
-
-        prev_start=0
-        while (count<100):
-            count+=1
-            for i in sort_Period:
-                count+=1
-
-                #print("test->",Execution[i[0]]+1)
-                for width in range(0,Execution[i[0]]+1,1):
-                    #print(width,prev_start,Execution[i[0]])
-
-                    if (width-(Execution[i[0]])==0):
-                        End_List.append(width+prev_start)
-                        Task_List.append(i[0])
-                        Begin_List.append(prev_start)
-                        prev_start=width+prev_start
-
-        #print(Task_List,Begin_List,End_List)        
-        
-        return Task_List,Begin_List,End_List
-
-    def edf (self,Release,Period,Execution): #EDF algorithm
-        #Ta(50, 12), Tb(40, 10),Tc(30, 10).
-        #Release, Period, and Execution Time
-        #
-        
-        #print(Release, Period, Execution)
-        #for i in Release:
-        #    print(Release[i])
-        #     print("The Task value is ->", i)
-        # for i1 in Period:
-        #     print(Period[i1])
-        #    print("The Task value is ->", i1)
-        #for i2 in Execution:
-        #    print(Execution[i2])
-        #    print("The Task value is ->", i2)
-        print(Release)
-        print(Period)
-        print(Execution)
-        Task_List=[]
-        Begin_List=[]
-        End_List=[]
-        sort_Period = sorted(Period.items(), key=lambda x: x[1])
-
-        count =0
-
-        prev_start=0
-        while (count<100):
-            count+=1
-            for i in sort_Period:
-                count+=1
-                #print (i)
-                #print("test->",Execution[i[0]]+1)
-                for width in range(0,Execution[i[0]]+1,1):
-                    #print(width,prev_start,Execution[i[0]])
-
-                    if (width-(Execution[i[0]])==0):
-                        End_List.append(width+prev_start)
-                        Task_List.append(i[0])
-                        Begin_List.append(prev_start)
-                        prev_start=width+prev_start
-
-        #print(Task_List,Begin_List,End_List)        
-        
-        return Task_List,Begin_List,End_List
 #####################################################All Graphics and controls beyond  this point
 class Draw_Schedule(Frame):
     
@@ -153,12 +80,7 @@ class Draw_Schedule(Frame):
         if (algo_type=="eedf"):
             print("we eedfed")
             Task,Begin,End=algo.eedf(Release,Period,Execution)
-        if (algo_type=="edf"):
-            print("we edfed")
-            Task,Begin,End=algo.edf(Release,Period,Execution)
-        if (algo_type=="rm"):
-            print("we rmed")
-            Task,Begin,End=algo.rm(Release,Period,Execution)
+
         if (algo_type=="fcfs"):
             print("we fcfsed")
             Task,Begin,End=algo.fcfs(Execution)
@@ -230,49 +152,47 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
   
         tk.Tk.__init__(self, *args, **kwargs) 
         self.title('Scheduling')
-        self.configure(bg='light grey')         
-        self.minsize(width=600, height=300)
-        self.maxsize(width=600, height=300)
+        self.configure(bg='yellow')         
+        self.minsize(width=400, height=310)
+        self.maxsize(width=400, height=310)
 
         #Set up the Textboxes,  text, and button
+        title_text = font.Font(family='Times', weight = 'bold', size = 13)
+        self.task_text = font.Font(family='Times', weight = 'bold', size = 10)
+        self.txt0 = tk.Label(self, text="Welcome! Please Enter Your Input...",bg='yellow',font=title_text)
         
-        self.txt0 = tk.Label(self, text="Enter the Release, Period, and Execution Time. Eg:'1,2,3'",bg='light grey')
         self.txt0.grid(row=0, column=0, sticky='w')
         
-        self.button0 = tk.Button(self, text="Start", command=lambda: self.Execute()) # When Clicked, The Schedule is drawn
-        self.button0.grid(row=0,column=1)
-        self.button1 = tk.Button(self, text="Add Task", command=lambda: self.Add_Task()) # When Clicked, A task is added
-        self.button1.grid(row=1,column=1)
-        self.button2 = tk.Button(self, text="Clear", command=lambda: self.clear()) # When Clicked, All tasks are cleared
-        self.button2.grid(row=2,column=1)
+        self.button0 = tk.Button(self, text="Start", bg='white',command=lambda: self.Execute(),font=self.task_text) # When Clicked, The Schedule is drawn
+        self.button0.grid(row=1,column=1, sticky='w')
+        self.button1 = tk.Button(self, text="Add Task",bg='white', command=lambda: self.Add_Task(),font=self.task_text) # When Clicked, A task is added
+        self.button1.grid(row=2,column=1, sticky='w')
+        self.button2 = tk.Button(self, text="Clear",bg='white', command=lambda: self.clear(),font=self.task_text) # When Clicked, All tasks are cleared
+        self.button2.grid(row=3,column=1, sticky='w')
         var1 = tk.IntVar()
         var2 = tk.IntVar()
         var3 = tk.IntVar()
         var4 = tk.IntVar()
         var5 = tk.IntVar()
-        self.check1 = tk.Checkbutton(self, text='Energy-Saving EDF',variable=var1, onvalue=1, offvalue=0,bg="light grey")
-        self.check1.grid(row=0,column=6, sticky='w')
-        self.check2 = tk.Checkbutton(self, text='EDF',variable=var2, onvalue=1, offvalue=0,bg="light grey")
-        self.check2.grid(row=1,column=6, sticky='w')
-        
-        self.check3 = tk.Checkbutton(self, text='RM',variable=var3, onvalue=1, offvalue=0,bg="light grey")
-        self.check3.grid(row=2,column=6, sticky='w')
-        self.check4 = tk.Checkbutton(self, text='FCFS',variable=var4, onvalue=1, offvalue=0,bg="light grey")
-        self.check4.grid(row=3,column=6, sticky='w')
-        self.check5 = tk.Checkbutton(self, text='RR',variable=var5, onvalue=1, offvalue=0,bg="light grey")
-        self.check5.grid(row=4,column=6, sticky='w')
+        self.check1 = tk.Checkbutton(self, text='Cycle-Saving EDF',variable=var1, onvalue=1, offvalue=0,bg='yellow',font=self.task_text)
+        self.check1.grid(row=4,column=1, sticky='w')
+
+        self.check4 = tk.Checkbutton(self, text='FCFS',variable=var4, onvalue=1, offvalue=0,bg='yellow',font=self.task_text)
+        self.check4.grid(row=5,column=1, sticky='w')
+        self.check5 = tk.Checkbutton(self, text='RR',variable=var5, onvalue=1, offvalue=0,bg='yellow',font=self.task_text)
+        self.check5.grid(row=6,column=1, sticky='w')
     
-        self.quantum_get=tk.Entry(self,width=3)
-        self.quantum_text = tk.Label(self, text="Quantum",bg='light grey')
-        self.quantum_get.grid(row=4,column=1,sticky='n')
-        self.quantum_text.grid(row=3, column=1)
+        self.quantum_get=tk.Entry(self,width=10)
+        self.quantum_text = tk.Label(self, text="Quantum",bg='yellow',font=self.task_text)
+        self.quantum_get.grid(row=7,column=1, sticky='e')
+        self.quantum_text.grid(row=7, column=1, sticky='w')
     def Add_Task(self):
         global counter
         counter +=1
         descript="Task " + str(counter) + ":"
 
         self.txtin=tk.Entry(self,width=20)
-        self.txt = tk.Label(self, text=descript,bg='light grey')
+        self.txt = tk.Label(self, text=descript,bg='yellow',font=self.task_text)
         self.txt.grid(row=counter, column=0, sticky='w')
         
         entry_list.append(self.txtin)
@@ -292,17 +212,6 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         Execution={}
         Simple_Execution=[]
         N=len(entry_list)
-      #  entry_list_test=["0,50,12","0,40,10","0,30,10"]
-      #  for i in entry_list_test:
-       #     Task=i#.get()
-            
-       #     Task = Task.split(",")
-        
-       #     Release.update({count:int(Task[0])})
-        #    Period.update({count:int(Task[1])})
-       #     Execution.update({count:int(Task[2])})
-        #    count+=1
-
 
         if (var1.get() == 1):
 
@@ -319,24 +228,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             algo_type="eedf"
             quantum=0
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
-        elif (var2.get() == 1):
 
-            entry_list_test=["0,50,12","0,40,10","0,30,10"]
-            for i in entry_list_test:
-                Task=i#.get()
-            
-                Task = Task.split(",")
-        
-                Release.update({count:int(Task[0])})
-                Period.update({count:int(Task[1])})
-                Execution.update({count:int(Task[2])})
-                count+=1
-            algo_type="edf"
-            quantum=0
-            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
-
-        elif (var3.get() == 1):###RM
-            algo_type="rm"
         elif (var4.get() == 1):###FCFS
 
             #entry_list_test=["12","40","10"]
