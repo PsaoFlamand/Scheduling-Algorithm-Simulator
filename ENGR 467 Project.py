@@ -159,6 +159,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         #Set up the Textboxes,  text, and button
         title_text = font.Font(family='Times', weight = 'bold', size = 13)
         self.task_text = font.Font(family='Times', weight = 'bold', size = 10)
+        self.explain_text = font.Font(family='Times', weight = 'bold', size = 7)
         self.txt0 = tk.Label(self, text="Welcome! Please Enter Your Input...",bg='yellow',font=title_text)
         
         self.txt0.grid(row=0, column=0, sticky='w')
@@ -186,6 +187,11 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.quantum_text = tk.Label(self, text="Quantum",bg='yellow',font=self.task_text)
         self.quantum_get.grid(row=7,column=1, sticky='e')
         self.quantum_text.grid(row=7, column=1, sticky='w')
+        ##Explanation of input
+        self.explainEEDF = tk.Label(self, text="EDF(Release,Period,Execution)",bg='yellow',font=self.explain_text)
+        self.explainEEDF.grid(row=8,column=1, sticky='w')
+        self.explainEEDF = tk.Label(self, text="RR/FCFS(Release,Execution)",bg='yellow',font=self.explain_text)
+        self.explainEEDF.grid(row=9,column=1, sticky='w')
     def Add_Task(self):
         global counter
         counter +=1
