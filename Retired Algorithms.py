@@ -1,3 +1,42 @@
+        elif (var3.get() == 1):###RM
+            entry_list_test=["0,25,5","0,60,20","0,35,8","0,105,15"]
+            for i in entry_list_test:
+                Task=i#.get()
+            
+                Task = Task.split(",")
+        
+                Release.update({count:int(Task[0])})
+                Period.update({count:int(Task[1])})
+                Execution.update({count:int(Task[2])})
+                count+=1
+            algo_type="rm"
+            quantum=0
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
+            
+        elif (var2.get() == 1):
+
+            entry_list_test=["0,50,12","0,40,10","0,30,10"]
+            for i in entry_list_test:
+                Task=i#.get()
+            
+                Task = Task.split(",")
+        
+                Release.update({count:int(Task[0])})
+                Period.update({count:int(Task[1])})
+                Execution.update({count:int(Task[2])})
+                count+=1
+            algo_type="edf"
+            quantum=0
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
+
+
+        if (algo_type=="edf"):
+            print("we edfed")
+            Task,Begin,End=algo.edf(Release,Period,Execution)
+        if (algo_type=="rm"):
+            print("we rmed")
+            Task,Begin,End=algo.rm(Release,Period,Execution)
+
     def rm (self,Release,Period,Execution): #RM algorithm
         #entry_list_test=["0,25,5","0,60,20","0,35,8","0,105,15"]
         Task_List=[]

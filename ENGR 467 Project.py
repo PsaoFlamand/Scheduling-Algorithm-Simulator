@@ -7,61 +7,84 @@ counter=0
 class Algorithms():
     def __init__(self):
         print("Nothing to do here")
+        
     def eedf(self): #Energy saving EDF
         #############Ahmed
         print("THis is energy EDF")
-    def fcfs (self,Execution): #FCFS algorithm###!!!!!!!!!!!!!!!!!!DONE
+        
+    def fcfs (self,release,deadline,Execution): #FCFS algorithm###!!!!!!!!!!!!!!!!!!DONE
         Task_List=[]
         Begin_List=[]
         End_List=[]
+        deadline_missed=[]
         count =0
         prev_start=0
-        
-        for i in Execution:
-            
-        
-            for width in range(0,int(i)+1,1):
-                if (width-int(i)==0):
-                    End_List.append(width+prev_start)
-                    Task_List.append(count)
-                    Begin_List.append(prev_start)
-                    prev_start=width+prev_start
-                    count+=1    
+        print(release)
+        print(deadline)
+        print(Execution)
+        #["30,15,20","20,39,20","10,60,15","5,65,15"]
+        sort_release= sorted(release.items(), key=lambda x: x[1])
+        #Runs through a list and outputs the begin and end
+        print(sort_release)
+        #for priority in sort_release:
+        prioritized_release=[]
+        prioritized_task=[]
+        for priority in sort_release:
+            print('priority',priority[0])
+            prioritized_task.append(int(priority[0]))
+            prioritized_release.append(int(priority[1]))
+        prev_start=prioritized_release[0]
+        for task_num in prioritized_task:
+            print('task_num',task_num,' prev_start', prev_start,'prioritized_release',release[task_num])
+            if prev_start<release[task_num]:
+                print("we are waiting")
+            else:
+                reset=0
+                
+                for width in range(0,int(Execution[task_num])+1,1):
+                    end=width+prev_start
+                    
+                   # print("end:",end," deadline:",deadline[count])
+                    
+                    if (end)>deadline[count] and reset==0:#detect missed deadline
+                        reset=1
+
+                        deadline_missed.append(end-1)
+                    #print("width",width," remaining", Execution[remaining])
+                    if (width-int(Execution[task_num])==0):
+                       # print("width",width," remaining", Execution[remaining])
+                        End_List.append(end)
+                        Task_List.append(task_num)
+                        Begin_List.append(prev_start)
+                        prev_start=width+prev_start
+                        count+=1
+                    
+       # print(deadline_missed)
         return Task_List,Begin_List,End_List
-    def rr (self,Execution,quantum): #RR algorithm###!!!!!!!!!!!!!!!!!!DONE
+    
+    def rr (self,Release,Period,Execution, quantum): #RR algorithm###!!!!!!!!!!!!!!!!!!DONE
         #print('''["53","8","68","24"]''')
         Task_List=[]
         Begin_List=[]
-        End_List=[]
-
-        Task_List=[]
-        Begin_List=[]
-        End_List=[]
-        count =0
-        prev_start=0
+        End_List=[]       
         remaining_execution=[]
         for i in Execution:
             remaining_execution.append(int(i))
         exe_count=0
-        breaker=1
-        count=0
         prev_start=0
         
         while not all(remains == 0 for remains in remaining_execution):
             write=1
-            count+=1
             for width in range(1,int(quantum)+1,1):
+                end=width+prev_start
                 if remaining_execution[exe_count]==0:
                     write=0
-                    w=0
                     break
                 remaining_execution[exe_count]-=1
                 if remaining_execution[exe_count]==0:
-
                     break
-       
             if write==1:
-                End_List.append(width+prev_start)
+                End_List.append(end)
                 Task_List.append(exe_count)
                 Begin_List.append(prev_start)
                 prev_start=width+prev_start
@@ -83,10 +106,10 @@ class Draw_Schedule(Frame):
 
         if (algo_type=="fcfs"):
             print("we fcfsed")
-            Task,Begin,End=algo.fcfs(Execution)
+            Task,Begin,End=algo.fcfs(Release,Period,Execution)
         if (algo_type=="rr"):
             print("we rred")
-            Task,Begin,End=algo.rr(Execution, quantum)
+            Task,Begin,End=algo.rr(Release,Period,Execution, quantum)
         self.Draw_Structure(N)
         self.Draw_Task(Task,Begin,End)
 
@@ -196,14 +219,11 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         global counter
         counter +=1
         descript="Task " + str(counter) + ":"
-
         self.txtin=tk.Entry(self,width=20)
         self.txt = tk.Label(self, text=descript,bg='yellow',font=self.task_text)
-        self.txt.grid(row=counter, column=0, sticky='w')
-        
+        self.txt.grid(row=counter, column=0, sticky='w') 
         entry_list.append(self.txtin)
         label_list.append(self.txt)
-        
         self.txtin.grid(row=counter,column=0)
         
     def Execute(self):
@@ -217,10 +237,10 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         Period={}
         Execution={}
         Simple_Execution=[]
+        Simple_Period=[]
+        Simple_Release=[]
         N=len(entry_list)
-
-        if (var1.get() == 1):
-
+        if (var1.get() == 1):#EEDF
             entry_list_test=["0,50,12","0,40,10","0,30,10"]
             for i in entry_list_test:
                 Task=i#.get()
@@ -234,30 +254,41 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             algo_type="eedf"
             quantum=0
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
-
-        elif (var4.get() == 1):###FCFS
-
-            #entry_list_test=["12","40","10"]
-            for i in entry_list:
-                Task=i.get()
-                Simple_Execution.append(Task)
+            
+        elif (var4.get() == 1):###FCFS#######################################
+            entry_list_test=["31,15,20","32,39,20","33,60,15","5,65,15"]
+            for i in entry_list_test:
+                Task=i#.get()
+            
+                Task = Task.split(",")
+        
+                Release.update({count:int(Task[0])})
+                Period.update({count:int(Task[1])})
+                Execution.update({count:int(Task[2])})
                 count+=1
+
             algo_type="fcfs"
             quantum=0
-            Draw_Schedule(Release,Period,Simple_Execution,N,algo_type,quantum)
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
+    
         elif (var5.get() == 1):###RR
-            #entry_list_test=["53","8","68","24"]
-            for i in entry_list:
-                Task=i.get()
-                Simple_Execution.append(Task)
+            entry_list_test=["30,60,20","20,70,20","10,80,15","5,90,15"]
+            for i in entry_list_test:
+                Task=i#.get()
+            
+                Task = Task.split(",")
+        
+                Release.update({count:int(Task[0])})
+                Period.update({count:int(Task[1])})
+                Execution.update({count:int(Task[2])})
                 count+=1
-
             algo_type="rr"
             quantum=self.quantum_get.get()
-            Draw_Schedule(Release,Period,Simple_Execution,N,algo_type,quantum)
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
             
         self.clear()
         N=0
+        
     def clear(self):
         global N
         global counter
@@ -274,6 +305,5 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
 
  
 if __name__ == "__main__": 
-
         app = Main()        
         app.mainloop()
