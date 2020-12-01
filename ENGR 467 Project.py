@@ -19,7 +19,7 @@ class Algorithms():
         
         for i in Execution:
             
-            print(i)
+        
             for width in range(0,int(i)+1,1):
                 if (width-int(i)==0):
                     End_List.append(width+prev_start)
@@ -59,7 +59,7 @@ class Algorithms():
                 if remaining_execution[exe_count]==0:
 
                     break
-            print (width)
+       
             if write==1:
                 End_List.append(width+prev_start)
                 Task_List.append(exe_count)
@@ -188,9 +188,9 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.quantum_get.grid(row=7,column=1, sticky='e')
         self.quantum_text.grid(row=7, column=1, sticky='w')
         ##Explanation of input
-        self.explainEEDF = tk.Label(self, text="(Release,Period,Execution) or",bg='yellow',font=self.explain_text)
+        self.explainEEDF = tk.Label(self, text="|Release,Period,Execution| or",bg='yellow',font=self.explain_text)
         self.explainEEDF.grid(row=8,column=1, sticky='w')
-        self.explainEEDF = tk.Label(self, text="(Release,Deadline,Execution)",bg='yellow',font=self.explain_text)
+        self.explainEEDF = tk.Label(self, text="|Release,Deadline,Execution|",bg='yellow',font=self.explain_text)
         self.explainEEDF.grid(row=9,column=1, sticky='w')
     def Add_Task(self):
         global counter
