@@ -188,9 +188,9 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.quantum_get.grid(row=7,column=1, sticky='e')
         self.quantum_text.grid(row=7, column=1, sticky='w')
         ##Explanation of input
-        self.explainEEDF = tk.Label(self, text="EDF(Release,Period,Execution)",bg='yellow',font=self.explain_text)
+        self.explainEEDF = tk.Label(self, text="(Release,Period,Execution) or",bg='yellow',font=self.explain_text)
         self.explainEEDF.grid(row=8,column=1, sticky='w')
-        self.explainEEDF = tk.Label(self, text="RR/FCFS(Release,Execution)",bg='yellow',font=self.explain_text)
+        self.explainEEDF = tk.Label(self, text="(Release,Deadline,Execution)",bg='yellow',font=self.explain_text)
         self.explainEEDF.grid(row=9,column=1, sticky='w')
     def Add_Task(self):
         global counter
