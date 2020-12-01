@@ -36,28 +36,29 @@ class Algorithms():
         prev_start=prioritized_release[0]
         for task_num in prioritized_task:
             print('task_num',task_num,' prev_start', prev_start,'prioritized_release',release[task_num])
-            if prev_start<release[task_num]:
+            while prev_start<release[task_num]:
                 print("we are waiting")
-            else:
-                reset=0
+                prev_start+=1
+            
+            reset=0
+            
+            for width in range(0,int(Execution[task_num])+1,1):
+                end=width+prev_start
                 
-                for width in range(0,int(Execution[task_num])+1,1):
-                    end=width+prev_start
-                    
-                   # print("end:",end," deadline:",deadline[count])
-                    
-                    if (end)>deadline[count] and reset==0:#detect missed deadline
-                        reset=1
+               # print("end:",end," deadline:",deadline[count])
+                
+                if (end)>deadline[count] and reset==0:#detect missed deadline
+                    reset=1
 
-                        deadline_missed.append(end-1)
-                    #print("width",width," remaining", Execution[remaining])
-                    if (width-int(Execution[task_num])==0):
-                       # print("width",width," remaining", Execution[remaining])
-                        End_List.append(end)
-                        Task_List.append(task_num)
-                        Begin_List.append(prev_start)
-                        prev_start=width+prev_start
-                        count+=1
+                    deadline_missed.append(end-1)
+                #print("width",width," remaining", Execution[remaining])
+                if (width-int(Execution[task_num])==0):
+                   # print("width",width," remaining", Execution[remaining])
+                    End_List.append(end)
+                    Task_List.append(task_num)
+                    Begin_List.append(prev_start)
+                    prev_start=width+prev_start
+                    count+=1
                     
        # print(deadline_missed)
         return Task_List,Begin_List,End_List
@@ -256,7 +257,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
             
         elif (var4.get() == 1):###FCFS#######################################
-            entry_list_test=["31,15,20","32,39,20","33,60,15","5,65,15"]
+            entry_list_test=["90,15,20","60,39,20","33,60,15","5,65,15"]
             for i in entry_list_test:
                 Task=i#.get()
             
