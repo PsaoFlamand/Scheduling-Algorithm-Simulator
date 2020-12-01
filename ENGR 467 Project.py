@@ -27,34 +27,50 @@ class Algorithms():
                     prev_start=width+prev_start
                     count+=1    
         return Task_List,Begin_List,End_List
-    def rr (self,Release,Deadline,Execution): #RR algorithm
-
+    def rr (self,Execution,quantum): #RR algorithm###!!!!!!!!!!!!!!!!!!DONE
+        #print('''["53","8","68","24"]''')
         Task_List=[]
         Begin_List=[]
         End_List=[]
 
-
+       # print(Execution)
+        Task_List=[]
+        Begin_List=[]
+        End_List=[]
         count =0
-
         prev_start=0
-        while (count<100):
-            count+=1
-            for i in sort_Period:
-                count+=1
-
-                #print("test->",Execution[i[0]]+1)
-                for width in range(0,Execution[i[0]]+1,1):
-                    #print(width,prev_start,Execution[i[0]])
-
-                    if (width-(Execution[i[0]])==0):
-                        End_List.append(width+prev_start)
-                        Task_List.append(i[0])
-                        Begin_List.append(prev_start)
-                        prev_start=width+prev_start
-
-        #print(Task_List,Begin_List,End_List)        
+        remaining_execution=[]
+        for i in Execution:
+            remaining_execution.append(int(i))
+        exe_count=0
+        breaker=1
+        count=0
+        prev_start=0
         
+        while not all(v == 0 for v in remaining_execution):
+            write=1
+            count+=1
+            for width in range(1,int(quantum)+1,1):
+                if remaining_execution[exe_count]==0:
+                    write=0
+                    w=0
+                    break
+                remaining_execution[exe_count]-=1
+                if remaining_execution[exe_count]==0:
+
+                    break
+            print (width)
+            if write==1:
+                End_List.append(width+prev_start)
+                Task_List.append(exe_count)
+                Begin_List.append(prev_start)
+                prev_start=width+prev_start
+            if exe_count==(len(remaining_execution)-1):
+                exe_count=0
+            else:
+                exe_count+=1
         return Task_List,Begin_List,End_List
+
     def rm (self,Execution): #RM algorithm
 
         Task_List=[]
@@ -92,14 +108,16 @@ class Algorithms():
         #print(Release, Period, Execution)
         #for i in Release:
         #    print(Release[i])
-       #     print("The Task value is ->", i)
-       # for i1 in Period:
-       #     print(Period[i1])
+        #     print("The Task value is ->", i)
+        # for i1 in Period:
+        #     print(Period[i1])
         #    print("The Task value is ->", i1)
         #for i2 in Execution:
         #    print(Execution[i2])
         #    print("The Task value is ->", i2)
-        
+        print(Release)
+        print(Period)
+        print(Execution)
         Task_List=[]
         Begin_List=[]
         End_List=[]
@@ -112,7 +130,7 @@ class Algorithms():
             count+=1
             for i in sort_Period:
                 count+=1
-
+                #print (i)
                 #print("test->",Execution[i[0]]+1)
                 for width in range(0,Execution[i[0]]+1,1):
                     #print(width,prev_start,Execution[i[0]])
@@ -129,7 +147,7 @@ class Algorithms():
 #####################################################All Graphics and controls beyond  this point
 class Draw_Schedule(Frame):
     
-    def __init__(self,Release,Period,Execution,N,algo_type):
+    def __init__(self,Release,Period,Execution,N,algo_type,quantum):
         super().__init__()
         algo=Algorithms()
         if (algo_type=="eedf"):
@@ -146,7 +164,7 @@ class Draw_Schedule(Frame):
             Task,Begin,End=algo.fcfs(Execution)
         if (algo_type=="rr"):
             print("we rred")
-            Task,Begin,End=algo.rr(Release,Period,Execution)
+            Task,Begin,End=algo.rr(Execution, quantum)
         self.Draw_Structure(N)
         self.Draw_Task(Task,Begin,End)
 
@@ -171,7 +189,9 @@ class Draw_Schedule(Frame):
         scale=1
         Counter = 0
         mx=End_List[len(End_List)-1]
-        if(mx>160):
+        if (mx>320):
+            scale=20
+        if(mx>160 and mx <=320):
             scale=10
         if(mx>60 and mx<=160):
             scale=5
@@ -222,9 +242,9 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.button0 = tk.Button(self, text="Start", command=lambda: self.Execute()) # When Clicked, The Schedule is drawn
         self.button0.grid(row=0,column=1)
         self.button1 = tk.Button(self, text="Add Task", command=lambda: self.Add_Task()) # When Clicked, A task is added
-        self.button1.grid(row=0,column=4)
+        self.button1.grid(row=1,column=1)
         self.button2 = tk.Button(self, text="Clear", command=lambda: self.clear()) # When Clicked, All tasks are cleared
-        self.button2.grid(row=0,column=5)
+        self.button2.grid(row=2,column=1)
         var1 = tk.IntVar()
         var2 = tk.IntVar()
         var3 = tk.IntVar()
@@ -241,7 +261,11 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.check4.grid(row=3,column=6, sticky='w')
         self.check5 = tk.Checkbutton(self, text='RR',variable=var5, onvalue=1, offvalue=0,bg="light grey")
         self.check5.grid(row=4,column=6, sticky='w')
-
+    
+        self.quantum_get=tk.Entry(self,width=3)
+        self.quantum_text = tk.Label(self, text="Quantum",bg='light grey')
+        self.quantum_get.grid(row=4,column=1,sticky='n')
+        self.quantum_text.grid(row=3, column=1)
     def Add_Task(self):
         global counter
         counter +=1
@@ -250,8 +274,10 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.txtin=tk.Entry(self,width=20)
         self.txt = tk.Label(self, text=descript,bg='light grey')
         self.txt.grid(row=counter, column=0, sticky='w')
+        
         entry_list.append(self.txtin)
         label_list.append(self.txt)
+        
         self.txtin.grid(row=counter,column=0)
         
     def Execute(self):
@@ -291,7 +317,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 Execution.update({count:int(Task[2])})
                 count+=1
             algo_type="eedf"
-            Draw_Schedule(Release,Period,Execution,N,algo_type)
+            quantum=0
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
         elif (var2.get() == 1):
 
             entry_list_test=["0,50,12","0,40,10","0,30,10"]
@@ -305,7 +332,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 Execution.update({count:int(Task[2])})
                 count+=1
             algo_type="edf"
-            Draw_Schedule(Release,Period,Execution,N,algo_type)
+            quantum=0
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
 
         elif (var3.get() == 1):###RM
             algo_type="rm"
@@ -317,10 +345,19 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 Simple_Execution.append(Task)
                 count+=1
             algo_type="fcfs"
-            Draw_Schedule(Release,Period,Simple_Execution,N,algo_type)
+            quantum=0
+            Draw_Schedule(Release,Period,Simple_Execution,N,algo_type,quantum)
         elif (var5.get() == 1):###RR
+            #entry_list_test=["53","8","68","24"]
+            for i in entry_list:
+                Task=i.get()
+                Simple_Execution.append(Task)
+                count+=1
+
             algo_type="rr"
-        #Draw_Schedule(Release,Period,Execution,N,algo_type)
+            quantum=self.quantum_get.get()
+            Draw_Schedule(Release,Period,Simple_Execution,N,algo_type,quantum)
+            
         self.clear()
         N=0
     def clear(self):
