@@ -5,9 +5,7 @@ from tkinter import font
 global counter
 counter=0
 class Algorithms():
-    def __init__(self):
-        print("Nothing to do here")
-        
+
     def eedf(self, Release, period, Execution, ac1, ac2): #Energy saving EDF
         #############Ahmed
         print("THis is energy EDF")
@@ -76,7 +74,8 @@ class Algorithms():
         #print(deadline_missed)
         return Task_List,Begin_List,End_List,deadline_missed
     
-    def rr (self,release,deadline,Execution, quantum, N): #RR algorithm###!!!!!!!!!!!!!!!!!!DONE
+    def rr (self,release,deadline,Execution, quantum, N,context_switching): #RR algorithm###!!!!!!!!!!!!!!!!!!DONE
+        
         Task_List=[]
         Begin_List=[]
         End_List=[]       
@@ -96,7 +95,7 @@ class Algorithms():
         del prioritized_task[0]
         remaining_execution.append(int(Execution[prioritized_task_test[0]]))
         while not all(remains == 0 for remains in remaining_execution):#Loops until all tasks are drained
-
+            
             write=1
             reset=0
             for width in range(1,int(quantum)+1,1):
@@ -140,12 +139,13 @@ class Algorithms():
                         break
                     else:
                         break
+            prev_start+=context_switching
         return Task_List,Begin_List,End_List,deadline_missed
 
 #####################################################All Graphics and controls beyond  this point
 class Draw_Schedule(Frame):
     
-    def __init__(self,Release,Period,Execution,N,algo_type,quantum,ac1,ac2):
+    def __init__(self,Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context):
         super().__init__()
         algo=Algorithms()
         if (algo_type=="eedf"):
@@ -154,7 +154,7 @@ class Draw_Schedule(Frame):
         if (algo_type=="fcfs"):
             Task,Begin,End,missed_deadline=algo.fcfs(Release,Period,Execution)
         if (algo_type=="rr"):
-            Task,Begin,End,missed_deadline=algo.rr(Release,Period,Execution, quantum, N)
+            Task,Begin,End,missed_deadline=algo.rr(Release,Period,Execution, quantum,N, int(context))
         self.Draw_Structure(N)
         self.Draw_Task(Task,Begin,End,missed_deadline)
 
@@ -250,15 +250,21 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.check4.grid(row=5,column=1, sticky='w')
         self.check5 = tk.Checkbutton(self, text='RR',variable=var3, onvalue=1, offvalue=0,bg='yellow',font=self.task_text)
         self.check5.grid(row=6,column=1, sticky='w')
+        
         self.quantum_get=tk.Entry(self,width=10)
+        self.context_get=tk.Entry(self,width=10)
         self.quantum_text = tk.Label(self, text="Quantum",bg='yellow',font=self.task_text)
+        self.context_text = tk.Label(self, text="Context",bg='yellow',font=self.task_text)
         self.quantum_get.grid(row=7,column=1, sticky='e')
         self.quantum_text.grid(row=7, column=1, sticky='w')
+        self.context_get.grid(row=8,column=1, sticky='e')
+        self.context_text.grid(row=8,column=1, sticky='w')
+        
         ##Explanation of input
         self.explainEEDF = tk.Label(self, text="|Release,Period,Execution| or",bg='yellow',font=self.explain_text)
-        self.explainEEDF.grid(row=8,column=1, sticky='w')
-        self.explainEEDF = tk.Label(self, text="|Release,Deadline,Execution|",bg='yellow',font=self.explain_text)
         self.explainEEDF.grid(row=9,column=1, sticky='w')
+        self.explainEEDF = tk.Label(self, text="|Release,Deadline,Execution|",bg='yellow',font=self.explain_text)
+        self.explainEEDF.grid(row=10,column=1, sticky='w')
     def Add_Task(self):
         global counter
         counter +=1
@@ -296,7 +302,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 count+=1
             algo_type="eedf"
             quantum=0
-            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2)
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context)
         elif (var2.get() == 1):###FCFS#######################################
             entry_list_test=["10,100,20","5,60,20","20,20,15","30,100,15"] #(release,deadline,execution)
             for i in entry_list_test:
@@ -308,20 +314,22 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 count+=1
             algo_type="fcfs"
             quantum=0
-            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2)
+            context=0#self.context_get.get()
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context)
         elif (var3.get() == 1):###RR
             #entry_list_test=["30,60,20","20,70,20","10,80,15","5,90,15"]
             entry_list_test=["0,100,75","10,100,40","10,100,25","80,100,20","85,100,45"]
-            for i in entry_list:
-                Task=i.get()
+            for i in entry_list_test:
+                Task=i#.get()
                 Task = Task.split(",")
                 Release.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
                 Execution.update({count:int(Task[2])})
                 count+=1
             algo_type="rr"
-            quantum=self.quantum_get.get()
-            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2)
+            quantum=15#self.quantum_get.get()
+            context=self.context_get.get()
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context)
         self.clear()
         N=0
         
