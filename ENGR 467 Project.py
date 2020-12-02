@@ -172,7 +172,7 @@ class Draw_Schedule(Frame):
             tsknum+=1
         self.canvas.grid()
         
-    def Draw_Structure_EEDF(self,N):#
+    def Draw_Structure_EEDF(self,N,frequency):#
         #This is where the Schedule base is Drawn 
         Schedule = tk.Toplevel(app,width=1000,height=450)
         self.grid()
@@ -180,10 +180,12 @@ class Draw_Schedule(Frame):
         self.canvas = Canvas(Schedule,width=1000,height=450)
         self.canvas.create_line(25, 10, 1000, 10)
         tsknum=0
-        for i in range(40,(((N+1)*30)),30):                  #Draws the Initial X-Axis Lines
-            self.canvas.create_line(25, i, 1000, i) #Format(x1,y1,x2,y2)
-            self.canvas.create_text(10,i-13,fill="darkblue",font="Times 12 italic bold",text="T"+str(tsknum))
+                         #Draws the Initial X-Axis Lines
+        self.canvas.create_line(25, 1000, 1000, 1000) #Format(x1,y1,x2,y2)
+        self.canvas.create_text(10,i-13,fill="darkblue",font="Times 12 italic bold",text="F"+str(frequency))
             tsknum+=1
+        for freq in frequency:
+            
         self.canvas.grid()
         
     def Draw_Task(self,Task_List,Begin_List,End_List,missed_deadline):
