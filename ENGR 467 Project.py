@@ -115,6 +115,7 @@ class Algorithms():
         End_List=[]       
         remaining_execution=[]
         deadline_missed=[]
+        q=[]
         sort_release= sorted(release.items(), key=lambda x: x[1])
         prioritized_release=[]
         prioritized_task=[]
@@ -126,6 +127,7 @@ class Algorithms():
         prev_start=float(prioritized_release[0])
         exe_count=0
         task_num=prioritized_task[0]
+        q
         del prioritized_task[0]
         remaining_execution.append(int(Execution[prioritized_task_test[0]]))
         while not all(remains == 0 for remains in remaining_execution):#Loops until all tasks are drained
@@ -226,7 +228,10 @@ class Draw_Schedule(Frame):
     def Draw_Task(self,Task_List,Begin_List,End_List,missed_deadline,explanation,end_time):
         scale=1
         Counter = 0
-        mx=end_time#End_List[len(End_List)-1]
+        if end_time==0:
+            mx=End_List[len(End_List)-1]
+        else:
+            mx=end_time#End_List[len(End_List)-1]
         if (mx>320):
             scale=20
         if(mx>160 and mx <=320):
@@ -391,8 +396,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 count+=1
             algo_type="rr"
             quantum=15#self.quantum_get.get()
-            context=self.context_get.get()
-            end_time=self.end_time_get.get()
+            context=0#self.context_get.get()
+            end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
         self.clear()
         N=0
