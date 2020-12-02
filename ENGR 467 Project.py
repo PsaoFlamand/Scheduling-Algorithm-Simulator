@@ -61,8 +61,8 @@ class Algorithms():
                     #print('U = ', U)
                     t = ac2[task_num] / U
                     End_List.append(t + period[task_num])
-                frequency.append(U)
-                print('U =', U)
+            frequency.append(U)
+            print('U =', U)
             #Ut = 1/U
             initial += 1
             print('t = ',t)
