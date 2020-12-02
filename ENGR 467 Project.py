@@ -62,15 +62,15 @@ class Algorithms():
         #print('Task_List',Task_List,'Begin_List',Begin_List,'End_List',End_List)
         return Task_List,Begin_List,End_List,deadline_missed
     
-    def rr (self,release,deadline,Execution, quantum): #RR algorithm###!!!!!!!!!!!!!!!!!!DONE
+    def rr (self,release,deadline,Execution, quantum, N): #RR algorithm###!!!!!!!!!!!!!!!!!!DONE
         #["30,60,20","20,70,20","10,80,15","5,90,15"]
         Task_List=[]
         Begin_List=[]
         End_List=[]       
         remaining_execution=[]
         deadline_missed=[]
-        for i in Execution:
-            remaining_execution.append(int(Execution[i]))
+       # for i in Execution:
+            
         sort_release= sorted(release.items(), key=lambda x: x[1])
         #Runs through a list and outputs the begin and end
         print(sort_release)
@@ -84,21 +84,30 @@ class Algorithms():
         prev_start=prioritized_release[0]
         
         exe_count=0
-        
+        task_num=prioritized_task[0]
+        del prioritized_task[0]
         print(prev_start)
-
+        remaining_execution.append(int(Execution[prioritized_task[0]]))
         while not all(remains == 0 for remains in remaining_execution):
+            #print('remaining_execution: ',remaining_execution)
+            #print('task_num: ',(N-1)-exe_count)
             write=1
             reset=0
+           # print('prev_start: ',prev_start,'task: ',(N-1)-exe_count)
+            #while prev_start<release[(N-1)-exe_count]:
+             #   print("we are waiting")
+             #   prev_start+=1
             for width in range(1,int(quantum)+1,1):
-                end=width+prev_start
+                if remaining_execution[exe_count]!=0:
+                    end=width+prev_start
+                print('end ',end)
                 
-                if (end)>deadline[exe_count] and reset==0:#detect missed deadline
+                if (end)>deadline[(N-1)-exe_count] and reset==0:#detect missed deadline
                     reset=1
-                    print("Missssseeeeddd : end:",end," deadline:",deadline[exe_count])
-                    deadline_missed.append(deadline[exe_count])
+                   # print("Missssseeeeddd : end:",end," deadline:",deadline[task_num])
+                    deadline_missed.append(deadline[(N-1)-exe_count])
 
-            
+                
                 if remaining_execution[exe_count]==0:
                     write=0
                     break
@@ -107,14 +116,38 @@ class Algorithms():
                     break
             if write==1:
                 End_List.append(end)
-                Task_List.append(exe_count)
+                Task_List.append((N-1)-exe_count)
                 Begin_List.append(prev_start)
                 prev_start=width+prev_start
             ###decides which task to drain
-            if exe_count==(len(remaining_execution)-1):
-                exe_count=0
+            #if exe_count==(len(remaining_execution)-1):
+            #    exe_count=0
+            #else:
+            #    exe_count+=1
+            if exe_count==0:
+                exe_count=(len(remaining_execution)-1)
             else:
-                exe_count+=1
+                exe_count-=1                
+            for task_num_s in prioritized_task:
+                #print('task_num_s',(N-1)-exe_count)
+               # print('task',(N-1)-exe_count,'release[task_num]>',release[task_num_s],'end',end)
+                if release[task_num_s]>=end:
+                    #print("WON'T RUN : ",(N-1)-exe_count)
+                  
+                    break
+                else:
+                    #print('release[task_num_s]',release[task_num_s],'end',end)
+                    if release[task_num_s]!=end:
+                        remaining_execution.append(int(Execution[task_num_s]))
+                        del Execution[task_num_s]
+                        del prioritized_task[0]
+                    
+                        exe_count=len(remaining_execution)-1
+                        break
+                    else:
+                        break
+            #print('len(remaining_execution)-1: ',(len(remaining_execution)-1),'exe_count: ',exe_count)
+
         return Task_List,Begin_List,End_List,deadline_missed
 
 #####################################################All Graphics and controls beyond  this point
@@ -132,7 +165,7 @@ class Draw_Schedule(Frame):
             Task,Begin,End,missed_deadline=algo.fcfs(Release,Period,Execution)
         if (algo_type=="rr"):
             print("we rred")
-            Task,Begin,End,missed_deadline=algo.rr(Release,Period,Execution, quantum)
+            Task,Begin,End,missed_deadline=algo.rr(Release,Period,Execution, quantum, N)
         self.Draw_Structure(N)
         self.Draw_Task(Task,Begin,End,missed_deadline)
 
