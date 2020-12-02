@@ -34,8 +34,9 @@ class Algorithms():
             prioritized_task.append(int(priority[0]))
             prioritized_release.append(int(priority[1]))
         prev_start=prioritized_release[0]
+        
         for task_num in prioritized_task:
-            print('task_num',task_num,' prev_start', prev_start,'prioritized_release',release[task_num])
+            
             while prev_start<release[task_num]:
                 print("we are waiting")
                 prev_start+=1
@@ -43,14 +44,11 @@ class Algorithms():
             reset=0
             
             for width in range(0,int(Execution[task_num])+1,1):
-                end=width+prev_start
-                
-               # print("end:",end," deadline:",deadline[count])
-                
-                if (end)>deadline[count] and reset==0:#detect missed deadline
+                end=width+prev_start               
+                if (end)>deadline[task_num] and reset==0:#detect missed deadline
                     reset=1
-
-                    deadline_missed.append(end-1)
+                    print("Missssseeeeddd : end:",end," deadline:",deadline[task_num])
+                    deadline_missed.append(deadline[task_num])
                 #print("width",width," remaining", Execution[remaining])
                 if (width-int(Execution[task_num])==0):
                    # print("width",width," remaining", Execution[remaining])
@@ -60,24 +58,47 @@ class Algorithms():
                     prev_start=width+prev_start
                     count+=1
                     
-       # print(deadline_missed)
-        return Task_List,Begin_List,End_List
+        #print(deadline_missed)
+        #print('Task_List',Task_List,'Begin_List',Begin_List,'End_List',End_List)
+        return Task_List,Begin_List,End_List,deadline_missed
     
-    def rr (self,Release,Period,Execution, quantum): #RR algorithm###!!!!!!!!!!!!!!!!!!DONE
-        #print('''["53","8","68","24"]''')
+    def rr (self,release,deadline,Execution, quantum): #RR algorithm###!!!!!!!!!!!!!!!!!!DONE
+        #["30,60,20","20,70,20","10,80,15","5,90,15"]
         Task_List=[]
         Begin_List=[]
         End_List=[]       
         remaining_execution=[]
+        deadline_missed=[]
         for i in Execution:
-            remaining_execution.append(int(i))
-        exe_count=0
-        prev_start=0
+            remaining_execution.append(int(Execution[i]))
+        sort_release= sorted(release.items(), key=lambda x: x[1])
+        #Runs through a list and outputs the begin and end
+        print(sort_release)
+        #for priority in sort_release:
+        prioritized_release=[]
+        prioritized_task=[]
+        for priority in sort_release:
+            print('priority',priority[0])
+            prioritized_task.append(int(priority[0]))
+            prioritized_release.append(int(priority[1]))
+        prev_start=prioritized_release[0]
         
+        exe_count=0
+        
+        print(prev_start)
+
         while not all(remains == 0 for remains in remaining_execution):
             write=1
+            reset=0
             for width in range(1,int(quantum)+1,1):
                 end=width+prev_start
+                
+                if (end)>deadline[exe_count] and reset==0:#detect missed deadline
+                    reset=1
+                    print("Missssseeeeddd : end:",end," deadline:",deadline[exe_count])
+                    deadline_missed.append(deadline[exe_count])
+
+            
                 if remaining_execution[exe_count]==0:
                     write=0
                     break
@@ -89,11 +110,12 @@ class Algorithms():
                 Task_List.append(exe_count)
                 Begin_List.append(prev_start)
                 prev_start=width+prev_start
+            ###decides which task to drain
             if exe_count==(len(remaining_execution)-1):
                 exe_count=0
             else:
                 exe_count+=1
-        return Task_List,Begin_List,End_List
+        return Task_List,Begin_List,End_List,deadline_missed
 
 #####################################################All Graphics and controls beyond  this point
 class Draw_Schedule(Frame):
@@ -107,12 +129,12 @@ class Draw_Schedule(Frame):
 
         if (algo_type=="fcfs"):
             print("we fcfsed")
-            Task,Begin,End=algo.fcfs(Release,Period,Execution)
+            Task,Begin,End,missed_deadline=algo.fcfs(Release,Period,Execution)
         if (algo_type=="rr"):
             print("we rred")
-            Task,Begin,End=algo.rr(Release,Period,Execution, quantum)
+            Task,Begin,End,missed_deadline=algo.rr(Release,Period,Execution, quantum)
         self.Draw_Structure(N)
-        self.Draw_Task(Task,Begin,End)
+        self.Draw_Task(Task,Begin,End,missed_deadline)
 
     def Draw_Structure(self,N):##################################### Must Adjust Schedule Diagram to Number Of tasks Len(Task_Number) and change the range by Task_Number/30
         #This is where the Schedule base is Drawn 
@@ -131,7 +153,7 @@ class Draw_Schedule(Frame):
 
         self.canvas.grid()
         
-    def Draw_Task(self,Task_List,Begin_List,End_List):
+    def Draw_Task(self,Task_List,Begin_List,End_List,missed_deadline):
         scale=1
         Counter = 0
         mx=End_List[len(End_List)-1]
@@ -148,8 +170,9 @@ class Draw_Schedule(Frame):
         for i1 in range(25,1000,30):                #Draws the Y-Axis Lines
             self.canvas.create_line(i1, (((N+1)*30)-20), i1, (((N+1)*30)-10))
             self.canvas.create_text(i1,(((N+1)*30)),fill="darkblue",font="Times 12 italic bold",text=str(Counter))
-        
+
             Counter+=scale
+        
         for i in range(0,len(Task_List)):
 
             Task=Task_List[i]
@@ -157,6 +180,8 @@ class Draw_Schedule(Frame):
             End=End_List[i]/scale
             
             self.canvas.create_rectangle((30*(Begin)+25), ((Task*30)+10), (30*(End)+25), ((Task*30)+40),fill="blue")
+            for dead in missed_deadline:
+                self.canvas.create_line((30*(dead/scale)+25), (10), (30*(dead/scale)+25), (140),fill="red")
 
 class Main(Tk): #This Module sets up the original window with search boxes, labels, and a button
     
@@ -257,7 +282,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
             
         elif (var4.get() == 1):###FCFS#######################################
-            entry_list_test=["90,15,20","60,39,20","33,60,15","5,65,15"]
+            entry_list_test=["0,100,20","5,60,20","0,20,15","0,100,15"] #(release,deadline,execution)
             for i in entry_list_test:
                 Task=i#.get()
             
@@ -284,7 +309,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 Execution.update({count:int(Task[2])})
                 count+=1
             algo_type="rr"
-            quantum=self.quantum_get.get()
+            quantum=5#self.quantum_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
             
         self.clear()
