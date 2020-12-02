@@ -8,9 +8,40 @@ class Algorithms():
     def __init__(self):
         print("Nothing to do here")
         
-    def eedf(self): #Energy saving EDF
+    def eedf(self, Release, period, Execution, ac1, ac2): #Energy saving EDF
         #############Ahmed
         print("THis is energy EDF")
+        #Execution = worst case execution
+        #ac1 = invocation1, ac2 = invocation2
+        #frequency = 1, 0.75, 0.5
+        Task_List = []
+        Begin_List = []
+        End_List = []
+        deadline_missed =[]
+        frequency = []
+        print(f'Release = {Release}, Execution (worst case) = {Execution} ms, period = {period} ms, invocation 1 = {ac1} ms, invocation 2 = {ac2} ms')
+        print(f'Frequency = {frequency}Fm')
+        U = 0
+        sort_period= sorted(period.items(), key=lambda x: x[1])
+        #Runs through a list and outputs the begin and end
+        print('sort_period',sort_period)
+        #for priority in sort_release:
+        prioritized_period=[]
+        prioritized_task=[]
+        for priority in sort_period:
+            print('priority',priority[0])
+            prioritized_task.append(int(priority[0]))
+            prioritized_period.append(int(priority[1]))
+        #prev_start=prioritized_period[0]
+        print(prioritized_period)
+        print(prioritized_task)
+
+        for task_num in prioritized_task:
+            U = U + (Execution[task_num]/period[task_num])
+        Ut = 1/U
+        print(U)
+        print(Ut)
+        return Task_List,Begin_List,End_List,deadline_missed,frequency
         
     def fcfs (self,release,deadline,Execution): #FCFS algorithm###!!!!!!!!!!!!!!!!!!DONE
         Task_List=[]
@@ -157,12 +188,13 @@ class Algorithms():
 #####################################################All Graphics and controls beyond  this point
 class Draw_Schedule(Frame):
     
-    def __init__(self,Release,Period,Execution,N,algo_type,quantum):
+    def __init__(self,Release,Period,Execution,N,algo_type,quantum,ac1,ac2):
         super().__init__()
         algo=Algorithms()
         if (algo_type=="eedf"):
             print("we eedfed")
-            Task,Begin,End=algo.eedf(Release,Period,Execution)
+            Task,Begin,End,missed_deadline,frequency=algo.eedf(Release,Period,Execution,ac1,ac2)
+            #Task_List,Begin_List,End_List,deadline_missed,frequency
 
         if (algo_type=="fcfs"):
             print("we fcfsed")
@@ -299,15 +331,15 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         Release={}
         Period={}
         Execution={}
-        invocation_1={}
-        invocation_2={}
+        ac1={}
+        ac2={}
         Simple_Execution=[]
         Simple_Period=[]
         Simple_Release=[]
         
         N=len(entry_list)
         if (var1.get() == 1):#EEDF
-            entry_list_test=["0,50,12","0,40,10","0,30,10"]
+            entry_list_test=["0,8,3,2,1","0,10,3,1,1","0,14,1,1,1"]
             for i in entry_list_test:
                 Task=i#.get()
             
@@ -316,12 +348,12 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 Release.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
                 Execution.update({count:int(Task[2])})
-                invocation_1.update({count: int(Task[3])})
-                invocation_2.update({count: int(Task[4])})
+                ac1.update({count: int(Task[3])})
+                ac2.update({count: int(Task[4])})
                 count+=1
             algo_type="eedf"
             quantum=0
-            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2)
             
         elif (var4.get() == 1):###FCFS#######################################
             entry_list_test=["10,100,20","5,60,20","20,20,15","30,100,15"] #(release,deadline,execution)
@@ -337,7 +369,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
 
             algo_type="fcfs"
             quantum=0
-            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2)
     
         elif (var5.get() == 1):###RR
             entry_list_test=["30,60,20","20,70,20","10,80,15","5,90,15"]
@@ -352,7 +384,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 count+=1
             algo_type="rr"
             quantum=5#self.quantum_get.get()
-            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2)
             
         self.clear()
         N=0
