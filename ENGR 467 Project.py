@@ -17,6 +17,7 @@ class Algorithms():
         End_List = []
         deadline_missed =[]
         frequency = []
+        explanation = []
         print(f'Release = {Release}, Execution (worst case) = {Execution} ms, period = {period} ms, invocation 1 = {ac1} ms, invocation 2 = {ac2} ms')
         print(f'Frequency = {frequency}Fm')
         U = 0
@@ -31,36 +32,47 @@ class Algorithms():
             prioritized_task.append(int(priority[0]))
             prioritized_period.append(int(priority[1]))
         #prev_start=prioritized_period[0]
-        print(prioritized_period)
-        print(prioritized_task)
+        print('prioritized_period:' , prioritized_period)
+        print('prioritized_task:', prioritized_task)
         print (len(prioritized_task))
         
         initial = 0
-
+        t = 0
+        #Might need an additional nested for loop
         for i in range(1,3):
-            for task_num in prioritized_task:
-                if (initial == 0 or len(prioritized_task) % task_num+1 == 0): #initial condition or calculating U for the worst case (current process)
+            for task_num in range(len(prioritized_task)):
+                if (initial == 0): #initial condition or calculating U for the worst case (current process)
                     U = U + (Execution[task_num]/period[task_num])
-                    frequency.append(U)
+                    #frequency.append(U)
+                    #print('U = ', U)
                     t = ac1[task_num] / U
                     End_List.append(t)
-                elif (i == 1): #First invocation
+                elif (len(prioritized_task) % (task_num+1) == 0):
+                    pass
+                elif (i == 1 or initial == 1): #First invocation
                     U = U + (ac1[task_num]/period[task_num])
-                    frequency.append(U)
+                    #frequency.append(U)
+                    #print('U = ', U)
                     t = ac1[task_num] / U
                     End_List.append(t)
-                elif (i == 2): #Second invocation
+                elif (i == 2 or initial == 2): #Second invocation
                     U = U + (ac2[task_num]/period[task_num])
-                    frequency.append(U)
+                    #frequency.append(U)
+                    #print('U = ', U)
                     t = ac2[task_num] / U
                     End_List.append(t + period[task_num])
+                frequency.append(U)
+                print('U =', U)
             #Ut = 1/U
             initial += 1
-        print(U)
+            print('t = ',t)
+            print(End_List)
+
+        
         
         
 
-        return Task_List,Begin_List,End_List,deadline_missed,frequency
+        return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
         
     def fcfs (self,release,period,Execution,deadline): #FCFS algorithm###!!!!!!!!!!!!!!!!!!DONE
         Task_List=[]
