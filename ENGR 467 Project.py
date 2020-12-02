@@ -52,8 +52,8 @@ class Algorithms():
                 elif (i == 2): #Second invocation
                     U = U + (ac2[task_num]/period[task_num])
                     frequency.append(U)
-                    t = ac1[task_num] / U
-                    End_List.append(t)
+                    t = ac2[task_num] / U
+                    End_List.append(t + period[task_num])
             #Ut = 1/U
             initial += 1
         print(U)
