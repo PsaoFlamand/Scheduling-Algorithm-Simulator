@@ -23,9 +23,10 @@ class Algorithms():
         print(deadline)
         print(Execution)
         #["30,15,20","20,39,20","10,60,15","5,65,15"]
+        
         sort_release= sorted(release.items(), key=lambda x: x[1])
         #Runs through a list and outputs the begin and end
-        print(sort_release)
+        print('sort_release',sort_release)
         #for priority in sort_release:
         prioritized_release=[]
         prioritized_task=[]
@@ -34,6 +35,9 @@ class Algorithms():
             prioritized_task.append(int(priority[0]))
             prioritized_release.append(int(priority[1]))
         prev_start=prioritized_release[0]
+
+        print('prioritized_task',prioritized_task)
+        print('prioritized_release',prioritized_release)
         
         for task_num in prioritized_task:
             
@@ -51,7 +55,7 @@ class Algorithms():
                     deadline_missed.append(deadline[task_num])
                 #print("width",width," remaining", Execution[remaining])
                 if (width-int(Execution[task_num])==0):
-                   # print("width",width," remaining", Execution[remaining])
+                    #print("width",width," remaining", Execution[remaining])
                     End_List.append(end)
                     Task_List.append(task_num)
                     Begin_List.append(prev_start)
@@ -82,7 +86,7 @@ class Algorithms():
             prioritized_task.append(int(priority[0]))
             prioritized_release.append(int(priority[1]))
         prev_start=prioritized_release[0]
-        
+
         exe_count=0
         task_num=prioritized_task[0]
         del prioritized_task[0]
@@ -295,9 +299,12 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         Release={}
         Period={}
         Execution={}
+        invocation_1={}
+        invocation_2={}
         Simple_Execution=[]
         Simple_Period=[]
         Simple_Release=[]
+        
         N=len(entry_list)
         if (var1.get() == 1):#EEDF
             entry_list_test=["0,50,12","0,40,10","0,30,10"]
@@ -309,13 +316,15 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 Release.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
                 Execution.update({count:int(Task[2])})
+                invocation_1.update({count: int(Task[3])})
+                invocation_2.update({count: int(Task[4])})
                 count+=1
             algo_type="eedf"
             quantum=0
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum)
             
         elif (var4.get() == 1):###FCFS#######################################
-            entry_list_test=["0,100,20","5,60,20","0,20,15","0,100,15"] #(release,deadline,execution)
+            entry_list_test=["10,100,20","5,60,20","20,20,15","30,100,15"] #(release,deadline,execution)
             for i in entry_list_test:
                 Task=i#.get()
             
