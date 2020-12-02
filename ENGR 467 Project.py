@@ -33,11 +33,39 @@ class Algorithms():
         #prev_start=prioritized_period[0]
         print(prioritized_period)
         print(prioritized_task)
+<<<<<<< Updated upstream
         for task_num in prioritized_task:
             U = U + (Execution[task_num]/period[task_num])
         Ut = 1/U
+=======
+        print (len(prioritized_task))
+        
+        initial = 0
+
+        for i in range(1,3):
+            for task_num in prioritized_task:
+                if (initial == 0 or len(prioritized_task) % task_num+1 == 0): #initial condition or calculating U for the worst case (current process)
+                    U = U + (Execution[task_num]/period[task_num])
+                    frequency.append(U)
+                    t = ac1[task_num] / U
+                    End_List.append(t)
+                elif (i == 1): #First invocation
+                    U = U + (ac1[task_num]/period[task_num])
+                    frequency.append(U)
+                    t = ac1[task_num] / U
+                    End_List.append(t)
+                elif (i == 2): #Second invocation
+                    U = U + (ac2[task_num]/period[task_num])
+                    frequency.append(U)
+                    t = ac1[task_num] / U
+                    End_List.append(t)
+            #Ut = 1/U
+            initial += 1
+>>>>>>> Stashed changes
         print(U)
-        print(Ut)
+        
+        
+
         return Task_List,Begin_List,End_List,deadline_missed,frequency
         
     def fcfs (self,release,period,Execution,deadline): #FCFS algorithm###!!!!!!!!!!!!!!!!!!DONE
