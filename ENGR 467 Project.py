@@ -33,11 +33,6 @@ class Algorithms():
         #prev_start=prioritized_period[0]
         print(prioritized_period)
         print(prioritized_task)
-<<<<<<< Updated upstream
-        for task_num in prioritized_task:
-            U = U + (Execution[task_num]/period[task_num])
-        Ut = 1/U
-=======
         print (len(prioritized_task))
         
         initial = 0
@@ -61,7 +56,6 @@ class Algorithms():
                     End_List.append(t)
             #Ut = 1/U
             initial += 1
->>>>>>> Stashed changes
         print(U)
         
         
