@@ -172,6 +172,9 @@ class Algorithms():
         del prioritized_task[0]
         remaining_execution.append(int(Execution[prioritized_task_test[0]]))
         while not all(remains == 0 for remains in remaining_execution):#Loops until all tasks are drained
+            print('Begin_List',Begin_List)
+            print('End_List',End_List)
+            print('Task_List',Task_List)
             write=1
             reset=0
             for width in range(1,int(quantum)+1,1):
