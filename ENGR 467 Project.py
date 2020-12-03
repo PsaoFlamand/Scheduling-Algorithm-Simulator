@@ -44,6 +44,8 @@ class Algorithms():
         prev_start=Release[prioritized_task[0]]
         i=0
         count=0
+        print('prioritize_task[i]',prioritized_task[i])
+        print(prioritized_task)
         while 1:
            # if (i==0 or initial==0): # First iteration and First invocation task 1
             U=0
@@ -72,9 +74,9 @@ class Algorithms():
                # print('Iteration i =',i)
                # print('U = ',U)
                # print('end_time for task 2 =',end_time)
-        #print('Begin list =',Begin_List)
-       # print('End list = ', End_List)
-       # print('Frequencies =',frequency)
+        print('Begin list =',Begin_List)
+        print('End list = ', End_List)
+        print('Frequencies =',frequency)
        #print('task_list',Task_List)
 
         return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
