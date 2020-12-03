@@ -6,9 +6,9 @@ global counter
 counter=0
 class Algorithms():
 
-    def eedf(self, Release, period, Execution, ac1, ac2): #Energy saving EDF
+    def eedf(self, Release, period, Execution, ac1, ac2,N): #Energy saving EDF
         #############Ahmed
-        print("THis is energy EDF")
+       # print("THis is energy EDF")
         #Execution = worst case execution
         #ac1 = invocation1, ac2 = invocation2
         #frequency = 1, 0.75, 0.5
@@ -18,12 +18,12 @@ class Algorithms():
         deadline_missed =[]
         frequency = []
         explanation = []
-        print(f'Release = {Release}, Execution (worst case) = {Execution} ms, period = {period} ms, invocation 1 = {ac1} ms, invocation 2 = {ac2} ms')
-        print(f'Frequency = {frequency}Fm')
+       # print(f'Release = {Release}, Execution (worst case) = {Execution} ms, period = {period} ms, invocation 1 = {ac1} ms, invocation 2 = {ac2} ms')
+      #  print(f'Frequency = {frequency}Fm')
         U = 0
         sort_period= sorted(period.items(), key=lambda x: x[1])
         #Runs through a list and outputs the begin and end
-        print('sort_period',sort_period)
+       # print('sort_period',sort_period)
         #for priority in sort_release:
         prioritized_period=[]
         prioritized_task=[]
@@ -32,103 +32,50 @@ class Algorithms():
             prioritized_task.append(int(priority[0]))
             prioritized_period.append(int(priority[1]))
         #prev_start=prioritized_period[0]
-        print('prioritized_period:' , prioritized_period)
-        print('prioritized_task:', prioritized_task)
-        print (len(prioritized_task))
+       # print('prioritized_period:' , prioritized_period)
+       # print('prioritized_task:', prioritized_task)
+        #print (len(prioritized_task))
         Task_List=prioritized_task
         initial = 0
-        for i in range(0,6):
-            if (i==0 or initial==0): # First iteration and First invocation task 1
-                U=0
-                Begin_List.append(0)
-                for task_num in range(len(prioritized_task)):
-                    U += Execution[task_num]/period[task_num]
-                t = ac1[0] / U
-                End_List.append(t)
-                frequency.append(U)
-                initial += 1
-                print('Iteration i =',i)
-                print('U = ',U)
-                print('t for task 1 =',t)
-            elif i==1: #First invocation task 2
-                Begin_List.append(End_List[i-1])
-                U=0
-                for task_num in range(len(prioritized_task)):
-                    if task_num >= i: #if task_num == i, do worst case scenario
-                        U += Execution[task_num]/period[task_num]
-                    else: #else use the ac1 value 
-                        U += ac1[task_num]/period[task_num]
-                t += ac1[1] / U
-                End_List.append(t)
-                frequency.append(U)
-                print('Iteration i =',i)
-                print('U = ',U)
-                print('t for task 2 =',t)
-            elif i==2: #First invocation task 3
-                Begin_List.append(End_List[i-1])
-                U=0
-                for task_num in range(len(prioritized_task)):
-                    if task_num == i: #if task_num == i, do worst case scenario
-                        U += Execution[task_num]/period[task_num]
-                    else: #else use the ac1 value 
-                        U += ac1[task_num]/period[task_num]
-                t += ac1[2] / U
-                End_List.append(t)
-                frequency.append(U)
-                print('Iteration i =',i)
-                print('U = ',U)
-                print('t for task 3 =',t)
-            elif i==3: #Second invocation task 1 (add deadline to the task)
-                U=0
-                t=prioritized_period[0]
-                Begin_List.append(prioritized_period[0])
-                for task_num in range(len(prioritized_task)):
-                    if task_num == 0: #if task_num == i, do worst case scenario
-                        U += Execution[task_num]/period[task_num]
-                    else: #else use the ac1 value 
-                        U += ac1[task_num]/period[task_num]
-                t += (ac2[0] / U) 
-                End_List.append(t)
-                frequency.append(U)
-                print('Iteration i =',i)
-                print('U = ',U)
-                print('t for task 1 =',t)
-            elif i==4: #Second invocation task 2
-                U=0
-                t=prioritized_period[1]
-                Begin_List.append(prioritized_period[1])
-                for task_num in range(len(prioritized_task)):
-                    if task_num == 1: #if task_num == i, do worst case scenario
-                        U += Execution[task_num]/period[task_num]
-                    elif task_num == 0: #For task1, we use ac2 value 
-                        U += ac2[task_num]/period[task_num]
-                    elif task_num == 2: #For task2, we use the old ac1 value
-                        U += ac1[task_num]/period[task_num]
-                t += (ac2[1] / U) 
-                End_List.append(t)
-                frequency.append(U)
-                print('Iteration i =',i)
-                print('U = ',U)
-                print('t for task 2 =',t)
-            elif i==5: #Second invocation task 3
-                U=0
-                t=prioritized_period[2]
-                Begin_List.append(prioritized_period[2])
-                for task_num in range(len(prioritized_task)):
-                    if task_num == 2: #if task_num == i, do worst case scenario
-                        U += Execution[task_num]/period[task_num]
-                    elif task_num == 0 or task_num == 1: #For task1, we use ac2 value 
-                        U += ac2[task_num]/period[task_num]
-                t += (ac2[2] / U)
-                End_List.append(t)
-                frequency.append(U)
-                print('Iteration i =',i)
-                print('U = ',U)
-                print('t for task 2 =',t)
-        print('Begin list =',Begin_List)
-        print('End list = ', End_List)
-        print('Frequencies =',frequency)
-        print('task_list',Task_List)
+        invocation_identifier=[]
+        for task in prioritized_task:
+            invocation_identifier.append(1)       
+      #  print('invocation_identifier',invocation_identifier)
+        prev_start=Release[prioritized_task[0]]
+        i=0
+        count=0
+        while 1:
+           # if (i==0 or initial==0): # First iteration and First invocation task 1
+            U=0
+            Begin_List.append(0)
+            for task_num in prioritized_task:
+                U += Execution[task_num]/period[task_num]
+            end_time = ac1[task_num] / U
+            End_List.append(end_time)
+            frequency.append(U)
+            #initial += 1
+            
+            print('Iteration i =',i)
+            print('U = ',U)
+            print('end_time for task 1 =',end_time)
+            print('invocation_identifier',invocation_identifier)
+            print('N',N)
+            print('(N/2)-1',(N/2)-1)
+            if i==((N)):
+                i=0
+            if count==(2*N)-1:
+                break
+            print('i',i)
+            invocation_identifier[i]=2
+            i+=1
+            count+=1
+               # print('Iteration i =',i)
+               # print('U = ',U)
+               # print('end_time for task 2 =',end_time)
+        #print('Begin list =',Begin_List)
+       # print('End list = ', End_List)
+       # print('Frequencies =',frequency)
+       #print('task_list',Task_List)
 
         return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
         
@@ -255,7 +202,7 @@ class Draw_Schedule(Frame):
         super().__init__()
         algo=Algorithms()
         if (algo_type=="eedf"):
-            Task,Begin,End,missed_deadline,frequency,explanation=algo.eedf(Release,Period,Execution,ac1,ac2)
+            Task,Begin,End,missed_deadline,frequency,explanation=algo.eedf(Release,Period,Execution,ac1,ac2,N)
             #Task_List,Begin_List,End_List,deadline_missed,frequency
         if (algo_type=="fcfs"):
             Task,Begin,End,missed_deadline,explanation=algo.fcfs(Release,Period,Execution,deadline)
