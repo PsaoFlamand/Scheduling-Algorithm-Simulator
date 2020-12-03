@@ -37,36 +37,81 @@ class Algorithms():
         print (len(prioritized_task))
         
         initial = 0
-        t = 0
-        #Might need an additional nested for loop
-        for i in range(1,3):
-            for task_num in range(len(prioritized_task)):
-                if (initial == 0): #initial condition or calculating U for the worst case (current process)
-                    U = U + (Execution[task_num]/period[task_num])
-                    #frequency.append(U)
-                    #print('U = ', U)
-                    t = ac1[task_num] / U
+        for i in range(0,(len(period)*2)):
+            if (i==0 or initial==0): # First iteration and First invocation task 1
+                U=0
+                for task_num in range(len(prioritized_task)):
+                    U += Execution[task_num]/period[task_num]
+                t = ac1[i] / U
+                End_List.append(t)
+                initial += 1
+                print('Iteration i =',i)
+                print('U = ',U)
+                print('t for task 1 =',t)
+            elif i==1: #First invocation task 2
+                U=0
+                for task_num in range(len(prioritized_task)):
+                    if task_num >= i: #if task_num == i, do worst case scenario
+                        U += Execution[task_num]/period[task_num]
+                    else: #else use the ac1 value 
+                        U += ac1[task_num]/period[task_num]
+                t = ac1[i] / U
+                End_List.append(t)
+                print('Iteration i =',i)
+                print('U = ',U)
+                print('t for task 2 =',t)
+            elif i==2: #First invocation task 3
+                U=0
+                for task_num in range(len(prioritized_task)):
+                    if task_num == i: #if task_num == i, do worst case scenario
+                        U += Execution[task_num]/period[task_num]
+                    else: #else use the ac1 value 
+                        U += ac1[task_num]/period[task_num]
+                t = ac1[i] / U
+                End_List.append(t)
+                print('Iteration i =',i)
+                print('U = ',U)
+                print('t for task 3 =',t)
+            elif i==3: #Second invocation task 1 (add deadline to the task)
+                U=0
+                for task_num in range(len(prioritized_task)):
+                    if task_num == i: #if task_num == i, do worst case scenario
+                        U += Execution[task_num]/period[task_num]
+                    else: #else use the ac1 value 
+                        U += ac1[task_num]/period[task_num]
+                t = (ac2[0] / U) + period[0]
+                End_List.append(t)
+                print('Iteration i =',i)
+                print('U = ',U)
+                print('t for task 1 =',t)
+            elif i==4: #Second invocation task 2
+                U=0
+                for task_num in range(len(prioritized_task)):
+                    if task_num == i: #if task_num == i, do worst case scenario
+                        U += Execution[task_num]/period[task_num]
+                    elif task_num == 0: #For task1, we use ac2 value 
+                        U += ac2[task_num]/period[task_num]
+                    elif task_num == 2: #For task2, we use the old ac1 value
+                        U += ac1[task_num]/period[task_num]
+                t = (ac2[1] / U) + period[1]
+                End_List.append(t)
+                print('Iteration i =',i)
+                print('U = ',U)
+                print('t for task 2 =',t)
+            elif i==5: #Second invocation task 3
+                U=0
+                for task_num in range(len(prioritized_task)):
+                    if task_num == i: #if task_num == i, do worst case scenario
+                        U += Execution[task_num]/period[task_num]
+                    elif task_num == 0 or task_num == 1: #For task1, we use ac2 value 
+                        U += ac2[task_num]/period[task_num]
+                    t = (ac2[2] / U) + period[2]
                     End_List.append(t)
-                elif (len(prioritized_task) % (task_num+1) == 0):
-                    pass
-                elif (i == 1 or initial == 1): #First invocation
-                    U = U + (ac1[task_num]/period[task_num])
-                    #frequency.append(U)
-                    #print('U = ', U)
-                    t = ac1[task_num] / U
-                    End_List.append(t)
-                elif (i == 2 or initial == 2): #Second invocation
-                    U = U + (ac2[task_num]/period[task_num])
-                    #frequency.append(U)
-                    #print('U = ', U)
-                    t = ac2[task_num] / U
-                    End_List.append(t + period[task_num])
-                frequency.append(U)
-                print('U =', U)
-            #Ut = 1/U
-            initial += 1
-            print('t = ',t)
-            print(End_List)
+                    print('Iteration i =',i)
+                    print('U = ',U)
+                    print('t for task 2 =',t)
+        print('End list = ', End_List)
+
         return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
         
     def fcfs (self,release,period,Execution,deadline): #FCFS algorithm###!!!!!!!!!!!!!!!!!!DONE
@@ -354,7 +399,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         ac2={}
         N=len(entry_list)
         if (var1.get() == 1):#EEDF
-            entry_list_test=["0,8,3,2,1,0","0,10,3,1,1,0","0,14,1,1,1,0"]#added deadline as the last bit
+            entry_list_test=["0,6,2,1,1,0","0,8,3,1,1,0","0,12,3,2,1,0"]#added deadline as the last bit
             for i in entry_list_test:
                 Task=i#.get()
                 Task = Task.split(",")
