@@ -81,7 +81,7 @@ class Algorithms():
             elif i==3: #Second invocation task 1 (add deadline to the task)
                 U=0
                 t=prioritized_period[0]
-                Begin_List.append(t)
+                Begin_List.append(prioritized_period[0])
                 for task_num in range(len(prioritized_task)):
                     if task_num == 0: #if task_num == i, do worst case scenario
                         U += Execution[task_num]/period[task_num]
@@ -94,10 +94,9 @@ class Algorithms():
                 print('U = ',U)
                 print('t for task 1 =',t)
             elif i==4: #Second invocation task 2
-                Begin_List.append(End_List[i-1])
                 U=0
                 t=prioritized_period[1]
-                Begin_List.append(t)
+                Begin_List.append(prioritized_period[1])
                 for task_num in range(len(prioritized_task)):
                     if task_num == 1: #if task_num == i, do worst case scenario
                         U += Execution[task_num]/period[task_num]
@@ -112,10 +111,9 @@ class Algorithms():
                 print('U = ',U)
                 print('t for task 2 =',t)
             elif i==5: #Second invocation task 3
-                Begin_List.append(End_List[i-1])
                 U=0
                 t=prioritized_period[2]
-                Begin_List.append(t)
+                Begin_List.append(prioritized_period[2])
                 for task_num in range(len(prioritized_task)):
                     if task_num == 2: #if task_num == i, do worst case scenario
                         U += Execution[task_num]/period[task_num]
