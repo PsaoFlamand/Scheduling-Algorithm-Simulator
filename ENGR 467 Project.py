@@ -74,6 +74,7 @@ class Algorithms():
         Begin_List=[]
         End_List=[]
         deadline_missed=[]
+        explanation=[]
         count =0
         prev_start=0
         sort_release= sorted(release.items(), key=lambda x: x[1])
@@ -93,6 +94,7 @@ class Algorithms():
                 if (end)>deadline[task_num] and reset==0:#detect missed deadline
                     reset=1
                     deadline_missed.append(deadline[task_num])
+                    explanation.append("Task "+str(task_num)+ " Missed Its Deadline At The Time Interval: "+str(deadline[task_num]))
                 if (width-int(Execution[task_num])==0):
                     End_List.append(end)
                     Task_List.append(task_num)
@@ -100,7 +102,7 @@ class Algorithms():
                     prev_start=width+prev_start
                     count+=1      
 
-        return Task_List,Begin_List,End_List,deadline_missed
+        return Task_List,Begin_List,End_List,deadline_missed,explanation
     
     def rr (self,release,period,Execution,deadline, quantum, N,context_switching): #RR algorithm###!!!!!!!!!!!!!!!!!!DONE
         explanation=[]
@@ -369,7 +371,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             end_time=self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
         elif (var2.get() == 1):###FCFS#######################################
-            entry_list_test=["10,100,20","5,60,20","20,20,15","30,100,15"] #(release,deadline,execution)
+            entry_list_test=["10,0,20,0","5,0,20,0","20,0,15,0","30,0,15,0"] #(release,deadline,execution)
             for i in entry_list_test:
                 Task=i#.get()
                 Task = Task.split(",")
@@ -381,7 +383,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             algo_type="fcfs"
             quantum=0
             context=0#self.context_get.get()
-            end_time=self.end_time_get.get()
+            end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
         elif (var3.get() == 1):###RR
             #entry_list_test=["30,0,20,60","20,0,20,70","10,0,15,80","5,0,15,90"]
