@@ -128,6 +128,7 @@ class Algorithms():
         print('Begin list =',Begin_List)
         print('End list = ', End_List)
         print('Frequencies =',frequency)
+        print('task_list',Task_List)
 
         return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
         
@@ -260,39 +261,43 @@ class Draw_Schedule(Frame):
             Task,Begin,End,missed_deadline,explanation=algo.fcfs(Release,Period,Execution,deadline)
         if (algo_type=="rr"):
             Task,Begin,End,missed_deadline,explanation=algo.rr(Release,Period,Execution,deadline, quantum,N, float(context))
-        self.Draw_Structure(N)
+        self.Draw_Structure(N,algo_type)
         self.Draw_Task(Task,Begin,End,missed_deadline,explanation,int(end_time))
 
-    def Draw_Structure(self,N):##################################### Must Adjust Schedule Diagram to Number Of tasks Len(Task_Number) and change the range by Task_Number/30
-        #This is where the Schedule base is Drawn 
-        Schedule = tk.Toplevel(app,width=1000,height=450)
-        self.grid()
-        Counter = 0
-        self.canvas = Canvas(Schedule,width=1000,height=450)
-        self.canvas.create_line(25, 10, 1000, 10)
-        tsknum=0
-        for i in range(40,(((N+1)*30)),30):                  #Draws the Initial X-Axis Lines
-            self.canvas.create_line(25, i, 1000, i) #Format(x1,y1,x2,y2)
-            self.canvas.create_text(10,i-13,fill="darkblue",font="Times 12 italic bold",text="T"+str(tsknum))
-            tsknum+=1
-        self.canvas.grid()
+    def Draw_Structure(self,N,algo_type):##################################### Must Adjust Schedule Diagram to Number Of tasks Len(Task_Number) and change the range by Task_Number/30
+        #This is where the Schedule base is Drawn
+        if algo_type=="eedf":
+            print('edf')
+            Schedule = tk.Toplevel(app,width=1000,height=450)
+            self.grid()
+            Counter = 0
+            self.canvas = Canvas(Schedule,width=1000,height=450)
+            self.canvas.create_line(25, 10, 100, 10)
+            tsknum=0
+                             #Draws the Initial X-Axis Lines
+            self.canvas.create_line(25, 100, 100, 100) #Format(x1,y1,x2,y2)
+           # self.canvas.create_text(10,i-13,fill="darkblue",font="Times 12 italic bold",text="F"+str(frequency))
+            #tsknum+=1
+            #for freq in frequency:
+                
+            self.canvas.grid()
+            #
+        else:
+            Schedule = tk.Toplevel(app,width=1000,height=450)
+            self.grid()
+            Counter = 0
+            self.canvas = Canvas(Schedule,width=1000,height=450)
+            self.canvas.create_line(25, 10, 1000, 10)
+            tsknum=0
+            for i in range(40,(((N+1)*30)),30):                  #Draws the Initial X-Axis Lines
+                self.canvas.create_line(25, i, 1000, i) #Format(x1,y1,x2,y2)
+                self.canvas.create_text(10,i-13,fill="darkblue",font="Times 12 italic bold",text="T"+str(tsknum))
+                tsknum+=1
+            self.canvas.grid()
         
-    def Draw_Structure_EEDF(self,N,frequency):#
+  #  def Draw_Structure_EEDF(self,N,frequency):#
         #This is where the Schedule base is Drawn 
-        Schedule = tk.Toplevel(app,width=1000,height=450)
-        self.grid()
-        Counter = 0
-        self.canvas = Canvas(Schedule,width=1000,height=450)
-        self.canvas.create_line(25, 10, 1000, 10)
-        tsknum=0
-                         #Draws the Initial X-Axis Lines
-        self.canvas.create_line(25, 1000, 1000, 1000) #Format(x1,y1,x2,y2)
-        self.canvas.create_text(10,i-13,fill="darkblue",font="Times 12 italic bold",text="F"+str(frequency))
-        #tsknum+=1
-        #for freq in frequency:
-            
-        #self.canvas.grid()
-        #
+
     def Draw_Task(self,Task_List,Begin_List,End_List,missed_deadline,explanation,end_time):
         scale=1
         Counter = 0
@@ -433,7 +438,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             algo_type="eedf"
             quantum=0
             context=0#self.context_get.get()
-            end_time=self.end_time_get.get()
+            end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
         elif (var2.get() == 1):###FCFS#######################################
             entry_list_test=["10,0,20,0","5,0,20,0","20,0,15,0","30,0,15,0"] #(release,deadline,execution)
