@@ -74,19 +74,20 @@ class Algorithms():
                 print('t for task 3 =',t)
             elif i==3: #Second invocation task 1 (add deadline to the task)
                 U=0
-                t=0
+                t=prioritized_period[0]
                 for task_num in range(len(prioritized_task)):
                     if task_num == 0: #if task_num == i, do worst case scenario
                         U += Execution[task_num]/period[task_num]
                     else: #else use the ac1 value 
                         U += ac1[task_num]/period[task_num]
-                t += (ac2[0] / U) + prioritized_period[0]
+                t += (ac2[0] / U) 
                 End_List.append(t)
                 print('Iteration i =',i)
                 print('U = ',U)
                 print('t for task 1 =',t)
             elif i==4: #Second invocation task 2
                 U=0
+                t=prioritized_period[1]
                 for task_num in range(len(prioritized_task)):
                     if task_num == 1: #if task_num == i, do worst case scenario
                         U += Execution[task_num]/period[task_num]
@@ -94,19 +95,20 @@ class Algorithms():
                         U += ac2[task_num]/period[task_num]
                     elif task_num == 2: #For task2, we use the old ac1 value
                         U += ac1[task_num]/period[task_num]
-                t += (ac2[1] / U) + prioritized_period[1]
+                t += (ac2[1] / U) 
                 End_List.append(t)
                 print('Iteration i =',i)
                 print('U = ',U)
                 print('t for task 2 =',t)
             elif i==5: #Second invocation task 3
                 U=0
+                t=prioritized_period[2]
                 for task_num in range(len(prioritized_task)):
                     if task_num == 2: #if task_num == i, do worst case scenario
                         U += Execution[task_num]/period[task_num]
                     elif task_num == 0 or task_num == 1: #For task1, we use ac2 value 
                         U += ac2[task_num]/period[task_num]
-                t = (ac2[2] / U) + prioritized_period[2]
+                t += (ac2[2] / U)
                 End_List.append(t)
                 print('Iteration i =',i)
                 print('U = ',U)
