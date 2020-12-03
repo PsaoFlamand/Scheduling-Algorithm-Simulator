@@ -272,10 +272,10 @@ class Draw_Schedule(Frame):
             self.grid()
             Counter = 0
             self.canvas = Canvas(Schedule,width=1000,height=450)
-            self.canvas.create_line(25, 10, 100, 10)
+            self.canvas.create_line(25, 10, 25, 300)
             tsknum=0
                              #Draws the Initial X-Axis Lines
-            self.canvas.create_line(25, 100, 100, 100) #Format(x1,y1,x2,y2)
+            self.canvas.create_line(25, 300, 1000, 300) #Format(x1,y1,x2,y2)
            # self.canvas.create_text(10,i-13,fill="darkblue",font="Times 12 italic bold",text="F"+str(frequency))
             #tsknum+=1
             #for freq in frequency:
@@ -315,32 +315,35 @@ class Draw_Schedule(Frame):
             scale=2
         elif(mx<=30):
             scale=1
-        for i1 in range(25,1000,30):                #Draws the Y-Axis Lines
-            self.canvas.create_line(i1, (((N+1)*30)-20), i1, (((N+1)*30)-10))
-            self.canvas.create_text(i1,(((N+1)*30)),fill="darkblue",font="Times 12 italic bold",text=str(Counter))
-            Counter+=scale
-            
-        for i in range(0,len(Task_List)):
-            Task=Task_List[i]
-            Begin=Begin_List[i]/scale
-            End=End_List[i]/scale
-            self.canvas.create_rectangle((30*(Begin)+25), ((Task*30)+10), (30*(End)+25), ((Task*30)+40),fill="blue")
-            count=0
-        for dead in missed_deadline:
-            self.canvas.create_line((30*(dead/scale)+25), (10), (30*(dead/scale)+25), (((N+1)*26)),fill="red",width=5)
-        count=float(1)
-        count_for_break=0
-        if len(explanation)==0:
-            self.canvas.create_text(200,(((N+1)*40)*count),fill="darkblue",font="Times 10 italic bold",text="All Tasks Were Schedulable!")
+        if algo_type=="eedf":
+            print('s')
         else:
-            for exp in explanation:
-                print(exp)
-                self.canvas.create_text(200,(((N+1)*40)*count),fill="darkblue",font="Times 10 italic bold",text=str(exp))
-                count+=float(0.1)
-                print(N)
-                if count_for_break==N-1:
-                    break
-                count_for_break+=1
+            for i1 in range(25,1000,30):                #Draws the Y-Axis Lines
+                self.canvas.create_line(i1, (((N+1)*30)-20), i1, (((N+1)*30)-10))
+                self.canvas.create_text(i1,(((N+1)*30)),fill="darkblue",font="Times 12 italic bold",text=str(Counter))
+                Counter+=scale
+                
+            for i in range(0,len(Task_List)):
+                Task=Task_List[i]
+                Begin=Begin_List[i]/scale
+                End=End_List[i]/scale
+                self.canvas.create_rectangle((30*(Begin)+25), ((Task*30)+10), (30*(End)+25), ((Task*30)+40),fill="blue")
+                count=0
+            for dead in missed_deadline:
+                self.canvas.create_line((30*(dead/scale)+25), (10), (30*(dead/scale)+25), (((N+1)*26)),fill="red",width=5)
+            count=float(1)
+            count_for_break=0
+            if len(explanation)==0:
+                self.canvas.create_text(200,(((N+1)*40)*count),fill="darkblue",font="Times 10 italic bold",text="All Tasks Were Schedulable!")
+            else:
+                for exp in explanation:
+                    print(exp)
+                    self.canvas.create_text(200,(((N+1)*40)*count),fill="darkblue",font="Times 10 italic bold",text=str(exp))
+                    count+=float(0.1)
+                    print(N)
+                    if count_for_break==N-1:
+                        break
+                    count_for_break+=1
             
 class Main(Tk): #This Module sets up the original window with search boxes, labels, and a button
     
