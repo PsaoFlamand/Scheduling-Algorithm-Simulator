@@ -127,56 +127,111 @@ class Algorithms():
         prev_start=float(prioritized_release[0])
         exe_count=0
         task_num=prioritized_task[0]
-        q
+        q.append(exe_count)
         del prioritized_task[0]
         remaining_execution.append(int(Execution[prioritized_task_test[0]]))
+        #q.append(exe_count)
         while not all(remains == 0 for remains in remaining_execution):#Loops until all tasks are drained
+            print('begin queue',q)
             
+           # print('exe_count',exe_count)
+           # print('prioritized_task_test[0]',prioritized_task_test[exe_count])
+            #print('excess',excess)
+
             write=1
             reset=0
             for width in range(1,int(quantum)+1,1):
-                if remaining_execution[exe_count]!=0:
+                if remaining_execution[q[0]]!=0:
                     end=width+prev_start                
-                if (end)>deadline[prioritized_task_test[exe_count]] and reset==0:#detect missed deadline
+                if (end)>deadline[prioritized_task_test[q[0]]] and reset==0:#detect missed deadline
                     reset=1
-                    deadline_missed.append(deadline[prioritized_task_test[exe_count]])
-                    explanation.append("Task "+str(prioritized_task_test[exe_count])+ " Missed Its Deadline At The Time Interval: "+str(deadline[prioritized_task_test[exe_count]]))
-                if remaining_execution[exe_count]==0:
+                    deadline_missed.append(deadline[prioritized_task_test[q[0]]])
+                    explanation.append("Task "+str(prioritized_task_test[q[0]])+ " Missed Its Deadline At The Time Interval: "+str(deadline[prioritized_task_test[q[0]]]))
+                if remaining_execution[q[0]]==0:
                     write=0
                     break
-                remaining_execution[exe_count]-=1
-                if remaining_execution[exe_count]==0:
+                remaining_execution[q[0]]-=1
+                if remaining_execution[q[0]]==0:
                     break
             if write==1:
                 End_List.append(end)
-                Task_List.append(prioritized_task_test[exe_count])
+                Task_List.append(prioritized_task_test[q[0]])
                 Begin_List.append(prev_start)
                 prev_start=width+prev_start
             ###decides which task to drain
-            if prioritized_task_test[0]<prioritized_task_test[1]:
-                if exe_count==(len(remaining_execution)-1):#start high, go low
-                    exe_count=0
-                else:
-                    exe_count+=1
-            else:
-                if exe_count==0:
-                    exe_count=(len(remaining_execution)-1) #start low, go high
-                else:
-                    exe_count-=1
-                    
+
+            c=0
+            print('len(q)',len(q))
             for task_num_s in prioritized_task:
-                if release[task_num_s]>=end:                  
-                    break
+                print('release[task_num_s]',release[task_num_s], 'end ',end)
+                
+                if release[task_num_s]>end:
+                    print('nope')
+                    #break
                 else:
-                    if release[task_num_s]!=end:
+                    if release[task_num_s]!=end and len(q)==1:#Queue organization
+                        #goal:[0,1,2,0,1,2,0,1,3,4,0,3,4,0,4]
                         remaining_execution.append(int(Execution[task_num_s]))
-                        del Execution[task_num_s]
-                        del prioritized_task[0]                
+                        #del Execution[task_num_s]
+                        
+
                         exe_count=len(remaining_execution)-1
-                        break
-                    else:
-                        break
+                       # if
+                        print('\n')
+                        print('exe_count ',exe_count)
+                        q.append(exe_count)
+                        #exe_count=q[0]
+                        c+=1
+                    elif release[task_num_s]==end and len(q)>1:
+                        #goal:[0,1,2,0,1,2,0,1,3,4,0,3,4,0,4]
+                        remaining_execution.append(int(Execution[task_num_s]))
+                        #del Execution[task_num_s]
+                        
+
+                        exe_count=len(remaining_execution)-1
+                       # if
+                        print('\n')
+                        print('exe_count ',exe_count)
+                        q.append(exe_count)
+                        #exe_count=q[0]
+                        c+=1
+                    elif release[task_num_s]!=end and len(q)>1:
+                        #goal:[0,1,2,0,1,2,0,1,3,4,0,3,4,0,4]
+                        remaining_execution.append(int(Execution[task_num_s]))
+                        #del Execution[task_num_s]
+                        
+
+                        exe_count=len(remaining_execution)-1
+                       # if
+                        print('\n')
+                        print('exe_count ',exe_count)
+                        q.append(exe_count)
+                        #exe_count=q[0]
+                        c+=1      
+            
+            for i in range(0,c,1):
+              
+               # print(i)
+                del prioritized_task[0]
+            
+
+            print('Task ',prioritized_task_test[q[0]],'release',release[prioritized_task_test[q[0]]],'execution',Execution[prioritized_task_test[q[0]]])
+           # print()
+            print('end',end)
+            print('remaining_execution[q[0]]',remaining_execution[q[0]])
+            print('queue',q)
+            print('remaining_execution ',remaining_execution)
+            if remaining_execution[q[0]]!=0:#Am I calling the right tasks?
+                excess=q.pop(0)
+                print('excess ',excess)
+                q.append(excess)
+
+            else:
+                excess=q.pop(0)
+            print('queue' ,q)
+            print('\n')
             prev_start+=float(context_switching)
+            
         return Task_List,Begin_List,End_List,deadline_missed,explanation
 
 #####################################################All Graphics and controls beyond  this point
@@ -384,8 +439,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             end_time=self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
         elif (var3.get() == 1):###RR
-            #entry_list_test=["30,0,20,60","20,0,20,70","10,0,15,80","5,0,15,90"]
-            entry_list_test=["0,0,75,300","10,0,40,500","10,0,25,700","80,0,20,900","85,0,45,1010"]
+            entry_list_test=["30,0,20,60","20,0,20,70","10,0,15,80","5,0,15,90"]
+            #entry_list_test=["0,0,75,300","10,0,40,500","10,0,25,700","80,0,20,900","85,0,45,1010"]
             for i in entry_list_test:
                 Task=i#.get()
                 Task = Task.split(",")
@@ -395,7 +450,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 deadline.update({count:int(Task[3])})
                 count+=1
             algo_type="rr"
-            quantum=15#self.quantum_get.get()
+            quantum=5#self.quantum_get.get()
             context=0#self.context_get.get()
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
