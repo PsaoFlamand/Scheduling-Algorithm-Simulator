@@ -35,7 +35,7 @@ class Algorithms():
         print('prioritized_period:' , prioritized_period)
         print('prioritized_task:', prioritized_task)
         print (len(prioritized_task))
-        
+        Task_List=prioritized_task
         initial = 0
         for i in range(0,6):
             if (i==0 or initial==0): # First iteration and First invocation task 1
@@ -259,10 +259,12 @@ class Draw_Schedule(Frame):
             #Task_List,Begin_List,End_List,deadline_missed,frequency
         if (algo_type=="fcfs"):
             Task,Begin,End,missed_deadline,explanation=algo.fcfs(Release,Period,Execution,deadline)
+            frequency=[]
         if (algo_type=="rr"):
             Task,Begin,End,missed_deadline,explanation=algo.rr(Release,Period,Execution,deadline, quantum,N, float(context))
+            frequency=[]
         self.Draw_Structure(N,algo_type)
-        self.Draw_Task(Task,Begin,End,missed_deadline,explanation,int(end_time))
+        self.Draw_Task(Task,Begin,End,missed_deadline,explanation,int(end_time),algo_type,frequency)
 
     def Draw_Structure(self,N,algo_type):##################################### Must Adjust Schedule Diagram to Number Of tasks Len(Task_Number) and change the range by Task_Number/30
         #This is where the Schedule base is Drawn
@@ -298,7 +300,7 @@ class Draw_Schedule(Frame):
   #  def Draw_Structure_EEDF(self,N,frequency):#
         #This is where the Schedule base is Drawn 
 
-    def Draw_Task(self,Task_List,Begin_List,End_List,missed_deadline,explanation,end_time):
+    def Draw_Task(self,Task_List,Begin_List,End_List,missed_deadline,explanation,end_time,algo_type,frequency):
         scale=1
         Counter = 0
         if end_time==0:
@@ -316,7 +318,17 @@ class Draw_Schedule(Frame):
         elif(mx<=30):
             scale=1
         if algo_type=="eedf":
-            print('s')
+            for i1 in range(25,1000,30):                #Draws the Y-Axis Lines
+                self.canvas.create_line(i1, (300), i1, (290))
+                self.canvas.create_text(i1,(310),fill="darkblue",font="Times 12 italic bold",text=str(Counter))
+                Counter+=scale
+           # for freq in frequency:
+              #  print(freq)
+            for i in range(0,len(frequency)):
+               # Task=Task_List[i]
+                Begin=Begin_List[i]/scale
+                End=End_List[i]/scale                
+                self.canvas.create_rectangle((30*(Begin)+25), (300), (30*(End)+25), (300-(300*frequency[i])),fill="blue")
         else:
             for i1 in range(25,1000,30):                #Draws the Y-Axis Lines
                 self.canvas.create_line(i1, (((N+1)*30)-20), i1, (((N+1)*30)-10))
