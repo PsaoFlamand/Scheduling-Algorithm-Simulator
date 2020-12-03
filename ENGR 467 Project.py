@@ -359,7 +359,6 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 Release.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
                 Execution.update({count:int(Task[2])})
-                
                 ac1.update({count: int(Task[3])})
                 ac2.update({count: int(Task[4])})
                 deadline.update({count:int(Task[5])})
@@ -387,8 +386,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         elif (var3.get() == 1):###RR
             #entry_list_test=["30,0,20,60","20,0,20,70","10,0,15,80","5,0,15,90"]
             entry_list_test=["0,0,75,300","10,0,40,500","10,0,25,700","80,0,20,900","85,0,45,1010"]
-            for i in entry_list:
-                Task=i.get()
+            for i in entry_list_test:
+                Task=i#.get()
                 Task = Task.split(",")
                 Release.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
@@ -396,7 +395,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 deadline.update({count:int(Task[3])})
                 count+=1
             algo_type="rr"
-            quantum=self.quantum_get.get()
+            quantum=15#self.quantum_get.get()
             context=0#self.context_get.get()
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
