@@ -47,7 +47,7 @@ class Algorithms():
         while 1:
            # if (i==0 or initial==0): # First iteration and First invocation task 1
             U=0
-            Begin_List.append(0)
+            Begin_List.append(prev_start)
             for task_num in prioritized_task:
                 U += Execution[task_num]/period[task_num]
             end_time = ac1[task_num] / U
