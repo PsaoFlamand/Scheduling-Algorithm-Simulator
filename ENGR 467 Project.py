@@ -298,6 +298,9 @@ class Draw_Schedule(Frame):
         super().__init__()
         algo=Algorithms()
         if (algo_type=="eedf"):
+            Task,Begin,End,missed_deadline,frequency,explanation=algo.eedf(Release,Period,Execution,ac1,ac2,N)
+            #Task_List,Begin_List,End_List,deadline_missed,frequency
+        if (algo_type=="laedf"):
             Task,Begin,End,missed_deadline,frequency,explanation=algo.laedf(Release,Period,Execution,ac1,ac2,N)
             #Task_List,Begin_List,End_List,deadline_missed,frequency
         if (algo_type=="fcfs"):
@@ -306,8 +309,8 @@ class Draw_Schedule(Frame):
         if (algo_type=="rr"):
             Task,Begin,End,missed_deadline,explanation=algo.rr(Release,Period,Execution,deadline, quantum,N, float(context))
             frequency=[]
-        #self.Draw_Structure(N,algo_type)
-       # self.Draw_Task(Task,Begin,End,missed_deadline,explanation,int(end_time),algo_type,frequency)
+        self.Draw_Structure(N,algo_type)
+        self.Draw_Task(Task,Begin,End,missed_deadline,explanation,int(end_time),algo_type,frequency)
 
     def Draw_Structure(self,N,algo_type):##################################### Must Adjust Schedule Diagram to Number Of tasks Len(Task_Number) and change the range by Task_Number/30
         #This is where the Schedule base is Drawn
@@ -432,10 +435,12 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
 
         self.check1 = tk.Radiobutton(self, text='Cycle-Saving EDF',variable=var, value=1,bg='yellow',font=self.task_text)
         self.check1.grid(row=4,column=1, sticky='w')
-        self.check4 = tk.Radiobutton(self, text='FCFS',variable=var, value=2,bg='yellow',font=self.task_text)
-        self.check4.grid(row=5,column=1, sticky='w')
-        self.check5 = tk.Radiobutton(self, text='RR',variable=var, value=3,bg='yellow',font=self.task_text)
-        self.check5.grid(row=6,column=1, sticky='w')
+        self.check1 = tk.Radiobutton(self, text='Look Ahead EDF',variable=var, value=2,bg='yellow',font=self.task_text)
+        self.check1.grid(row=5,column=1, sticky='w')
+        self.check4 = tk.Radiobutton(self, text='FCFS',variable=var, value=3,bg='yellow',font=self.task_text)
+        self.check4.grid(row=6,column=1, sticky='w')
+        self.check5 = tk.Radiobutton(self, text='RR',variable=var, value=4,bg='yellow',font=self.task_text)
+        self.check5.grid(row=7,column=1, sticky='w')
         
         self.quantum_get=tk.Entry(self,width=10)
         self.context_get=tk.Entry(self,width=10)
@@ -443,16 +448,16 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.quantum_text = tk.Label(self, text="Quantum",bg='yellow',font=self.task_text)
         self.context_text = tk.Label(self, text="Context",bg='yellow',font=self.task_text)
         self.end_time_text = tk.Label(self, text="End Time",bg='yellow',font=self.task_text)
-        self.quantum_get.grid(row=7,column=1, sticky='e')
-        self.quantum_text.grid(row=7, column=1, sticky='w')
-        self.context_get.grid(row=8,column=1, sticky='e')
-        self.context_text.grid(row=8,column=1, sticky='w')
-        self.end_time_get.grid(row=9,column=1, sticky='e')
-        self.end_time_text.grid(row=9,column=1, sticky='w')
+        self.quantum_get.grid(row=8,column=1, sticky='e')
+        self.quantum_text.grid(row=8, column=1, sticky='w')
+        self.context_get.grid(row=9,column=1, sticky='e')
+        self.context_text.grid(row=9,column=1, sticky='w')
+        self.end_time_get.grid(row=10,column=1, sticky='e')
+        self.end_time_text.grid(row=10,column=1, sticky='w')
         
         ##Explanation of input
         self.explainEEDF = tk.Label(self, text="|Release,Period,Exe,Dead|",bg='yellow',font=self.explain_text)
-        self.explainEEDF.grid(row=10,column=1, sticky='w')
+        self.explainEEDF.grid(row=11,column=1, sticky='w')
 
     def Add_Task(self):
         global counter
@@ -496,7 +501,24 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             context=0#self.context_get.get()
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
-        elif (var.get() == 2):###FCFS#######################################
+        if (var.get() == 2):#laEDF
+            entry_list_test=["0,6,2,1,1,0","0,8,3,1,1,0","0,12,3,2,1,0"]#added deadline as the last bit
+            for i in entry_list_test:
+                Task=i#.get()
+                Task = Task.split(",")
+                Release.update({count:int(Task[0])})
+                Period.update({count:int(Task[1])})
+                Execution.update({count:int(Task[2])})
+                ac1.update({count: int(Task[3])})
+                ac2.update({count: int(Task[4])})
+                deadline.update({count:int(Task[5])})
+                count+=1
+            algo_type="laedf"
+            quantum=0
+            context=0#self.context_get.get()
+            end_time=0#self.end_time_get.get()
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
+        elif (var.get() == 3):###FCFS#######################################
             entry_list_test=["10,0,20,0","5,0,20,0","20,0,15,0","30,0,15,0"] #(release,deadline,execution)
             for i in entry_list_test:
                 Task=i#.get()
@@ -511,11 +533,11 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             context=0#self.context_get.get()
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
-        elif (var.get() == 3):###RR
+        elif (var.get() == 4):###RR
             #entry_list_test=["30,0,20,60","20,0,20,70","10,0,15,80","5,0,15,90"]
-            #entry_list_test=["0,0,75,300","10,0,40,500","10,0,25,700","80,0,20,900","85,0,45,1010"]
-            for i in entry_list:
-                Task=i.get()
+            entry_list_test=["0,0,75,300","10,0,40,500","10,0,25,700","80,0,20,900","85,0,45,1010"]
+            for i in entry_list_test:
+                Task=i#.get()
                 Task = Task.split(",")
                 Release.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
@@ -523,8 +545,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 deadline.update({count:int(Task[3])})
                 count+=1
             algo_type="rr"
-            quantum=self.quantum_get.get()
-            context=self.context_get.get()
+            quantum=15#self.quantum_get.get()
+            context=0#self.context_get.get()
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
         self.clear()
