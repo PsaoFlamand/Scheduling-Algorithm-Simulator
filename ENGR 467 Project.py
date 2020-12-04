@@ -111,6 +111,7 @@ class Algorithms():
         freq=0
         prev_start=0
         master_count=0
+        task_has_executed=[]
         for dead in range(0,len(deadline)):
             q=[]
             q.append(prioritized_task[dead])
@@ -130,7 +131,7 @@ class Algorithms():
             deadline[dead]=deadline[dead]*2
             
             for task in q:
-                if task_has_executed=1:
+                if task_has_executed[task]==1:
                     freq += Execution[task]/(deadline[task]-period[task])
                 else:
                     freq += Execution[task]/(deadline[task]-prev_start)
@@ -405,9 +406,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         global entry_list
         global label_list
         global N
-        global var1
-        global var2
-        global var3
+        global var
+
         label_list= []
         entry_list = []
         #Standard setup
@@ -428,14 +428,13 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.button1.grid(row=2,column=1, sticky='w')
         self.button2 = tk.Button(self, text="Clear",bg='white', command=lambda: self.clear(),font=self.task_text) # When Clicked, All tasks are cleared
         self.button2.grid(row=3,column=1, sticky='w')
-        var1 = tk.IntVar()
-        var2 = tk.IntVar()
-        var3 = tk.IntVar()
-        self.check1 = tk.Checkbutton(self, text='Cycle-Saving EDF',variable=var1, onvalue=1, offvalue=0,bg='yellow',font=self.task_text)
+        var = tk.IntVar()
+
+        self.check1 = tk.Radiobutton(self, text='Cycle-Saving EDF',variable=var, value=1,bg='yellow',font=self.task_text)
         self.check1.grid(row=4,column=1, sticky='w')
-        self.check4 = tk.Checkbutton(self, text='FCFS',variable=var2, onvalue=1, offvalue=0,bg='yellow',font=self.task_text)
+        self.check4 = tk.Radiobutton(self, text='FCFS',variable=var, value=2,bg='yellow',font=self.task_text)
         self.check4.grid(row=5,column=1, sticky='w')
-        self.check5 = tk.Checkbutton(self, text='RR',variable=var3, onvalue=1, offvalue=0,bg='yellow',font=self.task_text)
+        self.check5 = tk.Radiobutton(self, text='RR',variable=var, value=3,bg='yellow',font=self.task_text)
         self.check5.grid(row=6,column=1, sticky='w')
         
         self.quantum_get=tk.Entry(self,width=10)
@@ -480,7 +479,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         ac1={}
         ac2={}
         N=len(entry_list)
-        if (var1.get() == 1):#EEDF
+        if (var.get() == 1):#EEDF
             entry_list_test=["0,6,2,1,1,0","0,8,3,1,1,0","0,12,3,2,1,0"]#added deadline as the last bit
             for i in entry_list_test:
                 Task=i#.get()
@@ -497,7 +496,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             context=0#self.context_get.get()
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
-        elif (var2.get() == 1):###FCFS#######################################
+        elif (var.get() == 2):###FCFS#######################################
             entry_list_test=["10,0,20,0","5,0,20,0","20,0,15,0","30,0,15,0"] #(release,deadline,execution)
             for i in entry_list_test:
                 Task=i#.get()
@@ -512,7 +511,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             context=0#self.context_get.get()
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
-        elif (var3.get() == 1):###RR
+        elif (var.get() == 3):###RR
             #entry_list_test=["30,0,20,60","20,0,20,70","10,0,15,80","5,0,15,90"]
             #entry_list_test=["0,0,75,300","10,0,40,500","10,0,25,700","80,0,20,900","85,0,45,1010"]
             for i in entry_list:
