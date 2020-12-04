@@ -446,9 +446,9 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.check1.grid(row=4,column=1, sticky='w')
         self.check1 = tk.Radiobutton(self, text='Look Ahead EDF',variable=var, value=2,bg='yellow',font=self.task_text)
         self.check1.grid(row=5,column=1, sticky='w')
-        self.check4 = tk.Radiobutton(self, text='FCFS',variable=var, value=3,bg='yellow',font=self.task_text)
+        self.check4 = tk.Radiobutton(self, text='First In First Out',variable=var, value=3,bg='yellow',font=self.task_text)
         self.check4.grid(row=6,column=1, sticky='w')
-        self.check5 = tk.Radiobutton(self, text='RR',variable=var, value=4,bg='yellow',font=self.task_text)
+        self.check5 = tk.Radiobutton(self, text='Round Robin',variable=var, value=4,bg='yellow',font=self.task_text)
         self.check5.grid(row=7,column=1, sticky='w')
         
         self.quantum_get=tk.Entry(self,width=10)
