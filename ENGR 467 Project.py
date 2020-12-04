@@ -131,11 +131,11 @@ class Algorithms():
             deadline[dead]=deadline[dead]*2
             
             for task in q:
-                if task_has_executed[task]==1:
+                if task_has_executed[master_count]==1:
                     freq += Execution[task]/(deadline[task]-period[task])
                 else:
                     freq += Execution[task]/(deadline[task]-prev_start)
-           
+            task_has_executed.append(1)
             width=ac1[task]/freq
             
             end_time=width+prev_start
