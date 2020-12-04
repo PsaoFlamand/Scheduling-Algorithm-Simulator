@@ -36,50 +36,95 @@ class Algorithms():
        # print('prioritized_task:', prioritized_task)
         #print (len(prioritized_task))
         Task_List=prioritized_task
-        initial = 0
-        invocation_identifier=[]
-        for task in prioritized_task:
-            invocation_identifier.append(1)       
-      #  print('invocation_identifier',invocation_identifier)
-        prev_start=Release[prioritized_task[0]]
-        i=0
-        count=0
-        print('prioritize_task[i]',prioritized_task[i])
-        print(prioritized_task)
-        while 1:
-           # if (i==0 or initial==0): # First iteration and First invocation task 1
-            U=0
-            Begin_List.append(prev_start)
-            for task_num in prioritized_task:
-                U += Execution[task_num]/period[task_num]
-            end_time = ac1[task_num] / U
-            End_List.append(end_time)
-            frequency.append(U)
-            #initial += 1
+        
+        invocation = 1
+        for task in (2*Task_List):
+            if task==0:
+                U=0
+                if invocation == 1:
+                    Begin_List.append(Release[task])
+                else:
+                    Begin_List.append(prioritized_period[task])
+                
+                for task_num in Task_List:
+                    if invocation == 1:
+                        U += Execution[task_num] / period[task_num]
+                    else:
+                        if task_num == task:
+                            U += Execution[task_num] / period[task_num]
+                        else:
+                            U += ac1[task_num] / period[task_num]
+                
+                if invocation==1:
+                    t = ac1[task] / U
+                else:
+                    t = (ac2[task] / U) + prioritized_period[task]
+                End_List.append(t)
+                frequency.append(U)
+
+            elif task==1:
+                U=0
+                if invocation == 1:
+                    Begin_List.append(End_List[task-1])
+                else:
+                    Begin_List.append(prioritized_period[task])
+                
+                for task_num in Task_List:
+                    if invocation == 1:
+                        if task_num >= task:
+                            U += Execution[task_num] / period[task_num]
+                        else:
+                            U += ac1[task_num] / period[task_num]
+                    else:
+                        if task_num == task:
+                            U += Execution[task_num] / period[task_num]
+                        elif task_num < task:
+                            U += ac2[task_num] / period[task_num]
+                        elif task_num > task:
+                            U += ac1[task_num] / period[task_num]
+                
+                if invocation==1:
+                    t = ac1[task] / U
+                else:
+                    t = (ac2[task] / U) + prioritized_period[task]
+                End_List.append(t)
+                frequency.append(U)
+
+            elif task==2:
+                U=0
+                if invocation==1:
+                    Begin_List.append(End_List[task-1])
+                else:
+                    Begin_List.append(prioritized_period[task])
+                
+                for task_num in Task_List:
+                    if invocation==1:
+                        if task_num == task:
+                            U += Execution[task_num] / period[task_num]
+                        else:
+                            U += ac1[task_num] / period[task_num]
+                    else:
+                        if task_num == task:
+                            U += Execution[task_num] / period[task_num]
+                        else:
+                            U += ac2[task_num] / period[task_num]
+                if invocation==1:
+                    t = ac1[task] / U
+                else:
+                    t = (ac2[task] / U) + prioritized_period[task]
+                End_List.append(t)
+                frequency.append(U)
             
-            print('Iteration i =',i)
-            print('U = ',U)
-            print('end_time for task 1 =',end_time)
-            print('invocation_identifier',invocation_identifier)
-            print('N',N)
-            print('(N/2)-1',(N/2)-1)
-            if i==((N)):
-                i=0
-            if count==(2*N)-1:
-                break
-            print('i',i)
-            invocation_identifier[i]=2
-            i+=1
-            count+=1
-               # print('Iteration i =',i)
-               # print('U = ',U)
-               # print('end_time for task 2 =',end_time)
+            if task==(int(0.5 * len(2*Task_List))):
+                invocation += 1
         print('Begin list =',Begin_List)
         print('End list = ', End_List)
         print('Frequencies =',frequency)
-       #print('task_list',Task_List)
-
+        print('task_list',Task_List)
+        
         return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
+
+    
     def laedf(self, Release, period, Execution, ac1, ac2,N): #Look ahead Energy saving EDF
         N=3
         Task_List = []
