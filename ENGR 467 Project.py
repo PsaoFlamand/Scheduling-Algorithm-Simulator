@@ -63,7 +63,7 @@ class Algorithms():
                 End_List.append(t)
                 frequency.append(U)
 
-            elif task==1:
+s            elif task==1:
                 U=0
                 if invocation == 1:
                     Begin_List.append(End_List[task-1])
@@ -136,7 +136,6 @@ class Algorithms():
         frequency = []
         explanation = []
         deadline=[]
-        U = 0
         sort_period= sorted(period.items(), key=lambda x: x[1])
         prioritized_period=[]
         prioritized_task=[]
@@ -144,22 +143,55 @@ class Algorithms():
             prioritized_task.append(int(priority[0]))
             prioritized_period.append(int(priority[1]))
         Task_List=prioritized_task
-        invocation_identifier=[]
-        for task in prioritized_task:
-            invocation_identifier.append(1)       
-
-        i=0
-        U=0
         for dead in prioritized_task:
             deadline.append(period[dead])
+        print('deadline',deadline)
         selector=1
         count=0
         q=[]
         freq=0
         prev_start=0
-        master_count=0
-        task_has_executed=[]
-        for dead in range(0,len(deadline)):
+        #[2,4,6]
+        for dead in range(0,len(deadline)): #invocation 1
+            q=[]
+            q.append(prioritized_task[dead])
+            if dead==len(deadline)-1:
+                selector=0
+            else:
+                selector=dead+1
+            for i in range(0,N-1):#Check Deference INV1
+                deadline_difference=deadline[selector]-deadline[dead]
+                if Execution[prioritized_task[selector]]<deadline_difference:
+                    print("task",prioritized_task[selector]+1,' can be deffered')#We know which ones we want to defer
+                else:
+                    q.append(prioritized_task[selector])
+                selector+=1
+                if selector==N:
+                    selector=0
+            
+            for task in q: #Calculate Freqencies in the queue INV 1
+                if (deadline[task]-period[task])!=0:
+                    freq += Execution[task]/(deadline[task]-period[task])
+                else:
+                    freq += Execution[task]/(deadline[task]-prev_start)
+            #[2,4,6]
+            #[2,8,6]
+            deadline[dead]=deadline[dead]*2
+            if freq<=1 and freq>0.75: #rounding frequency
+                freq=1
+            elif freq<=0.75 and freq>0.5:
+                freq=0.75
+            elif freq<=0.5:
+                freq=0.5
+            width=ac1[prioritized_task[dead]]/freq
+            end_time=width+prev_start
+            prev_start+=width
+            print('end_time',end_time)
+            print('freq',freq)
+            print('q',q)
+            freq=0
+
+        for dead in range(0,len(deadline)): #invocation 2 Deferance check
             q=[]
             q.append(prioritized_task[dead])
             if dead==len(deadline)-1:
@@ -175,7 +207,8 @@ class Algorithms():
                 selector+=1
                 if selector==N:
                     selector=0
-            for task in q:
+            
+            for task in q:#Calculate the Invocation 2 queue frequencies
                 #print('task',task)
                 #print('Execution[task]',Execution[task])
                 #print('deadline[task]-prev_start',deadline[task]-prev_start)
@@ -187,6 +220,7 @@ class Algorithms():
                         freq += Execution[task]/(deadline[task]-prev_start)
                 else:
                     freq += Execution[task]/(deadline[task]-prev_start)
+            
             deadline[dead]=deadline[dead]*2
             if freq<=1 and freq>0.75:
                 freq=1
@@ -207,8 +241,6 @@ class Algorithms():
             print('freq',freq)
             print('q',q)
             freq=0
-            master_count+=1
-
 
 
             #U += Execution[task_num]/period[task_num]
