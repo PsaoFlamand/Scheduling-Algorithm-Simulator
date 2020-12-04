@@ -38,7 +38,8 @@ class Algorithms():
         Task_List=prioritized_task
         
         invocation = 1
-        for task in (2*Task_List):
+        task_list_with_2_iterations = 2*Task_List
+        for task in (task_list_with_2_iterations):
             if task==0:
                 U=0
                 if invocation == 1:
@@ -84,7 +85,7 @@ class Algorithms():
                             U += ac1[task_num] / period[task_num]
                 
                 if invocation==1:
-                    t = ac1[task] / U
+                    t += ac1[task] / U
                 else:
                     t = (ac2[task] / U) + prioritized_period[task]
                 End_List.append(t)
@@ -109,14 +110,15 @@ class Algorithms():
                         else:
                             U += ac2[task_num] / period[task_num]
                 if invocation==1:
-                    t = ac1[task] / U
+                    t += ac1[task] / U
                 else:
                     t = (ac2[task] / U) + prioritized_period[task]
                 End_List.append(t)
                 frequency.append(U)
             
-            if task==(int(0.5 * len(2*Task_List))):
+            if task==(int(0.5 * len(task_list_with_2_iterations))-1):
                 invocation += 1
+        
         print('Begin list =',Begin_List)
         print('End list = ', End_List)
         print('Frequencies =',frequency)
