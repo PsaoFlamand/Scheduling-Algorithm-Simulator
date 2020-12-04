@@ -80,7 +80,97 @@ class Algorithms():
        #print('task_list',Task_List)
 
         return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
-        
+    def laedf(self, Release, period, Execution, ac1, ac2,N): #Look ahead Energy saving EDF
+        N=3
+        Task_List = []
+        Begin_List = []
+        End_List = []
+        deadline_missed =[]
+        frequency = []
+        explanation = []
+        deadline=[]
+        U = 0
+        sort_period= sorted(period.items(), key=lambda x: x[1])
+        prioritized_period=[]
+        prioritized_task=[]
+        for priority in sort_period:
+            prioritized_task.append(int(priority[0]))
+            prioritized_period.append(int(priority[1]))
+        Task_List=prioritized_task
+        invocation_identifier=[]
+        for task in prioritized_task:
+            invocation_identifier.append(1)       
+
+        i=0
+        U=0
+        for dead in prioritized_task:
+            deadline.append(period[dead])
+        selector=1
+        count=0
+        q=[]
+        freq=0
+        prev_start=0
+        master_count=0
+        for dead in range(0,len(deadline)):
+            q=[]
+            q.append(prioritized_task[dead])
+            if dead==len(deadline)-1:
+                selector=0
+            else:
+                selector=dead+1
+            for i in range(0,N-1):
+                deadline_difference=deadline[selector]-deadline[dead]
+                if Execution[prioritized_task[selector]]<deadline_difference:
+                    print("task",prioritized_task[selector]+1,' can be deffered')#We know which ones we want to defer
+                else:
+                    q.append(prioritized_task[selector])
+                selector+=1
+                if selector==N:
+                    selector=0
+            deadline[dead]=deadline[dead]*2
+            
+            for task in q:
+                if task_has_executed=1:
+                    freq += Execution[task]/(deadline[task]-period[task])
+                else:
+                    freq += Execution[task]/(deadline[task]-prev_start)
+           
+            width=ac1[task]/freq
+            
+            end_time=width+prev_start
+            prev_start+=width
+            print('end_time',end_time)
+            print('freq',freq)
+            print('q',q)
+            freq=0
+
+
+
+
+            #U += Execution[task_num]/period[task_num]
+            
+        #width =  (ac1[task_num] / U)
+        #end_time=width+prev_start
+        #End_List.append(end_time)
+        #frequency.append(U)
+        #End_List.append(end_time)
+        #Task_List.append(task_num)
+        #Begin_List.append(prev_start)
+        #prev_start=end_time
+
+        #if i==((N)):
+        #    i=0
+        #invocation_identifier[i]=2
+        #i+=1
+   
+
+        #print('Begin list =',Begin_List)
+        #print('End list = ', End_List)
+        #print('Frequencies =',frequency)
+       #print('task_list',Task_List)
+
+        return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
+                  
     def fcfs (self,release,period,Execution,deadline): #FCFS algorithm###!!!!!!!!!!!!!!!!!!DONE
         Task_List=[]
         Begin_List=[]
@@ -207,7 +297,7 @@ class Draw_Schedule(Frame):
         super().__init__()
         algo=Algorithms()
         if (algo_type=="eedf"):
-            Task,Begin,End,missed_deadline,frequency,explanation=algo.eedf(Release,Period,Execution,ac1,ac2,N)
+            Task,Begin,End,missed_deadline,frequency,explanation=algo.laedf(Release,Period,Execution,ac1,ac2,N)
             #Task_List,Begin_List,End_List,deadline_missed,frequency
         if (algo_type=="fcfs"):
             Task,Begin,End,missed_deadline,explanation=algo.fcfs(Release,Period,Execution,deadline)
@@ -215,8 +305,8 @@ class Draw_Schedule(Frame):
         if (algo_type=="rr"):
             Task,Begin,End,missed_deadline,explanation=algo.rr(Release,Period,Execution,deadline, quantum,N, float(context))
             frequency=[]
-        self.Draw_Structure(N,algo_type)
-        self.Draw_Task(Task,Begin,End,missed_deadline,explanation,int(end_time),algo_type,frequency)
+        #self.Draw_Structure(N,algo_type)
+       # self.Draw_Task(Task,Begin,End,missed_deadline,explanation,int(end_time),algo_type,frequency)
 
     def Draw_Structure(self,N,algo_type):##################################### Must Adjust Schedule Diagram to Number Of tasks Len(Task_Number) and change the range by Task_Number/30
         #This is where the Schedule base is Drawn
