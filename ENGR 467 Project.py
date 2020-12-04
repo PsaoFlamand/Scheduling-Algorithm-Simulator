@@ -63,7 +63,7 @@ class Algorithms():
                 End_List.append(t)
                 frequency.append(U)
 
-s            elif task==1:
+            elif task==1:
                 U=0
                 if invocation == 1:
                     Begin_List.append(End_List[task-1])
@@ -177,12 +177,14 @@ s            elif task==1:
             #[2,4,6]
             #[2,8,6]
             deadline[dead]=deadline[dead]*2
-            if freq<=1 and freq>0.75: #rounding frequency
-                freq=1
-            elif freq<=0.75 and freq>0.5:
-                freq=0.75
-            elif freq<=0.5:
-                freq=0.5
+            round_freq=True
+            if round_freq==True:
+                if freq<=1 and freq>0.75: #rounding frequency
+                    freq=1
+                elif freq<=0.75 and freq>0.5:
+                    freq=0.75
+                elif freq<=0.5:
+                    freq=0.5
             width=ac1[prioritized_task[dead]]/freq
             end_time=width+prev_start
             prev_start+=width
