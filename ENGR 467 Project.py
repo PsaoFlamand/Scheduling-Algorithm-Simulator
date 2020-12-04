@@ -136,15 +136,15 @@ class Algorithms():
                 print('deadline[task]-prev_start',deadline[task]-prev_start)
                 print('deadline[task]-period[task]',deadline[task]-period[task])
                 if master_count>0:
-                    if task==prioritized_task[0]:#slightly hardcoded here
+                    if (deadline[task]-period[task])!=0:
                         freq += Execution[task]/(deadline[task]-period[task])
                     else:
                         freq += Execution[task]/(deadline[task]-prev_start)
                 else:
                     freq += Execution[task]/(deadline[task]-prev_start)
             deadline[dead]=deadline[dead]*2
-            master_count+=1
-            task_has_executed.append(1)
+            
+            task_has_executed.append(prioritized_task[master_count])
             width=ac1[task]/freq
             print('\n')
             end_time=width+prev_start
@@ -153,7 +153,7 @@ class Algorithms():
             print('freq',freq)
             print('q',q)
             freq=0
-
+            master_count+=1
 
 
 
