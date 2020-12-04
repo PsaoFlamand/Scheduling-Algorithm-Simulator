@@ -139,6 +139,7 @@ class Algorithms():
         del prioritized_task[0]
         remaining_execution.append(int(Execution[prioritized_task_test[0]]))
         while not all(remains == 0 for remains in remaining_execution):#Loops until all tasks are drained
+            prev_task=q[0]
             print('Begin_List',Begin_List)
             print('End_List',End_List)
             print('Task_List',Task_List)
@@ -184,7 +185,8 @@ class Algorithms():
                         remaining_execution.append(int(Execution[task_num_s]))
                         exe_count=len(remaining_execution)-1
                         q.append(exe_count)
-                        c+=1      
+                        c+=1
+            
             for i in range(0,c,1):
                 del prioritized_task[0]
             if remaining_execution[q[0]]!=0:#Am I calling the right tasks?
@@ -192,8 +194,9 @@ class Algorithms():
                 q.append(excess)
             else:
                 excess=q.pop(0)
-
-            prev_start+=float(context_switching)
+            if len(q)!=0:
+                if prev_task!=q[0]:
+                    prev_start+=float(context_switching)
             
         return Task_List,Begin_List,End_List,deadline_missed,explanation
 
@@ -421,9 +424,9 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
         elif (var3.get() == 1):###RR
             #entry_list_test=["30,0,20,60","20,0,20,70","10,0,15,80","5,0,15,90"]
-            entry_list_test=["0,0,75,300","10,0,40,500","10,0,25,700","80,0,20,900","85,0,45,1010"]
-            for i in entry_list_test:
-                Task=i#.get()
+            #entry_list_test=["0,0,75,300","10,0,40,500","10,0,25,700","80,0,20,900","85,0,45,1010"]
+            for i in entry_list:
+                Task=i.get()
                 Task = Task.split(",")
                 Release.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
@@ -431,8 +434,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 deadline.update({count:int(Task[3])})
                 count+=1
             algo_type="rr"
-            quantum=15#self.quantum_get.get()
-            context=0#self.context_get.get()
+            quantum=self.quantum_get.get()
+            context=self.context_get.get()
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
         self.clear()
