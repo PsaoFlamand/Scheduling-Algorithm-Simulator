@@ -133,9 +133,10 @@ class Algorithms():
             for task in q:
                 print('task',task)
                 print('Execution[task]',Execution[task])
-                print('deadline[task]',deadline[task])
+                print('deadline[task]-prev_start',deadline[task]-prev_start)
+                print('deadline[task]-period[task]',deadline[task]-period[task])
                 if master_count>0:
-                    if task==prioritized_task[0]:
+                    if task==prioritized_task[0]:#slightly hardcoded here
                         freq += Execution[task]/(deadline[task]-period[task])
                     else:
                         freq += Execution[task]/(deadline[task]-prev_start)
