@@ -38,7 +38,7 @@ class Algorithms():
         #Task_List=prioritized_task
         
         invocation = 1
-        task_list_with_2_iterations = 2*Task_List
+        task_list_with_2_iterations = 2*prioritized_task
         for task in (task_list_with_2_iterations):
             if task==0:
                 U=0
@@ -47,7 +47,7 @@ class Algorithms():
                 else:
                     Begin_List.append(prioritized_period[task])
                 
-                for task_num in Task_List:
+                for task_num in prioritized_task:
                     if invocation == 1:
                         U += Execution[task_num] / period[task_num]
                     else:
@@ -71,7 +71,7 @@ class Algorithms():
                 else:
                     Begin_List.append(prioritized_period[task])
                 
-                for task_num in Task_List:
+                for task_num in prioritized_task:
                     if invocation == 1:
                         if task_num >= task:
                             U += Execution[task_num] / period[task_num]
@@ -100,7 +100,7 @@ class Algorithms():
                 else:
                     Begin_List.append(prioritized_period[task])
                 
-                for task_num in Task_List:
+                for task_num in prioritized_task:
                     if invocation==1:
                         if task_num == task:
                             U += Execution[task_num] / period[task_num]
