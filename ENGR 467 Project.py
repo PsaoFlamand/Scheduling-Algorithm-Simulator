@@ -6,7 +6,7 @@ global counter
 counter=0
 class Algorithms():
 
-    def eedf(self, Release, period, Execution, ac1, ac2,N): #Energy saving EDF
+    def eedf(self, Release, period, Execution, ac1, ac2,N,round_freq): #Energy saving EDF
         #############Ahmed
        # print("THis is energy EDF")
         #Execution = worst case execution
@@ -35,7 +35,7 @@ class Algorithms():
        # print('prioritized_period:' , prioritized_period)
        # print('prioritized_task:', prioritized_task)
         #print (len(prioritized_task))
-        Task_List=prioritized_task
+        #Task_List=prioritized_task
         
         invocation = 1
         task_list_with_2_iterations = 2*Task_List
@@ -43,7 +43,7 @@ class Algorithms():
             if task==0:
                 U=0
                 if invocation == 1:
-                    Begin_List.append(Release[task])
+                    Begin_List.append(0)
                 else:
                     Begin_List.append(prioritized_period[task])
                 
@@ -60,6 +60,7 @@ class Algorithms():
                     t = ac1[task] / U
                 else:
                     t = (ac2[task] / U) + prioritized_period[task]
+                Task_List.append(task)
                 End_List.append(t)
                 frequency.append(U)
 
@@ -88,6 +89,7 @@ class Algorithms():
                     t += ac1[task] / U
                 else:
                     t = (ac2[task] / U) + prioritized_period[task]
+                Task_List.append(task)
                 End_List.append(t)
                 frequency.append(U)
 
@@ -113,6 +115,7 @@ class Algorithms():
                     t += ac1[task] / U
                 else:
                     t = (ac2[task] / U) + prioritized_period[task]
+                Task_List.append(task)
                 End_List.append(t)
                 frequency.append(U)
             
@@ -483,7 +486,7 @@ class Draw_Schedule(Frame):
                
                     self.canvas.create_rectangle((30*(Begin)+45), (350), (30*(End)+45), (350-(325*frequency[i])),fill="blue")
                     self.canvas.create_text((30*(Begin)+65),((350-(325*frequency[i]))-10),fill="darkblue",font="Times 12 italic bold",text=str(frequency[i]))
-                    self.canvas.create_text((30*(Begin)+65),((350-(325*frequency[i]))+15),fill="darkblue",font="Times 16 italic bold",text=str('T'+str(Task+1)))
+                    self.canvas.create_text((30*(Begin)+65),((350-(325*frequency[i]))+15),fill="light grey",font="Times 16 italic bold",text=str('T'+str(Task+1)))
         else:
             for i1 in range(25,1000,30):                #Draws the Y-Axis Lines
                 self.canvas.create_line(i1, (((N+1)*30)-20), i1, (((N+1)*30)-10))
@@ -598,7 +601,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         ac2={}
         N=len(entry_list)
         if (var.get() == 1):#EEDF
-            entry_list_test=["0,6,2,1,1","0,8,3,1,1","0,12,3,2,1"]#added deadline as the last bit
+            entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
             for i in entry_list_test:
                 Task=i#.get()
                 Task = Task.split(",")
@@ -606,13 +609,11 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 Period.update({count:int(Task[1])})
                 ac1.update({count: int(Task[2])})
                 ac2.update({count: int(Task[3])})
-
                 count+=1
             algo_type="eedf"
             quantum=0
             context=0#self.context_get.get()
             end_time=0#self.end_time_get.get()
-            
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time,var_round.get())
         if (var.get() == 2):#laEDF
             entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
@@ -624,7 +625,6 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 Period.update({count:int(Task[1])})
                 ac1.update({count: int(Task[2])})
                 ac2.update({count: int(Task[3])})
-
                 count+=1
             algo_type="laedf"
             quantum=0
