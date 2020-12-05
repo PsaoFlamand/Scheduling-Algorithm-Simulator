@@ -545,8 +545,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         N=len(entry_list)
         if (var.get() == 1):#EEDF
             entry_list_test=["3,8,2,1","3,9,1,1","1,14,1,1"]#added deadline as the last bit
-            for i in entry_list_test:
-                Task=i#.get()
+            for i in entry_list:
+                Task=i.get()
                 Task = Task.split(",")
                 Execution.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
@@ -561,8 +561,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         if (var.get() == 2):#laEDF
             #entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
             entry_list_test=['3,8,2,1','3,10,1,1','1,14,1,1']
-            for i in entry_list_test:
-                Task=i#.get()
+            for i in entry_list:
+                Task=i.get()
                 Task = Task.split(",")
                 Execution.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
@@ -576,8 +576,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time,var_round.get())
         elif (var.get() == 3):###FCFS#######################################
             entry_list_test=["0,75,300","10,40,300","10,25,300","80,20,145","85,45,300"] #(release,deadline,execution)
-            for i in entry_list_test:
-                Task=i#.get()
+            for i in entry_list:
+                Task=i.get()
                 Task = Task.split(",")
                 Release.update({count:int(Task[0])})
                 Execution.update({count:int(Task[1])})
@@ -592,8 +592,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         elif (var.get() == 4):###RR
             entry_list_test=["30,20,60","20,20,70","10,15,80","5,15,90"]
             #entry_list_test=["0,75,300","10,40,500","10,25,700","80,20,900","85,45,1010"]
-            for i in entry_list_test:
-                Task=i#.get()
+            for i in entry_list:
+                Task=i.get()
                 Task = Task.split(",")
                 Release.update({count:int(Task[0])})
                 Execution.update({count:int(Task[1])})
@@ -601,7 +601,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 count+=1
             algo_type="rr"
             round_freq=0
-            quantum=5#self.quantum_get.get()
+            quantum=self.quantum_get.get()
             context=self.context_get.get()
             if context=='':
                 context=0
