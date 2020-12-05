@@ -145,7 +145,7 @@ class Algorithms():
         Task_List=prioritized_task
         for dead in prioritized_task:
             deadline.append(period[dead])
-        print('deadline',deadline)
+       # print('deadline',deadline)
         selector=1
         count=0
         q=[]
@@ -171,10 +171,17 @@ class Algorithms():
                     selector=0
             
             for task in q: #Calculate Freqencies in the queue INV 1
+               # print('Execution[task]',Execution[task],'/','deadline[task]-prev_start',deadline[task]-prev_start,'=',freq) 
+                #print('deadline[task]-prev_start',deadline[task]-prev_start)
+                #print('deadline[task]-period[task]',deadline[task]-period[task])
+                print('queue',q)       
                 if (deadline[task]-period[task])!=0:
                     freq += Execution[task]/(deadline[task]-period[task])
+                    print('Execution[task]',Execution[task],'/','(deadline[task]-period[task])',(deadline[task]-period[task]),'=',freq) 
                 else:
                     freq += Execution[task]/(deadline[task]-prev_start)
+                    print('Execution[task]',Execution[task],'/','deadline[task]-prev_start',deadline[task]-prev_start,'=',freq) 
+            print('\n')
             #[2,4,6]
             #[2,8,6]
             deadline[dead]=deadline[dead]*2
@@ -203,12 +210,12 @@ class Algorithms():
 
 
 
-        print('deadline',deadline)
+       # print('deadline',deadline)
 
         for dead in range(0,len(deadline)): #invocation 2 Deferance check
-            print('untriggered prev_start',prev_start)
+           # print('untriggered prev_start',prev_start)
             while prev_start<period[dead]:
-                print('prev_start',prev_start,'period[dead]',period[dead])
+               # print('prev_start',prev_start,'period[dead]',period[dead])
                 prev_start=period[dead]
             q=[]
             q.append(prioritized_task[dead])
@@ -229,13 +236,13 @@ class Algorithms():
             for task in q:#Calculate the Invocation 2 queue frequencies
                 #print('task',task)
                 #print('Execution[task]',Execution[task])
-                print('deadline[task]-prev_start',deadline[task]-prev_start)
-                print('deadline[task]-period[task]',deadline[task]-period[task])
-         
-                if (deadline[task]-period[task])!=0:
-                    freq += Execution[task]/(deadline[task]-period[task])
-                else:
-                    freq += Execution[task]/(deadline[task]-prev_start)
+             #   print('deadline[task]-prev_start',deadline[task]-prev_start)
+             #   print('deadline[task]-period[task]',deadline[task]-period[task])
+              #  print('Execution[task]',Execution[task])
+                #if (deadline[task]-period[task])!=0:
+                 #   freq += Execution[task]/(deadline[task]-period[task])
+                #else:
+                freq += Execution[task]/(deadline[task]-prev_start)
                 
             deadline[dead]=deadline[dead]*2
             if round_freq==True:
@@ -251,16 +258,16 @@ class Algorithms():
             width=ac2[prioritized_task[dead]]/freq
             #print('width',width)
            # print('task',task)
-            print('\n')
+           # print('\n')
             end_time=width+prev_start
             frequency.append(freq)
             End_List.append(end_time)
             Task_List.append(prioritized_task[dead])
             Begin_List.append(prev_start)
             prev_start+=width
-            print('end_time',end_time)
-            print('freq',freq)
-            print('q',q)
+           # print('end_time',end_time)
+           # print('freq',freq)
+           # print('q',q)
             freq=0
 
         return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
@@ -608,10 +615,10 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time,var_round.get())
         if (var.get() == 2):#laEDF
-            #entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
-            entry_list_test=['3,8,2,1','3,10,1,1','1,14,1,1']
-            for i in entry_list_test:
-                Task=i#.get()
+            entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
+            #entry_list_test=['3,8,2,1','3,10,1,1','1,14,1,1']
+            for i in entry_list:
+                Task=i.get()
                 Task = Task.split(",")
                 Execution.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
@@ -626,8 +633,8 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time,var_round.get())
         elif (var.get() == 3):###FCFS#######################################
             entry_list_test=["10,20,0","5,20,0","20,15,0","30,15,0"] #(release,deadline,execution)
-            for i in entry_list_test:
-                Task=i#.get()
+            for i in entry_list:
+                Task=i.get()
                 Task = Task.split(",")
                 Release.update({count:int(Task[0])})
                 Execution.update({count:int(Task[1])})
@@ -641,16 +648,16 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         elif (var.get() == 4):###RR
             entry_list_test=["30,20,60","20,20,70","10,15,80","5,15,90"]
             #entry_list_test=["0,75,300","10,40,500","10,25,700","80,20,900","85,45,1010"]
-            for i in entry_list_test:
-                Task=i#.get()
+            for i in entry_list:
+                Task=i.get()
                 Task = Task.split(",")
                 Release.update({count:int(Task[0])})
                 Execution.update({count:int(Task[1])})
                 deadline.update({count:int(Task[2])})
                 count+=1
             algo_type="rr"
-            quantum=5#self.quantum_get.get()
-            context=0#self.context_get.get()
+            quantum=self.quantum_get.get()
+            context=self.context_get.get()
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
         self.clear()
