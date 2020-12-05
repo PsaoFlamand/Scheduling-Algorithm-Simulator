@@ -533,7 +533,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         ac2={}
         N=len(entry_list)
         if (var.get() == 1):#EEDF
-            entry_list_test=["3,8,2,1","3,9,1,1","1,14,1,1"]#added deadline as the last bit
+            entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
             for i in entry_list_test:
                 Task=i#.get()
                 Task = Task.split(",")
