@@ -161,10 +161,10 @@ class Algorithms():
                 selector=dead+1
             for i in range(0,N-1):#Check Deference INV1
                 deadline_difference=deadline[selector]-deadline[dead]
-                if Execution[prioritized_task[selector]]<deadline_difference:
-                    print("task",prioritized_task[selector]+1,' can be deffered')#We know which ones we want to defer
-                else:
-                    q.append(prioritized_task[selector])
+                if Execution[prioritized_task[selector]]>=deadline_difference:
+                    q.append(prioritized_task[selector])#We know which ones we can't defer
+  
+                    
                 selector+=1
                 if selector==N:
                     selector=0
@@ -187,13 +187,24 @@ class Algorithms():
                     freq=0.5
             width=ac1[prioritized_task[dead]]/freq
             end_time=width+prev_start
+            frequency.append(freq)
+            End_List.append(end_time)
+            Task_List.append(prioritized_task[dead])
+            Begin_List.append(prev_start)
             prev_start+=width
             print('end_time',end_time)
             print('freq',freq)
             print('q',q)
             freq=0
 
+
+
+
+
+
         for dead in range(0,len(deadline)): #invocation 2 Deferance check
+            while prev_start<period[dead]:
+                prev_start+=1
             q=[]
             q.append(prioritized_task[dead])
             if dead==len(deadline)-1:
@@ -209,20 +220,18 @@ class Algorithms():
                 selector+=1
                 if selector==N:
                     selector=0
-            
+            print('queue inv2',q)
             for task in q:#Calculate the Invocation 2 queue frequencies
                 #print('task',task)
                 #print('Execution[task]',Execution[task])
-                #print('deadline[task]-prev_start',deadline[task]-prev_start)
-                #print('deadline[task]-period[task]',deadline[task]-period[task])
-                if master_count>0:
-                    if (deadline[task]-period[task])!=0:
-                        freq += Execution[task]/(deadline[task]-period[task])
-                    else:
-                        freq += Execution[task]/(deadline[task]-prev_start)
+                print('deadline[task]-prev_start',deadline[task]-prev_start)
+                print('deadline[task]-period[task]',deadline[task]-period[task])
+         
+                if (deadline[task]-period[task])!=0:
+                    freq += Execution[task]/(deadline[task]-period[task])
                 else:
                     freq += Execution[task]/(deadline[task]-prev_start)
-            
+                
             deadline[dead]=deadline[dead]*2
             if freq<=1 and freq>0.75:
                 freq=1
@@ -231,41 +240,20 @@ class Algorithms():
             elif freq<=0.5:
                 freq=0.5
             
-            task_has_executed.append(prioritized_task[master_count])
-            
-            width=ac1[prioritized_task[dead]]/freq
+            width=ac2[prioritized_task[dead]]/freq
             print('width',width)
             print('task',task)
             print('\n')
             end_time=width+prev_start
+            frequency.append(freq)
+            End_List.append(end_time)
+            Task_List.append(prioritized_task[dead])
+            Begin_List.append(prev_start)
             prev_start+=width
             print('end_time',end_time)
             print('freq',freq)
             print('q',q)
             freq=0
-
-
-            #U += Execution[task_num]/period[task_num]
-            
-        #width =  (ac1[task_num] / U)
-        #end_time=width+prev_start
-        #End_List.append(end_time)
-        #frequency.append(U)
-        #End_List.append(end_time)
-        #Task_List.append(task_num)
-        #Begin_List.append(prev_start)
-        #prev_start=end_time
-
-        #if i==((N)):
-        #    i=0
-        #invocation_identifier[i]=2
-        #i+=1
-   
-
-        #print('Begin list =',Begin_List)
-        #print('End list = ', End_List)
-        #print('Frequencies =',frequency)
-       #print('task_list',Task_List)
 
         return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
                   
@@ -411,7 +399,7 @@ class Draw_Schedule(Frame):
 
     def Draw_Structure(self,N,algo_type):##################################### Must Adjust Schedule Diagram to Number Of tasks Len(Task_Number) and change the range by Task_Number/30
         #This is where the Schedule base is Drawn
-        if algo_type=="eedf":
+        if algo_type=="eedf" or algo_type=='laedf':
             print('edf')
             Schedule = tk.Toplevel(app,width=1000,height=450)
             self.grid()
@@ -460,7 +448,7 @@ class Draw_Schedule(Frame):
             scale=2
         elif(mx<=30):
             scale=1
-        if algo_type=="eedf":
+        if algo_type=="eedf" or algo_type=='laedf':
             for i1 in range(25,1000,30):                #Draws the Y-Axis Lines
                 self.canvas.create_line(i1, (300), i1, (290))
                 self.canvas.create_text(i1,(310),fill="darkblue",font="Times 12 italic bold",text=str(Counter))
