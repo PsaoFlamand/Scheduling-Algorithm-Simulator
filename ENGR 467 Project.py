@@ -163,7 +163,7 @@ class Algorithms():
                 selector=dead+1
             for i in range(0,N-1):#Check Deference INV1
                 deadline_difference=deadline[selector]-deadline[dead]
-                if Execution[prioritized_task[selector]]>=deadline_difference:
+                if Execution[prioritized_task[selector]]>deadline_difference:
                     q.append(prioritized_task[selector])#We know which ones we can't defer  
                 selector+=1
                 if selector==N:
@@ -203,7 +203,7 @@ class Algorithms():
                 selector=dead+1
             for i in range(0,N-1):
                 deadline_difference=deadline[selector]-deadline[dead]
-                if Execution[prioritized_task[selector]]>=deadline_difference:
+                if Execution[prioritized_task[selector]]>deadline_difference:
                     q.append(prioritized_task[selector])#We know which ones we can't defer  
                 selector+=1
                 if selector==N:
@@ -336,7 +336,12 @@ class Algorithms():
             if len(q)!=0:
                 if prev_task!=q[0]:
                     prev_start+=float(context_switching)
-        return Task_List,Begin_List,End_List,deadline_missed,explanation
+        res = [] 
+        for i in explanation: 
+            if i not in res: 
+                res.append(i)
+                
+        return Task_List,Begin_List,End_List,deadline_missed,res
 
 #####################################################All Graphics and controls beyond  this point
 class Draw_Schedule(Frame):
@@ -469,7 +474,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         title_text = font.Font(family='Times', weight = 'bold', size = 13)
         self.task_text = font.Font(family='Times', weight = 'bold', size = 10)
         self.explain_text = font.Font(family='Times', weight = 'bold', size = 7)
-        self.txt0 = tk.Label(self, text="Welcome! Please Enter Your Input...",bg='yellow',font=title_text)
+        self.txt0 = tk.Label(self, text="|Release,Period,Execution,Deadline|",bg='yellow',font=title_text)
         self.txt0.grid(row=0, column=0, sticky='w')
         self.button0 = tk.Button(self, text="Start", bg='white',command=lambda: self.Execute(),font=self.task_text) # When Clicked, The Schedule is drawn
         self.button0.grid(row=1,column=1, sticky='w')
@@ -544,10 +549,10 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time,var_round.get())
         if (var.get() == 2):#laEDF
-            entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
-            #entry_list_test=['3,8,2,1','3,10,1,1','1,14,1,1']
-            for i in entry_list:
-                Task=i.get()
+            #entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
+            entry_list_test=['3,8,2,1','3,10,1,1','1,14,1,1']
+            for i in entry_list_test:
+                Task=i#.get()
                 Task = Task.split(",")
                 Execution.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
@@ -560,9 +565,9 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time,var_round.get())
         elif (var.get() == 3):###FCFS#######################################
-            entry_list_test=["10,20,0","5,20,0","20,15,0","30,15,0"] #(release,deadline,execution)
-            for i in entry_list:
-                Task=i.get()
+            entry_list_test=["0,75,300","10,40,300","10,25,300","80,20,145","85,45,300"] #(release,deadline,execution)
+            for i in entry_list_test:
+                Task=i#.get()
                 Task = Task.split(",")
                 Release.update({count:int(Task[0])})
                 Execution.update({count:int(Task[1])})
@@ -575,10 +580,10 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time,round_freq)
         elif (var.get() == 4):###RR
-            #entry_list_test=["30,20,60","20,20,70","10,15,80","5,15,90"]
-            entry_list_test=["0,75,300","10,40,500","10,25,700","80,20,900","85,45,1010"]
-            for i in entry_lis:
-                Task=i.get()
+            entry_list_test=["30,20,60","20,20,70","10,15,80","5,15,90"]
+            #entry_list_test=["0,75,300","10,40,500","10,25,700","80,20,900","85,45,1010"]
+            for i in entry_list_test:
+                Task=i#.get()
                 Task = Task.split(",")
                 Release.update({count:int(Task[0])})
                 Execution.update({count:int(Task[1])})
@@ -586,13 +591,13 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 count+=1
             algo_type="rr"
             round_freq=0
-            quantum=self.quantum_get.get()
+            quantum=5#self.quantum_get.get()
             context=self.context_get.get()
             if context=='':
                 context=0
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time,round_freq)
-        self.clear()
+        #self.clear()
         N=0
         
     def clear(self):
