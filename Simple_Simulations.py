@@ -260,7 +260,7 @@ class Algorithms():
                 if (end)>deadline[task_num] and reset==0:#detect missed deadline
                     reset=1
                     deadline_missed.append(deadline[task_num])
-                    explanation.append("Task "+str(task_num)+ " Missed Its Deadline At The Time Interval: "+str(deadline[task_num]))
+                    explanation.append("Task "+str(task_num+1)+ " Missed Its Deadline At The Time Interval: "+str(deadline[task_num]))
                 if (width-int(Execution[task_num])==0):
                     End_List.append(end)
                     Task_List.append(task_num)
@@ -301,7 +301,7 @@ class Algorithms():
                 if (end)>deadline[prioritized_task_test[q[0]]] and reset==0:#detect missed deadline
                     reset=1
                     deadline_missed.append(deadline[prioritized_task_test[q[0]]])
-                    explanation.append("Task "+str(prioritized_task_test[q[0]])+ " Missed Its Deadline At The Time Interval: "+str(deadline[prioritized_task_test[q[0]]]))
+                    explanation.append("Task "+str(prioritized_task_test[q[0]]+1)+ " Missed Its Deadline At The Time Interval: "+str(deadline[prioritized_task_test[q[0]]]))
                 if remaining_execution[q[0]]==0:
                     write=0
                     break
