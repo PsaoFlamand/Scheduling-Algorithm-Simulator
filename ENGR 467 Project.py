@@ -7,36 +7,19 @@ counter=2
 class Algorithms():
 
     def eedf(self, Release, period, Execution, ac1, ac2,N,round_freq): #Energy saving EDF
-        #############Ahmed
-       # print("THis is energy EDF")
-        #Execution = worst case execution
-        #ac1 = invocation1, ac2 = invocation2
-        #frequency = 1, 0.75, 0.5
         Task_List = []
         Begin_List = []
         End_List = []
         deadline_missed =[]
         frequency = []
         explanation = []
-       # print(f'Release = {Release}, Execution (worst case) = {Execution} ms, period = {period} ms, invocation 1 = {ac1} ms, invocation 2 = {ac2} ms')
-      #  print(f'Frequency = {frequency}Fm')
         U = 0
         sort_period= sorted(period.items(), key=lambda x: x[1])
-        #Runs through a list and outputs the begin and end
-       # print('sort_period',sort_period)
-        #for priority in sort_release:
         prioritized_period=[]
         prioritized_task=[]
         for priority in sort_period:
-            print('priority',priority[0])
             prioritized_task.append(int(priority[0]))
             prioritized_period.append(int(priority[1]))
-        #prev_start=prioritized_period[0]
-       # print('prioritized_period:' , prioritized_period)
-       # print('prioritized_task:', prioritized_task)
-        #print (len(prioritized_task))
-        #Task_List=prioritized_task
-        
         prev_start = 0
         invocation = 1
         task_list_with_2_iterations = 2*prioritized_task
@@ -50,7 +33,6 @@ class Algorithms():
                     if End_List[-1] > prioritized_period[task]:
                         prev_start = End_List[-1] - prioritized_period[task]
                     Begin_List.append(prioritized_period[task] + prev_start)
-                
                 for task_num in prioritized_task:
                     if invocation == 1:
                         U += Execution[task_num] / period[task_num]
@@ -59,7 +41,6 @@ class Algorithms():
                             U += Execution[task_num] / period[task_num]
                         else:
                             U += ac1[task_num] / period[task_num]
-                
                 if round_freq:
                     if U<=1 and U>0.75: #rounding frequency
                         U=1
@@ -67,7 +48,6 @@ class Algorithms():
                         U=0.75
                     elif U<=0.5:
                         U=0.5
-
                 if invocation==1:
                     t = ac1[task] / U
                 else:
@@ -75,7 +55,6 @@ class Algorithms():
                 Task_List.append(task)
                 End_List.append(t)
                 frequency.append(round(U,3))
-
             elif task==1:
                 U=0
                 if invocation == 1:
@@ -84,7 +63,6 @@ class Algorithms():
                     if End_List[-1] > prioritized_period[task]:
                         prev_start = End_List[-1] - prioritized_period[task]
                     Begin_List.append(prioritized_period[task] + prev_start)
-                
                 for task_num in prioritized_task:
                     if invocation == 1:
                         if task_num >= task:
@@ -98,7 +76,6 @@ class Algorithms():
                             U += ac2[task_num] / period[task_num]
                         elif task_num > task:
                             U += ac1[task_num] / period[task_num]
-                
                 if round_freq:
                     if U<=1 and U>0.75: #rounding frequency
                         U=1
@@ -106,22 +83,13 @@ class Algorithms():
                         U=0.75
                     elif U<=0.5:
                         U=0.5
-
                 if invocation==1:
                     t += ac1[task] / U
                 else:
-                     #t=0
-                    #if End_List[task-1] > Begin_List[task]:
-                    #    prev_start = abs(Begin_List[task] - End_List[task-1])
-                    #    #t=prev_start
-                    #else:
-                    #    prev_start=0
                     t = (ac2[task] / U) + prioritized_period[task] + prev_start
-                    
                 Task_List.append(task)
                 End_List.append(t)
                 frequency.append(round(U,3))
-
             elif task==2:
                 U=0
                 if invocation==1:
@@ -131,7 +99,6 @@ class Algorithms():
                         prev_start = abs(End_List[-1] - prioritized_period[task])
                         print(prev_start)
                     Begin_List.append(prioritized_period[task] + prev_start)
-                
                 for task_num in prioritized_task:
                     if invocation==1:
                         if task_num == task:
@@ -150,31 +117,20 @@ class Algorithms():
                         U=0.75
                     elif U<=0.5:
                         U=0.5
-
                 if invocation==1:
                     t += ac1[task] / U
                 else:
-                    #t=0
-                    #if End_List[task-1] > Begin_List[task]:
-                    #    prev_start = abs(Begin_List[task] - End_List[task-1])
-                    #    #t=prev_start
-                    #else:
-                    #    prev_start=0
                     t = (ac2[task] / U) + prioritized_period[task] + prev_start
-                
                 Task_List.append(task)
                 End_List.append(t)
                 frequency.append(round(U,3))
-            
             if task==(int(0.5 * len(task_list_with_2_iterations))-1):
                 invocation += 1
-        
         print('Begin list =',Begin_List)
         print('End list = ', End_List)
         print('Frequencies =',frequency)
         print('task_list',Task_List)
         return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
-
     
     def laedf(self, Release, period, Execution, ac1, ac2,N,round_freq): #Look ahead Energy saving EDF
 
