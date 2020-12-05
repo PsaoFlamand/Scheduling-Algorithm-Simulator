@@ -144,18 +144,27 @@ class Algorithms():
         sort_period= sorted(period.items(), key=lambda x: x[1])
         prioritized_period=[]
         prioritized_task=[]
+        tracker={}
+        op_tracker={}
+        c=0
         for priority in sort_period:
             prioritized_task.append(int(priority[0]))
             prioritized_period.append(int(priority[1]))
-        Task_List=prioritized_task
-        for dead in prioritized_task:
-            deadline.append(period[dead])
+            deadline.append(int(priority[1]))
+            tracker.update({int(priority[0]):c})
+            op_tracker.update({c:int(priority[0])})
+            c+=1
+        #Task_List=prioritized_task
+        #for dead in prioritized_task:
+            
         selector=1
         count=0
         q=[]
         freq=0
         prev_start=0
+        print('deadline',deadline)
         for dead in range(0,len(deadline)): #invocation 1
+            print('dead',dead)
             q=[]
             q.append(prioritized_task[dead])
             if dead==len(deadline)-1:
@@ -170,10 +179,12 @@ class Algorithms():
                 if selector==N:
                     selector=0
             for task in q: #Calculate Freqencies in the queue INV 1     
-                if (deadline[task]-period[task])!=0:
-                    freq += Execution[task]/(deadline[task]-period[task])
+                if (deadline[tracker[task]]-period[task])!=0:
+                    freq += Execution[task]/(deadline[tracker[task]]-period[task])
+                    print('Execution[task]',Execution[task],'/','(deadline[task]-period[task])',(deadline[task]-period[task]))
                 else:
-                    freq += Execution[task]/(deadline[task]-prev_start)
+                    freq += Execution[task]/(deadline[tracker[task]]-prev_start)
+                    print('Execution[task]',Execution[task],'/','(deadline[task]-prev_start)',(deadline[task]-prev_start))
             deadline[dead]=deadline[dead]*2
             if round_freq==True:
                 if freq<=1 and freq>0.75: #rounding frequency
@@ -194,8 +205,8 @@ class Algorithms():
             freq=0
             
         for dead in range(0,len(deadline)): #invocation 2 Deferance check
-            if prev_start<period[dead]:
-                prev_start=period[dead]
+            if prev_start<period[op_tracker[dead]]:
+                prev_start=period[op_tracker[dead]]
             q=[]
             q.append(prioritized_task[dead])
             if dead==len(deadline)-1:
@@ -210,7 +221,7 @@ class Algorithms():
                 if selector==N:
                     selector=0
             for task in q:#Calculate the Invocation 2 queue frequencies
-                freq += Execution[task]/(deadline[task]-prev_start)
+                freq += Execution[task]/(deadline[tracker[task]]-prev_start)
             deadline[dead]=deadline[dead]*2
             if round_freq==True:
                 if freq<=1 and freq>0.75:
