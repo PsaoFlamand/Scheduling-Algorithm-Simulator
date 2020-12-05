@@ -37,19 +37,15 @@ class Algorithms():
         #print (len(prioritized_task))
         #Task_List=prioritized_task
         
-        prev_start = 0
         invocation = 1
         task_list_with_2_iterations = 2*prioritized_task
         for task in (task_list_with_2_iterations):
-            prev_start = 0
             if task==0:
                 U=0
                 if invocation == 1:
                     Begin_List.append(0)
                 else:
-                    if End_List[-1] > prioritized_period[task]:
-                        prev_start = End_List[-1] - prioritized_period[task]
-                    Begin_List.append(prioritized_period[task] + prev_start)
+                    Begin_List.append(prioritized_period[task])
                 
                 for task_num in prioritized_task:
                     if invocation == 1:
@@ -60,30 +56,20 @@ class Algorithms():
                         else:
                             U += ac1[task_num] / period[task_num]
                 
-                if round_freq:
-                    if U<=1 and U>0.75: #rounding frequency
-                        U=1
-                    elif U<=0.75 and U>0.5:
-                        U=0.75
-                    elif U<=0.5:
-                        U=0.5
-
                 if invocation==1:
                     t = ac1[task] / U
                 else:
                     t = (ac2[task] / U) + prioritized_period[task]
                 Task_List.append(task)
                 End_List.append(t)
-                frequency.append(round(U,3))
+                frequency.append(U)
 
             elif task==1:
                 U=0
                 if invocation == 1:
                     Begin_List.append(End_List[task-1])
                 else:
-                    if End_List[-1] > prioritized_period[task]:
-                        prev_start = End_List[-1] - prioritized_period[task]
-                    Begin_List.append(prioritized_period[task] + prev_start)
+                    Begin_List.append(prioritized_period[task])
                 
                 for task_num in prioritized_task:
                     if invocation == 1:
@@ -99,38 +85,21 @@ class Algorithms():
                         elif task_num > task:
                             U += ac1[task_num] / period[task_num]
                 
-                if round_freq:
-                    if U<=1 and U>0.75: #rounding frequency
-                        U=1
-                    elif U<=0.75 and U>0.5:
-                        U=0.75
-                    elif U<=0.5:
-                        U=0.5
-                
                 if invocation==1:
                     t += ac1[task] / U
                 else:
-                    #t=0
-                    #if End_List[task-1] > Begin_List[task]:
-                    #    prev_start = abs(Begin_List[task] - End_List[task-1])
-                    #    #t=prev_start
-                    #else:
-                    #    prev_start=0
-                    t = (ac2[task] / U) + prioritized_period[task] + prev_start
+                    t = (ac2[task] / U) + prioritized_period[task]
                     
                 Task_List.append(task)
                 End_List.append(t)
-                frequency.append(round(U,3))
+                frequency.append(U)
 
             elif task==2:
                 U=0
                 if invocation==1:
                     Begin_List.append(End_List[task-1])
                 else:
-                    if End_List[-1] > prioritized_period[task]:
-                        prev_start = abs(End_List[-1] - prioritized_period[task])
-                        print(prev_start)
-                    Begin_List.append(prioritized_period[task] + prev_start)
+                    Begin_List.append(prioritized_period[task])
                 
                 for task_num in prioritized_task:
                     if invocation==1:
@@ -143,29 +112,14 @@ class Algorithms():
                             U += Execution[task_num] / period[task_num]
                         else:
                             U += ac2[task_num] / period[task_num]
-                
-                if round_freq:
-                    if U<=1 and U>0.75: #rounding frequency
-                        U=1
-                    elif U<=0.75 and U>0.5:
-                        U=0.75
-                    elif U<=0.5:
-                        U=0.5
-                
                 if invocation==1:
                     t += ac1[task] / U
                 else:
-                    #t=0
-                    #if End_List[task-1] > Begin_List[task]:
-                    #    prev_start = abs(Begin_List[task] - End_List[task-1])
-                    #    #t=prev_start
-                    #else:
-                    #    prev_start=0
-                    t = (ac2[task] / U) + prioritized_period[task] + prev_start
+                    t = (ac2[task] / U) + prioritized_period[task]
                 
                 Task_List.append(task)
                 End_List.append(t)
-                frequency.append(round(U,3))
+                frequency.append(U)
             
             if task==(int(0.5 * len(task_list_with_2_iterations))-1):
                 invocation += 1
@@ -551,8 +505,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.context_get.grid(row=11,column=1, sticky='e')
         self.context_text.grid(row=11,column=1, sticky='w')
         ##Explanation of input
-        self.explainEEDF = tk.Label(self, text="|Release,Period,Exe,Dead|",bg='yellow',font=self.explain_text)
-        self.explainEEDF.grid(row=12,column=1, sticky='w')
+        
 
     def Add_Task(self):
         global counter
@@ -580,7 +533,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         ac2={}
         N=len(entry_list)
         if (var.get() == 1):#EEDF
-            entry_list_test=["3,8,2,1","3,9,1,1","1,11,1,1"]#added deadline as the last bit
+            entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
             for i in entry_list_test:
                 Task=i#.get()
                 Task = Task.split(",")
