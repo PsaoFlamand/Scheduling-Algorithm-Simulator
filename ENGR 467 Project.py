@@ -128,7 +128,6 @@ class Algorithms():
         print('End list = ', End_List)
         print('Frequencies =',frequency)
         print('task_list',Task_List)
-        
         return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
 
     
@@ -155,7 +154,6 @@ class Algorithms():
         q=[]
         freq=0
         prev_start=0
-        #[2,4,6]
         for dead in range(0,len(deadline)): #invocation 1
             q=[]
             q.append(prioritized_task[dead])
@@ -210,10 +208,8 @@ class Algorithms():
                 selector+=1
                 if selector==N:
                     selector=0
-            #print('queue inv2',q)
             for task in q:#Calculate the Invocation 2 queue frequencies
                 freq += Execution[task]/(deadline[task]-prev_start)
-            
             deadline[dead]=deadline[dead]*2
             if round_freq==True:
                 if freq<=1 and freq>0.75:
@@ -265,7 +261,6 @@ class Algorithms():
                     Begin_List.append(prev_start)
                     prev_start=width+prev_start
                     count+=1      
-
         return Task_List,Begin_List,End_List,deadline_missed,explanation
     
     def rr (self,release,period,Execution,deadline, quantum, N,context_switching): #RR algorithm###!!!!!!!!!!!!!!!!!!DONE
@@ -316,7 +311,6 @@ class Algorithms():
             c=0
             for task_num_s in prioritized_task:
                 if release[task_num_s]<=end:
-                    
                     if release[task_num_s]!=end and len(q)==1:#Queue organization
                         remaining_execution.append(int(Execution[task_num_s]))
                         exe_count=len(remaining_execution)-1
@@ -382,7 +376,6 @@ class Draw_Schedule(Frame):
            #Draws the Initial X-Axis Lines
             self.canvas.create_line(45, 350, 1000, 350) #Format(x1,y1,x2,y2)
             self.canvas.grid()
-            #
         else:
             Schedule = tk.Toplevel(app,width=1000,height=450)
             self.grid()
@@ -418,17 +411,14 @@ class Draw_Schedule(Frame):
                 self.canvas.create_line(i1, (350), i1, (360))
                 self.canvas.create_text(i1-10,(360),fill="darkblue",font="Times 12 italic bold",text=str(Counter))
                 Counter+=scale
-
             for i in range(0,len(frequency)):
                 Task=Task_List[i]
                 Begin=Begin_List[i]/scale
                 End=End_List[i]/scale
                 if frequency[i]>1:
-                    
                     self.canvas.create_rectangle((30*(Begin)+45), (350), (30*(End)+45), (350-(350*frequency[i])),fill="red")
                     self.canvas.create_text((30*(Begin)+65),((325-(325*frequency[i]))+350),fill="darkblue",font="Times 12 italic bold",text=str('T'+str(Task+1)))
                 else:
-               
                     self.canvas.create_rectangle((30*(Begin)+45), (350), (30*(End)+45), (350-(325*frequency[i])),fill="blue")
                     self.canvas.create_text((30*(Begin)+65),((350-(325*frequency[i]))-10),fill="darkblue",font="Times 12 italic bold",text=str(frequency[i]))
                     self.canvas.create_text((30*(Begin)+65),((350-(325*frequency[i]))+15),fill="light grey",font="Times 16 italic bold",text=str('T'+str(Task+1)))
@@ -437,7 +427,6 @@ class Draw_Schedule(Frame):
                 self.canvas.create_line(i1, (((N+1)*30)-20), i1, (((N+1)*30)-10))
                 self.canvas.create_text(i1,(((N+1)*30)),fill="darkblue",font="Times 12 italic bold",text=str(Counter))
                 Counter+=scale
-                
             for i in range(0,len(Task_List)):
                 Task=Task_List[i]
                 Begin=Begin_List[i]/scale
@@ -468,7 +457,6 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         global N
         global var
         global var_round
-
         label_list= []
         entry_list = []
         #Standard setup
