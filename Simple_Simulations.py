@@ -434,7 +434,8 @@ class Draw_Schedule(Frame):
                 End=End_List[i]/scale
                 if frequency[i]>1:
                     self.canvas.create_rectangle((30*(Begin)+45), (350), (30*(End)+45), (350-(350*frequency[i])),fill="red")
-                    self.canvas.create_text((30*(Begin)+65),((325-(325*frequency[i]))+350),fill="darkblue",font="Times 12 italic bold",text=str('T'+str(Task+1)))
+                    self.canvas.create_text((30*(Begin)+53),((325-(325*frequency[i]))+350),fill="darkred",font="Times 12 italic bold",text=str('T'+str(Task+1)))
+                    self.canvas.create_text((30*(Begin)+65),(50),fill="darkblue",font="Times 10 italic bold",text=str(frequency[i]))
                 else:
                     self.canvas.create_rectangle((30*(Begin)+45), (350), (30*(End)+45), (350-(325*frequency[i])),fill="blue")
                     self.canvas.create_text((30*(Begin)+65),((350-(325*frequency[i]))-10),fill="darkblue",font="Times 12 italic bold",text=str(frequency[i]))
