@@ -58,7 +58,7 @@ class Algorithms():
             elif task==1:
                 U=0
                 if invocation == 1:
-                    Begin_List.append(End_List[task-1])
+                    Begin_List.append(End_List[-1])
                 else:
                     if End_List[-1] > prioritized_period[task]:
                         prev_start = End_List[-1] - prioritized_period[task]
@@ -93,7 +93,7 @@ class Algorithms():
             elif task==2:
                 U=0
                 if invocation==1:
-                    Begin_List.append(End_List[task-1])
+                    Begin_List.append(End_List[-1])
                 else:
                     if End_List[-1] > prioritized_period[task]:
                         prev_start = abs(End_List[-1] - prioritized_period[task])
