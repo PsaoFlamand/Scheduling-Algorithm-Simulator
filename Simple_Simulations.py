@@ -25,7 +25,7 @@ class Algorithms():
         task_list_with_2_iterations = 2*prioritized_task
         for task in (task_list_with_2_iterations):
             prev_start = 0
-            if task==0:
+            if task==prioritized_task[0]:
                 U=0
                 if invocation == 1:
                     Begin_List.append(0)
@@ -55,7 +55,7 @@ class Algorithms():
                 Task_List.append(task)
                 End_List.append(t)
                 frequency.append(round(U,3))
-            elif task==1:
+            elif task==prioritized_task[1]:
                 U=0
                 if invocation == 1:
                     Begin_List.append(End_List[-1])
@@ -90,7 +90,7 @@ class Algorithms():
                 Task_List.append(task)
                 End_List.append(t)
                 frequency.append(round(U,3))
-            elif task==2:
+            elif task==prioritized_task[2]:
                 U=0
                 if invocation==1:
                     Begin_List.append(End_List[-1])
@@ -517,7 +517,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         ##Explanation of input
     def set_text(self):
         if var.get() == 1:
-            self.input_des.config(text="|WC,Period,AC 1, AC 2| Max 3 Tasks",bg='yellow',fg='dark blue')
+            self.input_des.config(text="|WC,Period,AC 1, AC 2| Max 3 Ordered Tasks",bg='yellow',fg='dark blue')
         if var.get() == 2:
             self.input_des.config(text="|WC,Period,AC 1, AC 2| Unlimited Tasks",bg='yellow',fg='dark blue')
 
