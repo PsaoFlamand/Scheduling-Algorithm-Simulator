@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import Tk, Canvas, Frame, BOTH
 from tkinter import font
 global counter
-counter=0
+counter=2
 class Algorithms():
 
     def eedf(self, Release, period, Execution, ac1, ac2,N,round_freq): #Energy saving EDF
@@ -468,52 +468,52 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         tk.Tk.__init__(self, *args, **kwargs) 
         self.title('Scheduling')
         self.configure(bg='yellow')         
-        self.minsize(width=500, height=400)
-        self.maxsize(width=500, height=400)
+        self.minsize(width=400, height=280)
+        self.maxsize(width=400, height=280)
         #Set up the Textboxes,  text, and button
         title_text = font.Font(family='Times', weight = 'bold', size = 13)
         self.task_text = font.Font(family='Times', weight = 'bold', size = 10)
         self.explain_text = font.Font(family='Times', weight = 'bold', size = 7)
-        self.txt0 = tk.Label(self, text="Welcome! Please Enter Your Input... ",bg='yellow',font=title_text)
+        self.txt0 = tk.Label(self, text="Welcome To Simple Simulations!",bg='yellow',font=title_text,fg='dark blue')
         self.txt0.grid(row=0, column=0, sticky='w')
-        self.txt0 = tk.Label(self, text="RR & FIFO |Release,Execution,Deadline|",bg='yellow',font=title_text)
+        self.txt0 = tk.Label(self, text="RR & FIFO  |Release,Execution,Deadline|",bg='yellow',fg='dark blue')
         self.txt0.grid(row=1, column=0, sticky='w')
-        self.txt0 = tk.Label(self, text="LAEDF & CSEDF|WC,Period,AC 1, AC 2|",bg='yellow',font=title_text)
+        self.txt0 = tk.Label(self, text="LAEDF & CSEDF |WC,Period,AC 1, AC 2|",bg='yellow',fg='dark blue')
         self.txt0.grid(row=2, column=0, sticky='w')
         self.button0 = tk.Button(self, text="Start", bg='white',command=lambda: self.Execute(),font=self.task_text) # When Clicked, The Schedule is drawn
-        self.button0.grid(row=3,column=1, sticky='w')
+        self.button0.grid(row=0,column=1, sticky='w')
         self.button1 = tk.Button(self, text="Add Task",bg='white', command=lambda: self.Add_Task(),font=self.task_text) # When Clicked, A task is added
-        self.button1.grid(row=4,column=1, sticky='w')
+        self.button1.grid(row=1,column=1, sticky='w')
         self.button2 = tk.Button(self, text="Clear",bg='white', command=lambda: self.clear(),font=self.task_text) # When Clicked, All tasks are cleared
-        self.button2.grid(row=5,column=1, sticky='w')
+        self.button2.grid(row=2,column=1, sticky='w')
         var = tk.IntVar()
         var_round = tk.IntVar()
         self.check1 = tk.Radiobutton(self, text='Cycle-Saving EDF',variable=var, value=1,bg='yellow',font=self.task_text)
-        self.check1.grid(row=6,column=1, sticky='w')
+        self.check1.grid(row=3,column=1, sticky='w')
         self.check1 = tk.Radiobutton(self, text='Look Ahead EDF',variable=var, value=2,bg='yellow',font=self.task_text)
-        self.check1.grid(row=7,column=1, sticky='w')
+        self.check1.grid(row=4,column=1, sticky='w')
         self.check4 = tk.Radiobutton(self, text='First In First Out',variable=var, value=3,bg='yellow',font=self.task_text)
-        self.check4.grid(row=8,column=1, sticky='w')
+        self.check4.grid(row=5,column=1, sticky='w')
         self.check5 = tk.Radiobutton(self, text='Round Robin',variable=var, value=4,bg='yellow',font=self.task_text)
-        self.check5.grid(row=9,column=1, sticky='w')
+        self.check5.grid(row=6,column=1, sticky='w')
         self.check5 = tk.Radiobutton(self, text='All Frequencies',variable=var_round, value=False,bg='yellow',font=self.task_text)
-        self.check5.grid(row=10,column=1, sticky='w')
+        self.check5.grid(row=7,column=1, sticky='w')
         self.check5 = tk.Radiobutton(self, text='Round Frequencies',variable=var_round, value=True,bg='yellow',font=self.task_text)
-        self.check5.grid(row=11,column=1, sticky='w')
+        self.check5.grid(row=8,column=1, sticky='w')
         self.quantum_get=tk.Entry(self,width=10)
         self.context_get=tk.Entry(self,width=10)
         self.quantum_text = tk.Label(self, text="Quantum",bg='yellow',font=self.task_text)
         self.context_text = tk.Label(self, text="Context",bg='yellow',font=self.task_text)
-        self.quantum_get.grid(row=12,column=1, sticky='e')
-        self.quantum_text.grid(row=12, column=1, sticky='w')
-        self.context_get.grid(row=13,column=1, sticky='e')
-        self.context_text.grid(row=13,column=1, sticky='w')
+        self.quantum_get.grid(row=9,column=1, sticky='e')
+        self.quantum_text.grid(row=9, column=1, sticky='w')
+        self.context_get.grid(row=10,column=1, sticky='e')
+        self.context_text.grid(row=10,column=1, sticky='w')
         ##Explanation of input
 
     def Add_Task(self):
         global counter
         counter +=1
-        descript="Task " + str(counter) + ":"
+        descript="Task " + str(counter-2) + ":"
         self.txtin=tk.Entry(self,width=20)
         self.txt = tk.Label(self, text=descript,bg='yellow',font=self.task_text)
         self.txt.grid(row=counter, column=0, sticky='w') 
@@ -613,7 +613,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             i.grid_forget()
         entry_list.clear()
         label_list.clear()
-        counter = 0
+        counter = 2
         N=0
         
 if __name__ == "__main__": 
