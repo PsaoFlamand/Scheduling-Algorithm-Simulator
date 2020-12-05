@@ -582,7 +582,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         ac2={}
         N=len(entry_list)
         if (var.get() == 1):#EEDF
-            entry_list_test=["0,6,2,1,1,0","0,8,3,1,1,0","0,12,3,2,1,0"]#added deadline as the last bit
+            entry_list_test=["0,6,2,1,1","0,8,3,1,1","0,12,3,2,1"]#added deadline as the last bit
             for i in entry_list_test:
                 Task=i#.get()
                 Task = Task.split(",")
@@ -591,7 +591,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 Execution.update({count:int(Task[2])})
                 ac1.update({count: int(Task[3])})
                 ac2.update({count: int(Task[4])})
-                deadline.update({count:int(Task[5])})
+
                 count+=1
             algo_type="eedf"
             quantum=0
@@ -599,7 +599,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
         if (var.get() == 2):#laEDF
-            entry_list_test=["0,6,2,1,1,0","0,8,3,1,1,0","0,12,3,2,1,0"]#added deadline as the last bit
+            entry_list_test=["0,6,2,1,1","0,8,3,1,1","0,12,3,2,1"]#added deadline as the last bit
             for i in entry_list_test:
                 Task=i#.get()
                 Task = Task.split(",")
@@ -608,7 +608,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
                 Execution.update({count:int(Task[2])})
                 ac1.update({count: int(Task[3])})
                 ac2.update({count: int(Task[4])})
-                deadline.update({count:int(Task[5])})
+
                 count+=1
             algo_type="laedf"
             quantum=0
@@ -616,14 +616,13 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
         elif (var.get() == 3):###FCFS#######################################
-            entry_list_test=["10,0,20,0","5,0,20,0","20,0,15,0","30,0,15,0"] #(release,deadline,execution)
+            entry_list_test=["10,20,0","5,20,0","20,15,0","30,15,0"] #(release,deadline,execution)
             for i in entry_list_test:
                 Task=i#.get()
                 Task = Task.split(",")
                 Release.update({count:int(Task[0])})
-                Period.update({count:int(Task[1])})
-                Execution.update({count:int(Task[2])})
-                deadline.update({count:int(Task[3])})
+                Execution.update({count:int(Task[1])})
+                deadline.update({count:int(Task[2])})
                 count+=1
             algo_type="fcfs"
             quantum=0
@@ -631,18 +630,17 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
         elif (var.get() == 4):###RR
-            #entry_list_test=["30,0,20,60","20,0,20,70","10,0,15,80","5,0,15,90"]
-            entry_list_test=["0,0,75,300","10,0,40,500","10,0,25,700","80,0,20,900","85,0,45,1010"]
+            entry_list_test=["30,20,60","20,20,70","10,15,80","5,15,90"]
+            #entry_list_test=["0,75,300","10,40,500","10,25,700","80,20,900","85,45,1010"]
             for i in entry_list_test:
                 Task=i#.get()
                 Task = Task.split(",")
                 Release.update({count:int(Task[0])})
-                Period.update({count:int(Task[1])})
-                Execution.update({count:int(Task[2])})
-                deadline.update({count:int(Task[3])})
+                Execution.update({count:int(Task[1])})
+                deadline.update({count:int(Task[2])})
                 count+=1
             algo_type="rr"
-            quantum=15#self.quantum_get.get()
+            quantum=5#self.quantum_get.get()
             context=0#self.context_get.get()
             end_time=0#self.end_time_get.get()
             Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
