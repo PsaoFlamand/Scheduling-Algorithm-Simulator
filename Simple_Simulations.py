@@ -31,7 +31,7 @@ class Algorithms():
                     Begin_List.append(0)
                 else:
                     if End_List[-1] > prioritized_period[task]:
-                        prev_start = End_List[-1] - prioritized_period[task]
+                        prev_start = abs(End_List[-1] - prioritized_period[task])
                     Begin_List.append(prioritized_period[task] + prev_start)
                 for task_num in prioritized_task:
                     if invocation == 1:
@@ -51,7 +51,7 @@ class Algorithms():
                 if invocation==1:
                     t = ac1[task] / U
                 else:
-                    t = (ac2[task] / U) + prioritized_period[task]
+                    t = (ac2[task] / U) + prioritized_period[task] + prev_start
                 Task_List.append(task)
                 End_List.append(t)
                 frequency.append(round(U,3))
