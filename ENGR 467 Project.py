@@ -127,8 +127,8 @@ class Algorithms():
         return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
 
     
-    def laedf(self, Release, period, Execution, ac1, ac2,N): #Look ahead Energy saving EDF
-        N=3
+    def laedf(self, Release, period, Execution, ac1, ac2,N,round_freq): #Look ahead Energy saving EDF
+
         Task_List = []
         Begin_List = []
         End_List = []
@@ -153,6 +153,7 @@ class Algorithms():
         prev_start=0
         #[2,4,6]
         for dead in range(0,len(deadline)): #invocation 1
+
             q=[]
             q.append(prioritized_task[dead])
             if dead==len(deadline)-1:
@@ -177,7 +178,7 @@ class Algorithms():
             #[2,4,6]
             #[2,8,6]
             deadline[dead]=deadline[dead]*2
-            round_freq=True
+            #round_freq=False
             if round_freq==True:
                 if freq<=1 and freq>0.75: #rounding frequency
                     freq=1
@@ -185,6 +186,8 @@ class Algorithms():
                     freq=0.75
                 elif freq<=0.5:
                     freq=0.5
+            else:
+                freq=round(freq,3)
             width=ac1[prioritized_task[dead]]/freq
             end_time=width+prev_start
             frequency.append(freq)
@@ -192,19 +195,21 @@ class Algorithms():
             Task_List.append(prioritized_task[dead])
             Begin_List.append(prev_start)
             prev_start+=width
-            print('end_time',end_time)
-            print('freq',freq)
-            print('q',q)
+           # print('end_time',end_time)
+           # print('freq',freq)
+           # print('q',q)
             freq=0
 
 
 
 
-
+        print('deadline',deadline)
 
         for dead in range(0,len(deadline)): #invocation 2 Deferance check
+            print('untriggered prev_start',prev_start)
             while prev_start<period[dead]:
-                prev_start+=1
+                print('prev_start',prev_start,'period[dead]',period[dead])
+                prev_start=period[dead]
             q=[]
             q.append(prioritized_task[dead])
             if dead==len(deadline)-1:
@@ -213,14 +218,14 @@ class Algorithms():
                 selector=dead+1
             for i in range(0,N-1):
                 deadline_difference=deadline[selector]-deadline[dead]
-                if Execution[prioritized_task[selector]]<deadline_difference:
+                if Execution[prioritized_task[selector]]<=deadline_difference:
                     print("task",prioritized_task[selector]+1,' can be deffered')#We know which ones we want to defer
                 else:
                     q.append(prioritized_task[selector])
                 selector+=1
                 if selector==N:
                     selector=0
-            print('queue inv2',q)
+            #print('queue inv2',q)
             for task in q:#Calculate the Invocation 2 queue frequencies
                 #print('task',task)
                 #print('Execution[task]',Execution[task])
@@ -233,16 +238,19 @@ class Algorithms():
                     freq += Execution[task]/(deadline[task]-prev_start)
                 
             deadline[dead]=deadline[dead]*2
-            if freq<=1 and freq>0.75:
-                freq=1
-            elif freq<=0.75 and freq>0.5:
-                freq=0.75
-            elif freq<=0.5:
-                freq=0.5
+            if round_freq==True:
+                if freq<=1 and freq>0.75:
+                    freq=1
+                elif freq<=0.75 and freq>0.5:
+                    freq=0.75
+                elif freq<=0.5:
+                    freq=0.5
+            else:
+                freq=round(freq,3)
             
             width=ac2[prioritized_task[dead]]/freq
-            print('width',width)
-            print('task',task)
+            #print('width',width)
+           # print('task',task)
             print('\n')
             end_time=width+prev_start
             frequency.append(freq)
@@ -379,14 +387,14 @@ class Algorithms():
 #####################################################All Graphics and controls beyond  this point
 class Draw_Schedule(Frame):
     
-    def __init__(self,Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time):
+    def __init__(self,Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time,round_freq):
         super().__init__()
         algo=Algorithms()
         if (algo_type=="eedf"):
-            Task,Begin,End,missed_deadline,frequency,explanation=algo.eedf(Release,Period,Execution,ac1,ac2,N)
+            Task,Begin,End,missed_deadline,frequency,explanation=algo.eedf(Release,Period,Execution,ac1,ac2,N,round_freq)
             #Task_List,Begin_List,End_List,deadline_missed,frequency
         if (algo_type=="laedf"):
-            Task,Begin,End,missed_deadline,frequency,explanation=algo.laedf(Release,Period,Execution,ac1,ac2,N)
+            Task,Begin,End,missed_deadline,frequency,explanation=algo.laedf(Release,Period,Execution,ac1,ac2,N,round_freq)
             #Task_List,Begin_List,End_List,deadline_missed,frequency
         if (algo_type=="fcfs"):
             Task,Begin,End,missed_deadline,explanation=algo.fcfs(Release,Period,Execution,deadline)
@@ -405,10 +413,15 @@ class Draw_Schedule(Frame):
             self.grid()
             Counter = 0
             self.canvas = Canvas(Schedule,width=1000,height=450)
-            self.canvas.create_line(25, 10, 25, 300)
+            self.canvas.create_line(45, 10, 45, 350)
+            self.canvas.create_text(15,(10),fill="darkblue",font="Times 12 italic bold",text='Fm')
+            self.canvas.create_text(15,(30),fill="darkblue",font="Times 12 italic bold",text='1')
+            self.canvas.create_text(15,(105),fill="darkblue",font="Times 12 italic bold",text='0.75')
+            self.canvas.create_text(15,(185),fill="darkblue",font="Times 12 italic bold",text='0.5')
+
             tsknum=0
                              #Draws the Initial X-Axis Lines
-            self.canvas.create_line(25, 300, 1000, 300) #Format(x1,y1,x2,y2)
+            self.canvas.create_line(45, 350, 1000, 350) #Format(x1,y1,x2,y2)
            # self.canvas.create_text(10,i-13,fill="darkblue",font="Times 12 italic bold",text="F"+str(frequency))
             #tsknum+=1
             #for freq in frequency:
@@ -424,12 +437,9 @@ class Draw_Schedule(Frame):
             tsknum=0
             for i in range(40,(((N+1)*30)),30):                  #Draws the Initial X-Axis Lines
                 self.canvas.create_line(25, i, 1000, i) #Format(x1,y1,x2,y2)
-                self.canvas.create_text(10,i-13,fill="darkblue",font="Times 12 italic bold",text="T"+str(tsknum))
+                self.canvas.create_text(10,i-13,fill="darkblue",font="Times 12 italic bold",text="T"+str(tsknum+1))
                 tsknum+=1
             self.canvas.grid()
-        
-  #  def Draw_Structure_EEDF(self,N,frequency):#
-        #This is where the Schedule base is Drawn 
 
     def Draw_Task(self,Task_List,Begin_List,End_List,missed_deadline,explanation,end_time,algo_type,frequency):
         scale=1
@@ -449,17 +459,24 @@ class Draw_Schedule(Frame):
         elif(mx<=30):
             scale=1
         if algo_type=="eedf" or algo_type=='laedf':
-            for i1 in range(25,1000,30):                #Draws the Y-Axis Lines
-                self.canvas.create_line(i1, (300), i1, (290))
-                self.canvas.create_text(i1,(310),fill="darkblue",font="Times 12 italic bold",text=str(Counter))
+            for i1 in range(45,1000,30):                #Draws the Y-Axis Lines
+                self.canvas.create_line(i1, (350), i1, (360))
+                self.canvas.create_text(i1-10,(360),fill="darkblue",font="Times 12 italic bold",text=str(Counter))
                 Counter+=scale
-           # for freq in frequency:
-              #  print(freq)
+
             for i in range(0,len(frequency)):
-               # Task=Task_List[i]
+                Task=Task_List[i]
                 Begin=Begin_List[i]/scale
-                End=End_List[i]/scale                
-                self.canvas.create_rectangle((30*(Begin)+25), (300), (30*(End)+25), (300-(300*frequency[i])),fill="blue")
+                End=End_List[i]/scale
+                if frequency[i]>1:
+                    
+                    self.canvas.create_rectangle((30*(Begin)+45), (350), (30*(End)+45), (350-(350*frequency[i])),fill="red")
+                    self.canvas.create_text((30*(Begin)+65),((325-(325*frequency[i]))+350),fill="darkblue",font="Times 12 italic bold",text=str('T'+str(Task+1)))
+                else:
+               
+                    self.canvas.create_rectangle((30*(Begin)+45), (350), (30*(End)+45), (350-(325*frequency[i])),fill="blue")
+                    self.canvas.create_text((30*(Begin)+65),((350-(325*frequency[i]))-10),fill="darkblue",font="Times 12 italic bold",text=str(frequency[i]))
+                    self.canvas.create_text((30*(Begin)+65),((350-(325*frequency[i]))+15),fill="darkblue",font="Times 16 italic bold",text=str('T'+str(Task+1)))
         else:
             for i1 in range(25,1000,30):                #Draws the Y-Axis Lines
                 self.canvas.create_line(i1, (((N+1)*30)-20), i1, (((N+1)*30)-10))
@@ -495,6 +512,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         global label_list
         global N
         global var
+        global var_round
 
         label_list= []
         entry_list = []
@@ -517,7 +535,7 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.button2 = tk.Button(self, text="Clear",bg='white', command=lambda: self.clear(),font=self.task_text) # When Clicked, All tasks are cleared
         self.button2.grid(row=3,column=1, sticky='w')
         var = tk.IntVar()
-
+        var_round = tk.IntVar()
         self.check1 = tk.Radiobutton(self, text='Cycle-Saving EDF',variable=var, value=1,bg='yellow',font=self.task_text)
         self.check1.grid(row=4,column=1, sticky='w')
         self.check1 = tk.Radiobutton(self, text='Look Ahead EDF',variable=var, value=2,bg='yellow',font=self.task_text)
@@ -526,23 +544,26 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.check4.grid(row=6,column=1, sticky='w')
         self.check5 = tk.Radiobutton(self, text='Round Robin',variable=var, value=4,bg='yellow',font=self.task_text)
         self.check5.grid(row=7,column=1, sticky='w')
-        
+        self.check5 = tk.Radiobutton(self, text='All Frequencies',variable=var_round, value=False,bg='yellow',font=self.task_text)
+        self.check5.grid(row=8,column=1, sticky='w')
+        self.check5 = tk.Radiobutton(self, text='Round Frequencies',variable=var_round, value=True,bg='yellow',font=self.task_text)
+        self.check5.grid(row=9,column=1, sticky='w')
         self.quantum_get=tk.Entry(self,width=10)
         self.context_get=tk.Entry(self,width=10)
-        self.end_time_get=tk.Entry(self,width=10)
+        #self.end_time_get=tk.Entry(self,width=10)
         self.quantum_text = tk.Label(self, text="Quantum",bg='yellow',font=self.task_text)
         self.context_text = tk.Label(self, text="Context",bg='yellow',font=self.task_text)
-        self.end_time_text = tk.Label(self, text="End Time",bg='yellow',font=self.task_text)
-        self.quantum_get.grid(row=8,column=1, sticky='e')
-        self.quantum_text.grid(row=8, column=1, sticky='w')
-        self.context_get.grid(row=9,column=1, sticky='e')
-        self.context_text.grid(row=9,column=1, sticky='w')
-        self.end_time_get.grid(row=10,column=1, sticky='e')
-        self.end_time_text.grid(row=10,column=1, sticky='w')
+        #self.end_time_text = tk.Label(self, text="End Time",bg='yellow',font=self.task_text)
+        self.quantum_get.grid(row=10,column=1, sticky='e')
+        self.quantum_text.grid(row=10, column=1, sticky='w')
+        self.context_get.grid(row=11,column=1, sticky='e')
+        self.context_text.grid(row=11,column=1, sticky='w')
+        #self.end_time_get.grid(row=10,column=1, sticky='e')
+        #self.end_time_text.grid(row=10,column=1, sticky='w')
         
         ##Explanation of input
         self.explainEEDF = tk.Label(self, text="|Release,Period,Exe,Dead|",bg='yellow',font=self.explain_text)
-        self.explainEEDF.grid(row=11,column=1, sticky='w')
+        self.explainEEDF.grid(row=12,column=1, sticky='w')
 
     def Add_Task(self):
         global counter
@@ -574,35 +595,35 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
             for i in entry_list_test:
                 Task=i#.get()
                 Task = Task.split(",")
-                Release.update({count:int(Task[0])})
+                Execution.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
-                Execution.update({count:int(Task[2])})
-                ac1.update({count: int(Task[3])})
-                ac2.update({count: int(Task[4])})
+                ac1.update({count: int(Task[2])})
+                ac2.update({count: int(Task[3])})
 
                 count+=1
             algo_type="eedf"
             quantum=0
             context=0#self.context_get.get()
             end_time=0#self.end_time_get.get()
-            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
+            
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time,var_round.get())
         if (var.get() == 2):#laEDF
-            entry_list_test=["0,6,2,1,1","0,8,3,1,1","0,12,3,2,1"]#added deadline as the last bit
+            #entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
+            entry_list_test=['3,8,2,1','3,10,1,1','1,14,1,1']
             for i in entry_list_test:
                 Task=i#.get()
                 Task = Task.split(",")
-                Release.update({count:int(Task[0])})
+                Execution.update({count:int(Task[0])})
                 Period.update({count:int(Task[1])})
-                Execution.update({count:int(Task[2])})
-                ac1.update({count: int(Task[3])})
-                ac2.update({count: int(Task[4])})
+                ac1.update({count: int(Task[2])})
+                ac2.update({count: int(Task[3])})
 
                 count+=1
             algo_type="laedf"
             quantum=0
             context=0#self.context_get.get()
             end_time=0#self.end_time_get.get()
-            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time)
+            Draw_Schedule(Release,Period,Execution,N,algo_type,quantum,ac1,ac2,context,deadline,end_time,var_round.get())
         elif (var.get() == 3):###FCFS#######################################
             entry_list_test=["10,20,0","5,20,0","20,15,0","30,15,0"] #(release,deadline,execution)
             for i in entry_list_test:
