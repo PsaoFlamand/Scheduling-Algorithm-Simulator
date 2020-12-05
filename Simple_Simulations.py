@@ -153,18 +153,13 @@ class Algorithms():
             deadline.append(int(priority[1]))
             tracker.update({int(priority[0]):c})
             op_tracker.update({c:int(priority[0])})
-            c+=1
-        #Task_List=prioritized_task
-        #for dead in prioritized_task:
-            
+            c+=1   
         selector=1
         count=0
         q=[]
         freq=0
         prev_start=0
-        print('deadline',deadline)
         for dead in range(0,len(deadline)): #invocation 1
-            print('dead',dead)
             q=[]
             q.append(prioritized_task[dead])
             if dead==len(deadline)-1:
@@ -203,7 +198,6 @@ class Algorithms():
             Begin_List.append(prev_start)
             prev_start+=width
             freq=0
-            
         for dead in range(0,len(deadline)): #invocation 2 Deferance check
             if prev_start<period[op_tracker[dead]]:
                 prev_start=period[op_tracker[dead]]
