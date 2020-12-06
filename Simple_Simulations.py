@@ -97,7 +97,6 @@ class Algorithms():
                 else:
                     if End_List[-1] > prioritized_period[task]:
                         prev_start = abs(End_List[-1] - prioritized_period[task])
-                        print(prev_start)
                     Begin_List.append(prioritized_period[task] + prev_start)
                 for task_num in prioritized_task:
                     if invocation==1:
@@ -126,10 +125,6 @@ class Algorithms():
                 frequency.append(round(U,3))
             if task==(int(0.5 * len(task_list_with_2_iterations))-1):
                 invocation += 1
-        print('Begin list =',Begin_List)
-        print('End list = ', End_List)
-        print('Frequencies =',frequency)
-        print('task_list',Task_List)
         return Task_List,Begin_List,End_List,deadline_missed,frequency,explanation
     
     def laedf(self, Release, period, Execution, ac1, ac2,N,round_freq): #Look ahead Energy saving EDF
@@ -176,10 +171,8 @@ class Algorithms():
             for task in q: #Calculate Freqencies in the queue INV 1     
                 if (deadline[tracker[task]]-period[task])!=0:
                     freq += Execution[task]/(deadline[tracker[task]]-period[task])
-                    print('Execution[task]',Execution[task],'/','(deadline[task]-period[task])',(deadline[task]-period[task]))
                 else:
                     freq += Execution[task]/(deadline[tracker[task]]-prev_start)
-                    print('Execution[task]',Execution[task],'/','(deadline[task]-prev_start)',(deadline[task]-prev_start))
             deadline[dead]=deadline[dead]*2
             if round_freq==True:
                 if freq<=1 and freq>0.75: #rounding frequency
@@ -345,8 +338,7 @@ class Algorithms():
         res = [] 
         for i in explanation: 
             if i not in res: 
-                res.append(i)
-                
+                res.append(i)  
         return Task_List,Begin_List,End_List,deadline_missed,res
 
 #####################################################All Graphics and controls beyond  this point
@@ -485,7 +477,6 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.txt0.grid(row=0, column=0, sticky='w')
         self.input_des = tk.Label(self, text="Select an Algorithm",bg='yellow',fg='dark blue')
         self.input_des.grid(row=1, column=0, sticky='w')
-
         self.button0 = tk.Button(self, text="Start", bg='white',command=lambda: self.Execute(),font=self.task_text) # When Clicked, The Schedule is drawn
         self.button0.grid(row=0,column=1, sticky='w')
         self.button1 = tk.Button(self, text="Add Task",bg='white', command=lambda: self.Add_Task(),font=self.task_text) # When Clicked, A task is added
@@ -514,13 +505,12 @@ class Main(Tk): #This Module sets up the original window with search boxes, labe
         self.quantum_text.grid(row=9, column=1, sticky='w')
         self.context_get.grid(row=10,column=1, sticky='e')
         self.context_text.grid(row=10,column=1, sticky='w')
-        ##Explanation of input
+
     def set_text(self):
         if var.get() == 1:
             self.input_des.config(text="|WC,Period,AC 1, AC 2| Max 3 Ordered Tasks",bg='yellow',fg='dark blue')
         if var.get() == 2:
             self.input_des.config(text="|WC,Period,AC 1, AC 2| Unlimited Tasks",bg='yellow',fg='dark blue')
-
         if var.get() ==3 or var.get()==4: #FIFO 
             self.input_des.config(text="|Release,Execution,Deadline| Unlimited Tasks",bg='yellow',fg='dark blue')
 
