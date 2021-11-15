@@ -179,7 +179,7 @@ class Algorithms():
                     end = duration + prev_start
                     
                 '''detect missed deadline'''
-                if (end) > deadline[prioritized_task_mem[queue[0]]]:
+                if end > deadline[prioritized_task_mem[queue[0]]]:
                     deadlines_missed.append(deadline[prioritized_task_mem[queue[0]]])
                     explanations.append("Task %s Missed Its Deadline At The Time Interval: %s"%(str(prioritized_task_mem[queue[0]]+1),str(deadline[prioritized_task_mem[queue[0]]])))
 
