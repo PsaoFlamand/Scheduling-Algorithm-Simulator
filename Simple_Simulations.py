@@ -5,186 +5,170 @@ from tkinter import Tk, Canvas, Frame, BOTH, font
 class Algorithms():
 
     
-    def look_ahead_earliest_deadline_first(self, release, period, execution, ac1, ac2, number_of_tasks, rounded_frequency): #Look ahead Earliest Deadline First
-        task_list = []
-        start_list = []
-        end_list = []
-        deadline_missed = []
-        frequency_list = []
-        explanation_list = []
-        deadline_list=[]
-        sort_period = sorted(period.items(), key=lambda x: x[1])
-        prioritized_period =[]
-        prioritized_task_list = []
+    def look_ahead_earliest_deadline_first(self, release, period, execution_time, ac1, ac2, number_of_tasks, rounded_frequency): #Look ahead Earliest Deadline First
+        '''outputs'''
+        tasks = []
+        starts = []
+        ends = []
+        deadlines_missed = []
+        frequencies = []
+        explanations = []
+        
+        '''calculation variables'''
+        #deadlines=[]
+        prioritized_periods = []
+        prioritized_tasks = []
+        
         tracker = {}
-        op_tracker = {}
+        opposite_tracker = {}
+
+        sorted_periods = sorted(period.items(), key=lambda x: x[1])
+        print(sorted_periods)
+        print(period)
         
+        '''Prioritize task depending upon lowest period'''
+        for index, (prioritized_task, prioritized_period) in enumerate(sorted_periods):
+            prioritized_tasks.append(int(prioritized_task))
+            prioritized_periods.append(int(prioritized_period))
+                        
+            tracker[int(prioritized_task)] = index    
+            opposite_tracker[index] = int(prioritized_task)
+            
+        print('prioritized_tasks',prioritized_tasks)
         
-        for count, priority in enumerate(sort_period):
-            prioritized_task_list.append(int(priority[0]))
-            prioritized_period.append(int(priority[1]))
-            deadline_list.append(int(priority[1]))
-            
-            tracker[int(priority[0])] = count    
-            op_tracker[count] = int(priority[0])
-            
-        selector = 1
         queue = []
         frequency=0
         prev_start=0
-
-        for index, deadline in enumerate(deadline_list): #invocation 1
-            queue = []
-            queue.append(prioritized_task_list[index])
-            
-            if index == len(deadline_list) - 1:
-                selector = 0
-            else:
-                selector=index + 1
+        
+        '''simulate the first two invocations'''
+        for invocation in range(2):
+            for current, deadline in enumerate(prioritized_periods):
+                if invocation:
+                    if prev_start < period[opposite_tracker[current]]:
+                        prev_start = period[opposite_tracker[current]]
+                        
+                queue = []
+                queue.append(prioritized_tasks[current])
                 
-            for i in range(0,number_of_tasks-1):#Check Deference INV1
-                deadline_difference = deadline_list[selector] - deadline_list[index]
-                if execution[prioritized_task_list[selector]] > deadline_difference:
-                    queue.append(prioritized_task_list[selector])#We know which ones we can't defer  
-                selector += 1
-                if selector == number_of_tasks:
-                    selector = 0
-
-            for task in queue: #Calculate Freqencies in the queue INV 1     
-                if (deadline_list[tracker[task]] - period[task]) != 0:
-                    frequency += execution[task] / (deadline_list[tracker[task]]-period[task])
+                if current == len(prioritized_periods) - 1:
+                    next = 0
                 else:
-                    frequency += execution[task] / (deadline_list[tracker[task]]-prev_start)
-            deadline_list[index] = deadline_list[index]*2
-            
-            if rounded_frequency == True:
-                if frequency <= 1 and frequency > 0.75: #rounding frequency_list
-                    frequency = 1
-                elif frequency <= 0.75 and frequency > 0.5:
-                    frequency = 0.75
-                elif frequency <= 0.5:
-                    frequency = 0.5
-            else:
-                frequency = round(frequency,3)
-                
-            width = ac1[prioritized_task_list[index]]/frequency
-            end_time = width + prev_start
-            frequency_list.append(frequency)
-            end_list.append(end_time)
-            task_list.append(prioritized_task_list[index])
-            start_list.append(prev_start)
-            prev_start += width
-            frequency = 0
-            
-        for index, deadline in enumerate(deadline_list): #invocation 2 Deferance check
-            if prev_start < period[op_tracker[index]]:
-                prev_start = period[op_tracker[index]]
-                
-            queue = []
-            queue.append(prioritized_task_list[index])
-            
-            if index == len(deadline_list) - 1:
-                selector = 0
-            else:
-                selector = index + 1
-                
-            for i in range(0,number_of_tasks-1):
-                deadline_difference = deadline_list[selector]-deadline_list[index]
-                if execution[prioritized_task_list[selector]]>deadline_difference:
-                    queue.append(prioritized_task_list[selector])#We know which ones we can't defer  
-                selector += 1
-                if selector == number_of_tasks:
-                    selector = 0
+                    next=current + 1
                     
-            for task in queue:#Calculate the Invocation 2 queue frequencies
-                frequency += execution[task] / (deadline_list[tracker[task]]-prev_start)
-            deadline_list[index] = deadline_list[index]*2
-            
-            if rounded_frequency == True:
-                if frequency <= 1 and frequency > 0.75:
-                    frequency = 1
-                elif frequency <= 0.75 and frequency > 0.5:
-                    frequency = 0.75
-                elif frequency <= 0.5:
-                    frequency = 0.5
-            else:
-                frequency = round(frequency, 3)
+                '''Check Deference INV1'''
+                for i in range(number_of_tasks-1):
+                    deadline_difference = prioritized_periods[next] - prioritized_periods[current]
 
-            width = ac2[prioritized_task_list[index]] / frequency
-            end_time = width + prev_start
-            frequency_list.append(frequency)
-            end_list.append(end_time)
-            task_list.append(prioritized_task_list[index])
-            start_list.append(prev_start)
-            prev_start += width
-            frequency = 0
-            
-        return task_list, start_list, end_list, deadline_missed, frequency_list, explanation_list
+                    '''If we can't defer, add task to queue'''
+                    if execution_time[prioritized_tasks[next]] > deadline_difference:
+                        queue.append(prioritized_tasks[next])
+                        
+                    next += 1
+                    if next == number_of_tasks:
+                        next = 0
+                        
+                '''Calculate Freqencies in the queue INV 1'''  
+                for task in queue:
+                    '''if this is the second iteration, use the starting point of the second period as the starting point of reference'''
+                    if (prioritized_periods[tracker[task]] - period[task]) != 0 and not invocation:
+                        frequency += execution_time[task] / (prioritized_periods[tracker[task]]-period[task])
+                    else:
+                        '''otherwise assume that the current starting point is the previous start'''
+                        frequency += execution_time[task] / (prioritized_periods[tracker[task]]-prev_start)
+
+                '''Double the period value in order to update its deadline'''
+                prioritized_periods[current] = prioritized_periods[current]*2
+
+                '''rounding frequencies'''
+                if rounded_frequency == True:
+                    if frequency <= 1 and frequency > 0.75: 
+                        frequency = 1
+                    elif frequency <= 0.75 and frequency > 0.5:
+                        frequency = 0.75
+                    elif frequency <= 0.5:
+                        frequency = 0.5
+                else:
+                    frequency = round(frequency,3)
+                    
+                if invocation:  duration = ac2[prioritized_tasks[current]] / frequency
+                else:           duration = ac1[prioritized_tasks[current]] / frequency
+                    
+                end_time = duration + prev_start
+                
+                frequencies.append(frequency)
+                ends.append(end_time)
+                tasks.append(prioritized_tasks[current])
+                starts.append(prev_start)
+                
+                prev_start = end_time
+                frequency = 0
+                
+        return tasks, starts, ends, deadlines_missed, frequencies, explanations
 
                   
-    def first_come_first_serve (self, release, period, execution, deadline): #first_come_first_serve algorithm###!!!!!!!!!!!!!!!!!!DONE
-        task_list = []
-        start_list = []
-        end_list = []
-        deadline_missed = []
-        explanation_list = []
+    def first_come_first_serve (self, release, period, execution_time, deadline): #first_come_first_serve algorithm###!!!!!!!!!!!!!!!!!!DONE
+        tasks = []
+        starts = []
+        ends = []
+        deadlines_missed = []
+        explanations = []
         count = 0
         prev_start = 0
         sort_release = sorted(release.items(), key=lambda x: x[1])
         prioritized_release = []
-        prioritized_task_list = []
+        prioritized_tasks = []
         
         for priority in sort_release:
-            prioritized_task_list.append(int(priority[0]))
+            prioritized_tasks.append(int(priority[0]))
             prioritized_release.append(int(priority[1]))
         prev_start = prioritized_release[0]
         
-        for task_num in prioritized_task_list:
+        for task_num in prioritized_tasks:
             while prev_start < release[task_num]:
                 prev_start += 1
             reset = 0
-            for width in range(0, int(execution[task_num])+1,1):
+            for width in range(0, int(execution_time[task_num])+1,1):
                 end = width + prev_start               
 
                 if (end) > deadline[task_num] and reset == 0:#detect missed deadline
                     reset = 1
-                    deadline_missed.append(deadline[task_num])
-                    explanation_list.append("task %s Missed Its Deadline At The Time Interval: %s"%(task_num+1,deadline[task_num]))
+                    deadlines_missed.append(deadline[task_num])
+                    explanations.append("task %s Missed Its Deadline At The Time Interval: %s"%(task_num+1,deadline[task_num]))
 
-                if (width - int(execution[task_num]) == 0):
-                    end_list.append(end)
-                    task_list.append(task_num)
-                    start_list.append(prev_start)
+                if (width - int(execution_time[task_num]) == 0):
+                    ends.append(end)
+                    tasks.append(task_num)
+                    starts.append(prev_start)
                     prev_start = width + prev_start
                     count += 1
                     
-        return task_list, start_list, end_list, deadline_missed, explanation_list
+        return tasks, starts, ends, deadlines_missed, explanations
 
     
-    def round_robin (self, release, period, execution, deadline, quantum, number_of_tasks, context_switching): #round_robin algorithm###!!!!!!!!!!!!!!!!!!DONE
-        explanation_list = []
-        task_list = []
-        start_list = []
-        end_list = []       
+    def round_robin (self, release, period, execution_time, deadline, quantum, number_of_tasks, context_switching): #round_robin algorithm###!!!!!!!!!!!!!!!!!!DONE
+        explanations = []
+        tasks = []
+        starts = []
+        ends = []       
         remaining_execution = []
-        deadline_missed = []
+        deadlines_missed = []
         queue = []
         sort_release = sorted(release.items(), key=lambda x: x[1])
         prioritized_release = []
-        prioritized_task_list = []
+        prioritized_tasks = []
         prioritized_task_test = []
 
         for priority in sort_release:
-            prioritized_task_list.append(int(priority[0]))
+            prioritized_tasks.append(int(priority[0]))
             prioritized_task_test.append(int(priority[0]))
             prioritized_release.append(int(priority[1]))
 
         prev_start = float(prioritized_release[0])
         exe_count = 0
-        task_num = prioritized_task_list[0]
+        task_num = prioritized_tasks[0]
         queue.append(exe_count)
-        del prioritized_task_list[0]
-        remaining_execution.append(int(execution[prioritized_task_test[0]]))
+        del prioritized_tasks[0]
+        remaining_execution.append(int(execution_time[prioritized_task_test[0]]))
 
         while not all(remains == 0 for remains in remaining_execution):#Loops until all tasks are drained
             prev_task = queue[0]
@@ -197,10 +181,10 @@ class Algorithms():
                     
                 if (end) > deadline[prioritized_task_test[queue[0]]] and reset == 0:#detect missed deadline
                     reset = 1
-                    deadline_missed.append(deadline[prioritized_task_test[queue[0]]])
-                    explanation_list.append("Task %s Missed Its Deadline At The Time Interval: %s"%(str(prioritized_task_test[queue[0]]+1),str(deadline[prioritized_task_test[queue[0]]])))
+                    deadlines_missed.append(deadline[prioritized_task_test[queue[0]]])
+                    explanations.append("Task %s Missed Its Deadline At The Time Interval: %s"%(str(prioritized_task_test[queue[0]]+1),str(deadline[prioritized_task_test[queue[0]]])))
 
-                '''If no remaining execution in task, do not add to task execution'''
+                '''If no remaining execution_time in task, do not add to task execution_time'''
                 if not remaining_execution[queue[0]]:
                     write = 0
                     break
@@ -210,33 +194,33 @@ class Algorithms():
                     break
 
             if write:
-                end_list.append(end)
-                task_list.append(prioritized_task_test[queue[0]])
-                start_list.append(prev_start)
+                ends.append(end)
+                tasks.append(prioritized_task_test[queue[0]])
+                starts.append(prev_start)
                 prev_start = width + prev_start
                 
             ###decides which task to drain
             count = 0
             
-            for prioritized_task in prioritized_task_list:
+            for prioritized_task in prioritized_tasks:
                 if release[prioritized_task] <= end:
                     if release[prioritized_task] != end and len(queue) == 1:#Queue organization
-                        remaining_execution.append(int(execution[prioritized_task]))
+                        remaining_execution.append(int(execution_time[prioritized_task]))
                         exe_count = len(remaining_execution) - 1
                         queue.append(exe_count)
                         count += 1
                     elif release[prioritized_task] == end and len(queue) > 1:
-                        remaining_execution.append(int(execution[prioritized_task]))
+                        remaining_execution.append(int(execution_time[prioritized_task]))
                         exe_count = len(remaining_execution)-1
                         queue.append(exe_count)
                         count += 1
                     elif release[prioritized_task] != end and len(queue) > 1:
-                        remaining_execution.append(int(execution[prioritized_task]))
+                        remaining_execution.append(int(execution_time[prioritized_task]))
                         exe_count = len(remaining_execution)-1
                         queue.append(exe_count)
                         count += 1
             for i in range(count): 
-                del prioritized_task_list[0]
+                del prioritized_tasks[0]
                 
             if remaining_execution[queue[0]] != 0:#Am I calling the right tasks?
                 excess = queue.pop(0)
@@ -248,34 +232,34 @@ class Algorithms():
                 if prev_task != queue[0]:
                     prev_start += float(context_switching)
         res = [] 
-        for i in explanation_list: 
+        for i in explanations: 
             if i not in res: 
                 res.append(i)
                 
-        return task_list, start_list, end_list, deadline_missed, res
+        return tasks, starts, ends, deadlines_missed, res
 
 
 #####################################################All Graphics and controls beyond  this point
 class draw_schedule(Frame):
 
     
-    def __init__(self, release, period, execution, number_of_tasks, algorithm, ac1, ac2, deadline,  rounded_frequency=0, context_switching_time=0, quantum=0):
+    def __init__(self, release, period, execution_time, number_of_tasks, algorithm, ac1, ac2, deadline,  rounded_frequency=0, context_switching_time=0, quantum=0):
         super().__init__()
         algo = Algorithms()
 
         if (algorithm == "look_ahead_earliest_deadline_first"):
-            task, start, end, missed_deadline, frequency_list, explanation_list = algo.look_ahead_earliest_deadline_first(release, period, execution, ac1, ac2, number_of_tasks, rounded_frequency)
+            task, start, end, missed_deadline, frequencies, explanations = algo.look_ahead_earliest_deadline_first(release, period, execution_time, ac1, ac2, number_of_tasks, rounded_frequency)
             
         if (algorithm == "first_come_first_serve"):
-            task, start, end, missed_deadline, explanation_list = algo.first_come_first_serve(release,period, execution,deadline)
-            frequency_list = []
+            task, start, end, missed_deadline, explanations = algo.first_come_first_serve(release,period, execution_time,deadline)
+            frequencies = []
             
         if (algorithm == "round_robin"):
-            task, start, end, missed_deadline, explanation_list = algo.round_robin(release, period, execution, deadline, quantum, number_of_tasks, float(context_switching_time))
-            frequency_list = []
+            task, start, end, missed_deadline, explanations = algo.round_robin(release, period, execution_time, deadline, quantum, number_of_tasks, float(context_switching_time))
+            frequencies = []
             
         self.Draw_Structure(number_of_tasks, algorithm)
-        self.Draw_task(task, start, end, missed_deadline, explanation_list, algorithm, frequency_list, number_of_tasks)
+        self.Draw_task(task, start, end, missed_deadline, explanations, algorithm, frequencies, number_of_tasks)
 
 
     def Draw_Structure(self, number_of_tasks, algorithm):##################################### Must Adjust schedule Diagram to Number Of tasks Len(task_Number) and change the range by task_Number/30
@@ -313,10 +297,10 @@ class draw_schedule(Frame):
             self.canvas.grid()
 
 
-    def Draw_task(self, task_list, start_list, end_list, missed_deadline, explanation_list, algorithm, frequency_list, number_of_tasks):
+    def Draw_task(self, tasks, starts, ends, missed_deadline, explanations, algorithm, frequencies, number_of_tasks):
         scale = 1
         x_point = 0
-        max_range = end_list[len(end_list)-1]
+        max_range = ends[len(ends)-1]
         N = number_of_tasks
         
         if (max_range > 320):
@@ -336,28 +320,28 @@ class draw_schedule(Frame):
                 self.canvas.create_text(i1-10,(360),fill="darkblue",font="Times 12 italic bold",text=str(x_point))
                 x_point += scale
                 
-            for index, task in enumerate(task_list):
-                task = task_list[index]
-                start = start_list[index] / scale
-                end = end_list[index] / scale
+            for index, task in enumerate(tasks):
+                task = tasks[index]
+                start = starts[index] / scale
+                end = ends[index] / scale
                 
-                if frequency_list[index] > 1:
-                    self.canvas.create_rectangle((30*(start)+45), (350), (30*(end)+45), (350-(350*frequency_list[i])), fill="red")
-                    self.canvas.create_text((30*(start)+53),((325-(325*frequency_list[i]))+350),fill="darkred",font="Times 12 italic bold",text=str('T%s'%(task+1)))
-                    self.canvas.create_text((30*(start)+65),(50),fill="darkblue",font="Times 10 italic bold",text=str(frequency_list[index]))
+                if frequencies[index] > 1:
+                    self.canvas.create_rectangle((30*(start)+45), (350), (30*(end)+45), (350-(350*frequencies[i])), fill="red")
+                    self.canvas.create_text((30*(start)+53),((325-(325*frequencies[i]))+350),fill="darkred",font="Times 12 italic bold",text=str('T%s'%(task+1)))
+                    self.canvas.create_text((30*(start)+65),(50),fill="darkblue",font="Times 10 italic bold",text=str(frequencies[index]))
                 else:
-                    self.canvas.create_rectangle((30*(start)+45), (350), (30*(end)+45), (350-(325*frequency_list[index])),fill="blue")
-                    self.canvas.create_text((30*(start)+65),((350-(325*frequency_list[index]))-10),fill="darkblue",font="Times 12 italic bold",text=str(frequency_list[index]))
-                    self.canvas.create_text((30*(start)+65),((350-(325*frequency_list[index]))+15),fill="light grey",font="Times 16 italic bold",text='T%s'%(task+1))
+                    self.canvas.create_rectangle((30*(start)+45), (350), (30*(end)+45), (350-(325*frequencies[index])),fill="blue")
+                    self.canvas.create_text((30*(start)+65),((350-(325*frequencies[index]))-10),fill="darkblue",font="Times 12 italic bold",text=str(frequencies[index]))
+                    self.canvas.create_text((30*(start)+65),((350-(325*frequencies[index]))+15),fill="light grey",font="Times 16 italic bold",text='T%s'%(task+1))
         else:
             for i1 in range(25,1000,30):                #Draws the Y-Axis Lines
                 self.canvas.create_line(i1, (((N+1)*30)-20), i1, (((N+1)*30)-10))
                 self.canvas.create_text(i1,(((N+1)*30)),fill="darkblue",font="Times 12 italic bold",text=str(x_point))
                 x_point += scale
                 
-            for index, task in enumerate(task_list):
-                start = start_list[index]/scale
-                end = end_list[index]/scale
+            for index, task in enumerate(tasks):
+                start = starts[index]/scale
+                end = ends[index]/scale
                 self.canvas.create_rectangle((30*(start)+25), ((task*30)+10), (30*(end)+25), ((task*30)+40),fill="blue")
                 count = 0
                 
@@ -367,10 +351,10 @@ class draw_schedule(Frame):
             count = float(1)
             count_for_break = 0
             
-            if not explanation_list:
+            if not explanations:
                 self.canvas.create_text(200,(((N+1)*40)*count),fill="darkblue",font="Times 10 italic bold",text="All tasks Were Schedulable!")
             else:
-                for explanation in explanation_list:
+                for explanation in explanations:
                     self.canvas.create_text(200,(((N+1)*40)*count),fill="darkblue",font="Times 10 italic bold",text=str(explanation))
                     count += float(0.1)
                     
@@ -448,7 +432,7 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
             self.txt1.config(text="|Worst Case, Period, Actual 1, Actual 2|",bg='yellow',fg='dark blue')
             
         if self.var.get() == 2 or self.var.get() == 3: #FIFO 
-            self.txt1.config(text="|Release Time, Execution Duration, Deadline|",bg='yellow',fg='dark blue')
+            self.txt1.config(text="|Release Time, execution_time Duration, Deadline|",bg='yellow',fg='dark blue')
 
 
     def add_task(self):
@@ -466,15 +450,15 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
         global number_of_tasks
         release = {}
         period = {}
-        execution = {}
+        execution_time = {}
         deadline = {}
         ac1 = {}
         ac2 = {}
         number_of_tasks = len(self.entry_list)
         
         if (self.var.get() == 1):#look_ahead_earliest_deadline_first
-            #entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
-            entry_list_test = ['3,8,2,1','3,10,1,1','1,14,1,1']
+            entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
+            #entry_list_test = ['3,8,2,1','3,10,1,1','1,14,1,1']
             self.entry_list = entry_list_test
             number_of_tasks = len(self.entry_list)
             
@@ -484,7 +468,7 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
                 ac2[count] = int(task[3])
                 ac1[count] = int(task[2])
                 period[count] = int(task[1])
-                execution[count] = int(task[0])
+                execution_time[count] = int(task[0])
 
                 
             algorithm = "look_ahead_earliest_deadline_first"
@@ -494,10 +478,10 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
             if not context_switching_time:
                 context_switching_time = 0
                 
-            draw_schedule(release, period, execution, number_of_tasks, algorithm, ac1, ac2, deadline,  rounded_frequency, context_switching_time, quantum)
+            draw_schedule(release, period, execution_time, number_of_tasks, algorithm, ac1, ac2, deadline,  rounded_frequency, context_switching_time, quantum)
             
         elif (self.var.get() == 2):###first_come_first_serve#######################################
-            entry_list_test = ["0,75,300","10,40,300","10,25,300","80,20,145","85,45,300"] #(release,deadline,execution)
+            entry_list_test = ["0,75,300","10,40,300","10,25,300","80,20,145","85,45,300"] #(release,deadline,execution_time)
             self.entry_list = entry_list_test
             number_of_tasks = len(self.entry_list)
             
@@ -506,7 +490,7 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
                 task = task.split(",")
                 release[count] = int(task[0])
                 deadline[count] = int(task[2])
-                execution[count] = int(task[1])
+                execution_time[count] = int(task[1])
                 
             algorithm = "first_come_first_serve"
             rounded_frequency = 0
@@ -516,7 +500,7 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
             if not context_switching_time:
                 context_switching_time = 0
                 
-            draw_schedule(release, period, execution, number_of_tasks, algorithm, ac1, ac2, deadline,  rounded_frequency, context_switching_time, quantum)
+            draw_schedule(release, period, execution_time, number_of_tasks, algorithm, ac1, ac2, deadline,  rounded_frequency, context_switching_time, quantum)
             
         elif (self.var.get() == 3):###round_robin
             entry_list_test = ["30,20,60","20,20,70","10,15,80","5,15,90"]
@@ -529,7 +513,7 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
                 task = task.split(",")
                 release[count] = int(task[0])
                 deadline[count] = int(task[2])
-                execution[count] = int(task[1])
+                execution_time[count] = int(task[1])
                 
             algorithm = "round_robin"
             rounded_frequency = 0
@@ -541,7 +525,7 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
             if not quantum:
                 quantum = 5
         
-            draw_schedule(release, period, execution, number_of_tasks, algorithm, ac1, ac2, deadline,  rounded_frequency, context_switching_time, quantum)
+            draw_schedule(release, period, execution_time, number_of_tasks, algorithm, ac1, ac2, deadline,  rounded_frequency, context_switching_time, quantum)
         #self.clear()
 
         
