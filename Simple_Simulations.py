@@ -15,27 +15,22 @@ class Algorithms():
         explanations = []
         
         '''calculation variables'''
-        #deadlines=[]
         prioritized_periods = []
         prioritized_tasks = []
         
-        tracker = {}
-        opposite_tracker = {}
+        get_index = {}
+        get_task = {}
 
         sorted_periods = sorted(period.items(), key=lambda x: x[1])
-        print(sorted_periods)
-        print(period)
-        
+
         '''Prioritize task depending upon lowest period'''
         for index, (prioritized_task, prioritized_period) in enumerate(sorted_periods):
             prioritized_tasks.append(int(prioritized_task))
             prioritized_periods.append(int(prioritized_period))
                         
-            tracker[int(prioritized_task)] = index    
-            opposite_tracker[index] = int(prioritized_task)
-            
-        print('prioritized_tasks',prioritized_tasks)
-        
+            get_index[int(prioritized_task)] = index    
+            get_task[index] = int(prioritized_task)
+                    
         queue = []
         frequency=0
         prev_start=0
@@ -44,8 +39,8 @@ class Algorithms():
         for invocation in range(2):
             for current, deadline in enumerate(prioritized_periods):
                 if invocation:
-                    if prev_start < period[opposite_tracker[current]]:
-                        prev_start = period[opposite_tracker[current]]
+                    if prev_start < period[get_task[current]]:
+                        prev_start = period[get_task[current]]
                         
                 queue = []
                 queue.append(prioritized_tasks[current])
@@ -70,11 +65,11 @@ class Algorithms():
                 '''Calculate Freqencies in the queue INV 1'''  
                 for task in queue:
                     '''if this is the second iteration, use the starting point of the second period as the starting point of reference'''
-                    if (prioritized_periods[tracker[task]] - period[task]) != 0 and not invocation:
-                        frequency += execution_time[task] / (prioritized_periods[tracker[task]]-period[task])
+                    if (prioritized_periods[get_index[task]] - period[task]) != 0 and not invocation:
+                        frequency += execution_time[task] / (prioritized_periods[get_index[task]]-period[task])
                     else:
                         '''otherwise assume that the current starting point is the previous start'''
-                        frequency += execution_time[task] / (prioritized_periods[tracker[task]]-prev_start)
+                        frequency += execution_time[task] / (prioritized_periods[get_index[task]]-prev_start)
 
                 '''Double the period value in order to update its deadline'''
                 prioritized_periods[current] = prioritized_periods[current]*2
@@ -457,7 +452,7 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
         number_of_tasks = len(self.entry_list)
         
         if (self.var.get() == 1):#look_ahead_earliest_deadline_first
-            entry_list_test=["2,6,1,1","3,8,1,1","3,12,2,1"]#added deadline as the last bit
+            entry_list_test=["3,12,2,1","2,6,1,1","3,8,1,1"]#added deadline as the last bit
             #entry_list_test = ['3,8,2,1','3,10,1,1','1,14,1,1']
             self.entry_list = entry_list_test
             number_of_tasks = len(self.entry_list)
