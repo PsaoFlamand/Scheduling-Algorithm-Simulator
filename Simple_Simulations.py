@@ -22,7 +22,6 @@ class Algorithms():
 
         sorted_periods = sorted(period.items(), key=lambda x: x[1])
         
-        queue = []
         frequency=0
         prev_start=0
         
