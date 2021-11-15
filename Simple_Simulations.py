@@ -19,14 +19,12 @@ class Algorithms():
         
         get_index = {}
         get_task = {}
-
-        sorted_periods = sorted(period.items(), key=lambda x: x[1])
         
         frequency=0
-        prev_start=0
+        start=0
         
         '''Prioritize task depending upon lowest period'''
-        for index, (prioritized_task, prioritized_period) in enumerate(sorted_periods):
+        for index, (prioritized_task, prioritized_period) in enumerate(sorted(period.items(), key=lambda x: x[1])):
             prioritized_tasks.append(int(prioritized_task))
             prioritized_periods.append(int(prioritized_period))
                         
@@ -37,18 +35,17 @@ class Algorithms():
         for invocation in range(2):
             for current, deadline in enumerate(prioritized_periods):
                 if invocation:
-                    if prev_start < period[get_task[current]]:
-                        prev_start = period[get_task[current]]
+                    if start < period[get_task[current]]:
+                        start = period[get_task[current]]
                         
-                queue = []
-                queue.append(prioritized_tasks[current])
+                queue = [prioritized_tasks[current]]
                 
                 if current == len(prioritized_periods) - 1:
                     next = 0
                 else:
                     next=current + 1
                     
-                '''Check Deference INV1'''
+                '''Check Deference'''
                 for i in range(number_of_tasks-1):
                     deadline_difference = prioritized_periods[next] - prioritized_periods[current]
 
@@ -60,19 +57,19 @@ class Algorithms():
                     if next == number_of_tasks:
                         next = 0
                         
-                '''Calculate Freqencies in the queue INV 1'''  
+                '''Calculate freqencies in the queue'''  
                 for task in queue:
                     '''if this is the second iteration, use the starting point of the second period as the starting point of reference'''
                     if (prioritized_periods[get_index[task]] - period[task]) != 0 and not invocation:
                         frequency += execution_time[task] / (prioritized_periods[get_index[task]]-period[task])
                     else:
                         '''otherwise assume that the current starting point is the previous start'''
-                        frequency += execution_time[task] / (prioritized_periods[get_index[task]]-prev_start)
+                        frequency += execution_time[task] / (prioritized_periods[get_index[task]]-start)
 
                 '''Double the period value in order to update its deadline'''
                 prioritized_periods[current] = prioritized_periods[current]*2
 
-                '''rounding frequencies'''
+                '''Rounding frequencies'''
                 if rounded_frequency == True:
                     if frequency <= 1 and frequency > 0.75: 
                         frequency = 1
@@ -86,14 +83,14 @@ class Algorithms():
                 if invocation:  duration = ac2[prioritized_tasks[current]] / frequency
                 else:           duration = ac1[prioritized_tasks[current]] / frequency
                     
-                end = duration + prev_start
+                end = duration + start
                 
                 frequencies.append(frequency)
                 ends.append(end)
                 tasks.append(prioritized_tasks[current])
-                starts.append(prev_start)
+                starts.append(start)
                 
-                prev_start = end
+                start = end
                 frequency = 0
                 
         return tasks, starts, ends, deadlines_missed, frequencies, explanations
@@ -116,15 +113,15 @@ class Algorithms():
             prioritized_tasks.append(int(prioritized_task))
             prioritized_releases.append(int(prioritized_release))
 
-        prev_start = prioritized_releases[0]
+        start = prioritized_releases[0]
         
         for task in prioritized_tasks:
-            '''bring start up to next task release'''
-            if prev_start < release[task]:
-                prev_start = release[task]
+            '''If needed, bring starting point up to next task release'''
+            if start < release[task]:
+                start = release[task]
                 
             for duration in range(0, int(execution_time[task])+1,1):
-                end = duration + prev_start
+                end = duration + start
                 
                 '''detect missed deadline'''
                 if end > deadline[task]:
@@ -134,8 +131,8 @@ class Algorithms():
                 if duration - int(execution_time[task]) == 0:
                     ends.append(end)
                     tasks.append(task)
-                    starts.append(prev_start)
-                    prev_start = end
+                    starts.append(start)
+                    start = end
                     
         return tasks, starts, ends, deadlines_missed, list(set(explanations))
 
@@ -163,7 +160,7 @@ class Algorithms():
             prioritized_task_mem.append(int(prioritized_task))
             prioritized_releases.append(int(prioritized_release))
 
-        prev_start = float(prioritized_releases[0])
+        start = float(prioritized_releases[0])
         task = prioritized_tasks.pop(0)
         
         remaining_executions.append(int(execution_time[prioritized_task_mem[0]]))
@@ -175,7 +172,7 @@ class Algorithms():
             
             for duration in range(1, int(quantum) + 1,1):
                 if remaining_executions[queue[0]] != 0:
-                    end = duration + prev_start
+                    end = duration + start
                     
                 '''detect missed deadline'''
                 if end > deadline[prioritized_task_mem[queue[0]]]:
@@ -194,8 +191,8 @@ class Algorithms():
             if write:
                 ends.append(end)
                 tasks.append(prioritized_task_mem[queue[0]])
-                starts.append(prev_start)
-                prev_start = end
+                starts.append(start)
+                start = end
                 
             
             '''Queue organization'''
@@ -220,7 +217,7 @@ class Algorithms():
 
             if queue:
                 if prev_task != queue[0]:
-                    prev_start += float(context_switching)
+                    start += float(context_switching)
                 
         return tasks, starts, ends, deadlines_missed, list(set(explanations))
 
@@ -233,22 +230,22 @@ class draw_schedule(Frame):
         algo = Algorithms()
 
         if (algorithm == "look_ahead_earliest_deadline_first"):
-            task, start, end, missed_deadline, frequencies, explanations = algo.look_ahead_earliest_deadline_first(release, period, execution_time, ac1, ac2, number_of_tasks, rounded_frequency)
+            task, start, end, missed_deadlines, frequencies, explanations = algo.look_ahead_earliest_deadline_first(release, period, execution_time, ac1, ac2, number_of_tasks, rounded_frequency)
             
         if (algorithm == "first_in_first_out"):
-            task, start, end, missed_deadline, explanations = algo.first_in_first_out(release,period, execution_time,deadline)
+            task, start, end, missed_deadlines, explanations = algo.first_in_first_out(release,period, execution_time,deadline)
             frequencies = []
             
         if (algorithm == "round_robin"):
-            task, start, end, missed_deadline, explanations = algo.round_robin(release, period, execution_time, deadline, quantum, number_of_tasks, float(context_switching_time))
+            task, start, end, missed_deadlines, explanations = algo.round_robin(release, period, execution_time, deadline, quantum, number_of_tasks, float(context_switching_time))
             frequencies = []
             
         self.Draw_Structure(number_of_tasks, algorithm)
-        self.Draw_task(task, start, end, missed_deadline, explanations, algorithm, frequencies, number_of_tasks)
+        self.Draw_task(task, start, end, missed_deadlines, explanations, algorithm, frequencies, number_of_tasks)
 
 
     def Draw_Structure(self, number_of_tasks, algorithm):##################################### Must Adjust schedule Diagram to Number Of tasks Len(task_Number) and change the range by task_Number/30
-        #This is where the schedule base is Drawn
+        '''This is where the schedule base is Drawn'''
         if algorithm == 'look_ahead_earliest_deadline_first':
             print('edf')
             schedule = tk.Toplevel(app,width=1000,height=450)
@@ -282,7 +279,7 @@ class draw_schedule(Frame):
             self.canvas.grid()
 
 
-    def Draw_task(self, tasks, starts, ends, missed_deadline, explanations, algorithm, frequencies, number_of_tasks):
+    def Draw_task(self, tasks, starts, ends, missed_deadlines, explanations, algorithm, frequencies, number_of_tasks):
         scale = 1
         x_point = 0
         max_range = ends[len(ends)-1]
@@ -306,20 +303,20 @@ class draw_schedule(Frame):
                 x_point += scale
                 
             for index, task in enumerate(tasks):
-                task = tasks[index]
                 start = starts[index] / scale
                 end = ends[index] / scale
                 
                 if frequencies[index] > 1:
-                    self.canvas.create_rectangle((30*(start)+45), (350), (30*(end)+45), (350-(350*frequencies[i])), fill="red")
-                    self.canvas.create_text((30*(start)+53),((325-(325*frequencies[i]))+350),fill="darkred",font="Times 12 italic bold",text=str('T%s'%(task+1)))
+                    self.canvas.create_rectangle((30*(start)+45), (350), (30*(end)+45), (350-(350*frequencies[index])), fill="red")
+                    self.canvas.create_text((30*(start)+53),((325-(325*frequencies[index]))+350),fill="darkred",font="Times 12 italic bold",text=str('T%s'%(task+1)))
                     self.canvas.create_text((30*(start)+65),(50),fill="darkblue",font="Times 10 italic bold",text=str(frequencies[index]))
                 else:
                     self.canvas.create_rectangle((30*(start)+45), (350), (30*(end)+45), (350-(325*frequencies[index])),fill="blue")
                     self.canvas.create_text((30*(start)+65),((350-(325*frequencies[index]))-10),fill="darkblue",font="Times 12 italic bold",text=str(frequencies[index]))
                     self.canvas.create_text((30*(start)+65),((350-(325*frequencies[index]))+15),fill="light grey",font="Times 16 italic bold",text='T%s'%(task+1))
         else:
-            for i1 in range(25,1000,30):                #Draws the Y-Axis Lines
+            '''Draws the Y-Axis Lines'''
+            for i1 in range(25,1000,30):                
                 self.canvas.create_line(i1, (((N+1)*30)-20), i1, (((N+1)*30)-10))
                 self.canvas.create_text(i1,(((N+1)*30)),fill="darkblue",font="Times 12 italic bold",text=str(x_point))
                 x_point += scale
@@ -328,13 +325,11 @@ class draw_schedule(Frame):
                 start = starts[index]/scale
                 end = ends[index]/scale
                 self.canvas.create_rectangle((30*(start)+25), ((task*30)+10), (30*(end)+25), ((task*30)+40),fill="blue")
-                count = 0
                 
-            for deadline in missed_deadline:
+            for deadline in missed_deadlines:
                 self.canvas.create_line((30*(deadline/scale)+25), (10), (30*(deadline/scale)+25), (((N+1)*26)),fill="red",width=5)
                 
             count = float(1)
-            count_for_break = 0
             
             if not explanations:
                 self.canvas.create_text(200,(((N+1)*40)*count),fill="darkblue",font="Times 10 italic bold",text="All tasks Were Schedulable!")
@@ -342,16 +337,11 @@ class draw_schedule(Frame):
                 for explanation in explanations:
                     self.canvas.create_text(200,(((N+1)*40)*count),fill="darkblue",font="Times 10 italic bold",text=str(explanation))
                     count += float(0.1)
-                    
-                    if count_for_break == N-1:
-                        break
-                    
-                    count_for_break += 1
+
 
             
-class main(Tk): #This Module sets up the original window with search boxes, labels, and a button
+class main(Tk):
 
-    
     def __init__(self, *args, **kwargs):
         global number_of_tasks
 
@@ -441,8 +431,9 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
         ac2 = {}
         number_of_tasks = len(self.entry_list)
         
-        if (self.var.get() == 1):#look_ahead_earliest_deadline_first
-            entry_list_test=["3,12,2,1","2,6,1,1","3,8,1,1"]#added deadline as the last bit
+        '''look_ahead_earliest_deadline_first'''
+        if (self.var.get() == 1):
+            entry_list_test=["3,12,2,1","2,6,1,1","3,8,1,1"]
             #entry_list_test = ['3,8,2,1','3,10,1,1','1,14,1,1']
             self.entry_list = entry_list_test
             number_of_tasks = len(self.entry_list)
@@ -464,8 +455,7 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
                 context_switching_time = 0
                 
             draw_schedule(release, period, execution_time, number_of_tasks, algorithm, ac1, ac2, deadline,  rounded_frequency, context_switching_time, quantum)
-            
-        elif (self.var.get() == 2):###first_in_first_out#######################################
+        elif (self.var.get() == 2):#first in first out
             entry_list_test = ["0,75,300","10,40,300","10,25,300","80,20,145","85,45,300"] #(release,deadline,execution_time)
             self.entry_list = entry_list_test
             number_of_tasks = len(self.entry_list)
