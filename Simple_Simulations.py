@@ -3,9 +3,8 @@ from tkinter import Tk, Canvas, Frame, BOTH, font
 
 
 class Algorithms():
-
     
-    def look_ahead_earliest_deadline_first(self, release, period, execution_time, ac1, ac2, number_of_tasks, rounded_frequency): #Look ahead Earliest Deadline First
+    def look_ahead_earliest_deadline_first(self, release, period, execution_time, ac1, ac2, number_of_tasks, rounded_frequency):
         '''outputs'''
         tasks = []
         starts = []
@@ -22,7 +21,11 @@ class Algorithms():
         get_task = {}
 
         sorted_periods = sorted(period.items(), key=lambda x: x[1])
-
+        
+        queue = []
+        frequency=0
+        prev_start=0
+        
         '''Prioritize task depending upon lowest period'''
         for index, (prioritized_task, prioritized_period) in enumerate(sorted_periods):
             prioritized_tasks.append(int(prioritized_task))
@@ -31,10 +34,6 @@ class Algorithms():
             get_index[int(prioritized_task)] = index    
             get_task[index] = int(prioritized_task)
                     
-        queue = []
-        frequency=0
-        prev_start=0
-        
         '''simulate the first two invocations'''
         for invocation in range(2):
             for current, deadline in enumerate(prioritized_periods):
@@ -88,155 +87,147 @@ class Algorithms():
                 if invocation:  duration = ac2[prioritized_tasks[current]] / frequency
                 else:           duration = ac1[prioritized_tasks[current]] / frequency
                     
-                end_time = duration + prev_start
+                end = duration + prev_start
                 
                 frequencies.append(frequency)
-                ends.append(end_time)
+                ends.append(end)
                 tasks.append(prioritized_tasks[current])
                 starts.append(prev_start)
                 
-                prev_start = end_time
+                prev_start = end
                 frequency = 0
                 
         return tasks, starts, ends, deadlines_missed, frequencies, explanations
 
                   
-    def first_come_first_serve (self, release, period, execution_time, deadline): #first_come_first_serve algorithm###!!!!!!!!!!!!!!!!!!DONE
+    def first_in_first_out(self, release, period, execution_time, deadline):
+        '''Output Variables'''
         tasks = []
         starts = []
         ends = []
         deadlines_missed = []
         explanations = []
-        count = 0
-        prev_start = 0
-        sort_release = sorted(release.items(), key=lambda x: x[1])
-        prioritized_release = []
+
+        '''Calculation Variables'''
+        prioritized_releases = []
         prioritized_tasks = []
         
-        for priority in sort_release:
-            prioritized_tasks.append(int(priority[0]))
-            prioritized_release.append(int(priority[1]))
-        prev_start = prioritized_release[0]
+        '''prioritize by release'''
+        for prioritized_task,prioritized_release in sorted(release.items(), key=lambda x: x[1]):
+            prioritized_tasks.append(int(prioritized_task))
+            prioritized_releases.append(int(prioritized_release))
+
+        prev_start = prioritized_releases[0]
         
-        for task_num in prioritized_tasks:
-            while prev_start < release[task_num]:
-                prev_start += 1
-            reset = 0
-            for width in range(0, int(execution_time[task_num])+1,1):
-                end = width + prev_start               
+        for task in prioritized_tasks:
+            '''bring start up to next task release'''
+            if prev_start < release[task]:
+                prev_start = release[task]
+                
+            for duration in range(0, int(execution_time[task])+1,1):
+                end = duration + prev_start
+                
+                '''detect missed deadline'''
+                if end > deadline[task]:
+                    deadlines_missed.append(deadline[task])
+                    explanations.append("task %s Missed Its Deadline At The Time Interval: %s"%(task+1,deadline[task]))
 
-                if (end) > deadline[task_num] and reset == 0:#detect missed deadline
-                    reset = 1
-                    deadlines_missed.append(deadline[task_num])
-                    explanations.append("task %s Missed Its Deadline At The Time Interval: %s"%(task_num+1,deadline[task_num]))
-
-                if (width - int(execution_time[task_num]) == 0):
+                if duration - int(execution_time[task]) == 0:
                     ends.append(end)
-                    tasks.append(task_num)
+                    tasks.append(task)
                     starts.append(prev_start)
-                    prev_start = width + prev_start
-                    count += 1
+                    prev_start = end
                     
-        return tasks, starts, ends, deadlines_missed, explanations
+        return tasks, starts, ends, deadlines_missed, list(set(explanations))
 
     
-    def round_robin (self, release, period, execution_time, deadline, quantum, number_of_tasks, context_switching): #round_robin algorithm###!!!!!!!!!!!!!!!!!!DONE
+    def round_robin(self, release, period, execution_time, deadline, quantum, number_of_tasks, context_switching): 
+        '''Output Variables'''
         explanations = []
         tasks = []
         starts = []
-        ends = []       
-        remaining_execution = []
+        ends = []
+
+        '''Calculation Variables'''
+        remaining_executions = []
         deadlines_missed = []
-        queue = []
-        sort_release = sorted(release.items(), key=lambda x: x[1])
-        prioritized_release = []
+        queue = [0]
+        
+        prioritized_releases = []
         prioritized_tasks = []
-        prioritized_task_test = []
+        prioritized_task_mem = []
 
-        for priority in sort_release:
-            prioritized_tasks.append(int(priority[0]))
-            prioritized_task_test.append(int(priority[0]))
-            prioritized_release.append(int(priority[1]))
+        execution_count = 0
 
-        prev_start = float(prioritized_release[0])
-        exe_count = 0
-        task_num = prioritized_tasks[0]
-        queue.append(exe_count)
-        del prioritized_tasks[0]
-        remaining_execution.append(int(execution_time[prioritized_task_test[0]]))
+        for prioritized_task, prioritized_release in sorted(release.items(), key=lambda x: x[1]):
+            prioritized_tasks.append(int(prioritized_task))
+            prioritized_task_mem.append(int(prioritized_task))
+            prioritized_releases.append(int(prioritized_release))
 
-        while not all(remains == 0 for remains in remaining_execution):#Loops until all tasks are drained
+        prev_start = float(prioritized_releases[0])
+        task = prioritized_tasks.pop(0)
+        
+        remaining_executions.append(int(execution_time[prioritized_task_mem[0]]))
+        
+        '''Loops until all tasks are drained'''
+        while not all(remaining_execution == 0 for remaining_execution in remaining_executions):
             prev_task = queue[0]
             write = 1
-            reset = 0
             
-            for width in range(1, int(quantum) + 1,1):
-                if remaining_execution[queue[0]] != 0:
-                    end = width + prev_start
+            for duration in range(1, int(quantum) + 1,1):
+                if remaining_executions[queue[0]] != 0:
+                    end = duration + prev_start
                     
-                if (end) > deadline[prioritized_task_test[queue[0]]] and reset == 0:#detect missed deadline
-                    reset = 1
-                    deadlines_missed.append(deadline[prioritized_task_test[queue[0]]])
-                    explanations.append("Task %s Missed Its Deadline At The Time Interval: %s"%(str(prioritized_task_test[queue[0]]+1),str(deadline[prioritized_task_test[queue[0]]])))
+                '''detect missed deadline'''
+                if (end) > deadline[prioritized_task_mem[queue[0]]]:
+                    deadlines_missed.append(deadline[prioritized_task_mem[queue[0]]])
+                    explanations.append("Task %s Missed Its Deadline At The Time Interval: %s"%(str(prioritized_task_mem[queue[0]]+1),str(deadline[prioritized_task_mem[queue[0]]])))
 
                 '''If no remaining execution_time in task, do not add to task execution_time'''
-                if not remaining_execution[queue[0]]:
+                if not remaining_executions[queue[0]]:
                     write = 0
                     break
 
-                remaining_execution[queue[0]] -= 1
-                if not remaining_execution[queue[0]]:
+                remaining_executions[queue[0]] -= 1
+                if not remaining_executions[queue[0]]:
                     break
 
             if write:
                 ends.append(end)
-                tasks.append(prioritized_task_test[queue[0]])
+                tasks.append(prioritized_task_mem[queue[0]])
                 starts.append(prev_start)
-                prev_start = width + prev_start
+                prev_start = end
                 
-            ###decides which task to drain
-            count = 0
             
+            '''Queue organization'''
+            count = 0
+
             for prioritized_task in prioritized_tasks:
                 if release[prioritized_task] <= end:
-                    if release[prioritized_task] != end and len(queue) == 1:#Queue organization
-                        remaining_execution.append(int(execution_time[prioritized_task]))
-                        exe_count = len(remaining_execution) - 1
-                        queue.append(exe_count)
+                    if (release[prioritized_task] != end and len(queue) >= 1) or (release[prioritized_task] == end and len(queue) > 1):
+                        remaining_executions.append(int(execution_time[prioritized_task]))
+                        execution_count = len(remaining_executions) - 1
+                        queue.append(execution_count)
                         count += 1
-                    elif release[prioritized_task] == end and len(queue) > 1:
-                        remaining_execution.append(int(execution_time[prioritized_task]))
-                        exe_count = len(remaining_execution)-1
-                        queue.append(exe_count)
-                        count += 1
-                    elif release[prioritized_task] != end and len(queue) > 1:
-                        remaining_execution.append(int(execution_time[prioritized_task]))
-                        exe_count = len(remaining_execution)-1
-                        queue.append(exe_count)
-                        count += 1
-            for i in range(count): 
-                del prioritized_tasks[0]
-                
-            if remaining_execution[queue[0]] != 0:#Am I calling the right tasks?
-                excess = queue.pop(0)
-                queue.append(excess)
+                    
+            prioritized_tasks = prioritized_tasks[count:]
+            
+            '''add remaining execution time to queue'''
+            if remaining_executions[queue[0]]:
+                remaining_execution = queue.pop(0)
+                queue.append(remaining_execution)
             else: 
-                excess = queue.pop(0)
+                queue.pop(0)
 
             if queue:
                 if prev_task != queue[0]:
                     prev_start += float(context_switching)
-        res = [] 
-        for i in explanations: 
-            if i not in res: 
-                res.append(i)
                 
-        return tasks, starts, ends, deadlines_missed, res
+        return tasks, starts, ends, deadlines_missed, list(set(explanations))
 
 
 #####################################################All Graphics and controls beyond  this point
 class draw_schedule(Frame):
-
     
     def __init__(self, release, period, execution_time, number_of_tasks, algorithm, ac1, ac2, deadline,  rounded_frequency=0, context_switching_time=0, quantum=0):
         super().__init__()
@@ -245,8 +236,8 @@ class draw_schedule(Frame):
         if (algorithm == "look_ahead_earliest_deadline_first"):
             task, start, end, missed_deadline, frequencies, explanations = algo.look_ahead_earliest_deadline_first(release, period, execution_time, ac1, ac2, number_of_tasks, rounded_frequency)
             
-        if (algorithm == "first_come_first_serve"):
-            task, start, end, missed_deadline, explanations = algo.first_come_first_serve(release,period, execution_time,deadline)
+        if (algorithm == "first_in_first_out"):
+            task, start, end, missed_deadline, explanations = algo.first_in_first_out(release,period, execution_time,deadline)
             frequencies = []
             
         if (algorithm == "round_robin"):
@@ -475,7 +466,7 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
                 
             draw_schedule(release, period, execution_time, number_of_tasks, algorithm, ac1, ac2, deadline,  rounded_frequency, context_switching_time, quantum)
             
-        elif (self.var.get() == 2):###first_come_first_serve#######################################
+        elif (self.var.get() == 2):###first_in_first_out#######################################
             entry_list_test = ["0,75,300","10,40,300","10,25,300","80,20,145","85,45,300"] #(release,deadline,execution_time)
             self.entry_list = entry_list_test
             number_of_tasks = len(self.entry_list)
@@ -487,7 +478,7 @@ class main(Tk): #This Module sets up the original window with search boxes, labe
                 deadline[count] = int(task[2])
                 execution_time[count] = int(task[1])
                 
-            algorithm = "first_come_first_serve"
+            algorithm = "first_in_first_out"
             rounded_frequency = 0
             quantum = 0
             context_switching_time = self.context_get.get()
